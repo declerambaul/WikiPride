@@ -8,6 +8,8 @@ REV_LEN_CHANGED = "%s.%swiki_rev_len_changed"%(settings.sqluserdb,settings.langu
 EDITOR_YEAR_MONTH = "%s.%swiki_editor_centric_year_month"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH_NAMESPACE = "%s.%swiki_editor_centric_year_month_namespace"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH_DAY_NAMESPACE = "%s.%swiki_editor_centric_year_month_day_namespace"%(settings.sqluserdb,settings.language)
+TIME_YEAR_MONTH_NAMESPACE ="%s.%swiki_time_centric_year_month_namespace"%(settings.sqluserdb,settings.language)
+TIME_YEAR_MONTH_DAY_NAMESPACE = "%s.%swiki_time_centric_year_month_day_namespace"%(settings.sqluserdb,settings.language)
 
 
 
@@ -158,3 +160,45 @@ GROUP BY
     rlc.rev_day,
     rlc.namespace;
 """%(EDITOR_YEAR_MONTH_DAY_NAMESPACE,REV_LEN_CHANGED,USER_COHORT)
+
+CREATE_TIME_YEAR_MONTH_NAMESPACE = """
+CREATE TABLE %s
+SELECT /* SLOW_OK */ 
+    edc.rev_year,
+    edc.rev_month,    
+    edc.namespace,
+    COUNT(edc.user_id)  AS editors,
+    SUM(noop_edits)     AS noop_edits,
+    SUM(add_edits)      AS add_edits,
+    SUM(remove_edits)   AS remove_edits,
+    SUM(len_added)      AS len_added,
+    SUM(len_removed)    AS len_removed
+FROM %s as edc
+GROUP BY
+    edc.rev_year,
+    edc.rev_month,
+    edc.namespace;
+"""%(TIME_YEAR_MONTH_NAMESPACE,EDITOR_YEAR_MONTH_NAMESPACE)
+
+CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE = """
+CREATE TABLE %s
+SELECT /* SLOW_OK */ 
+    edc.rev_year,
+    edc.rev_month,
+    edc.rev_day,
+    edc.namespace,
+    COUNT(edc.user_id)  AS editors,
+    SUM(noop_edits)     AS noop_edits,
+    SUM(add_edits)      AS add_edits,
+    SUM(remove_edits)   AS remove_edits,
+    SUM(len_added)      AS len_added,
+    SUM(len_removed)    AS len_removed
+FROM %s as edc
+GROUP BY
+    edc.rev_year,
+    edc.rev_month,
+    edc.rev_day,
+    edc.namespace;
+"""%(TIME_YEAR_MONTH_DAY_NAMESPACE,EDITOR_YEAR_MONTH_DAY_NAMESPACE)
+
+

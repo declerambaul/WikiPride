@@ -1,6 +1,8 @@
 '''
 Starting with the Wikimedia SQL database schema, this module creates a set of tables that will be used to aggregate the cohort trends.
 '''
+
+import os
 import logging
 logger = logging.getLogger('Preprocessing')
 
@@ -8,13 +10,13 @@ logger = logging.getLogger('Preprocessing')
 import settings
 
 from data.tables import *
+from data.userlists import *
 from db import sql
 
 
 def dropTable(tablename):
     """Drops a SQL table in the user database
 
-    :arg cur: MySQL cursor
     :arg tablename: str, name of the table
     """
     try:        
@@ -23,6 +25,7 @@ def dropTable(tablename):
         cur.execute("DROP TABLE IF EXISTS %s;"%tablename)
     except:
         pass
+
 
 def createTable(query,tablename):
     """Create a SQL table in the user database
@@ -38,6 +41,8 @@ def createTable(query,tablename):
     except:
         logger.exception("Could not create table %s"%tablename)
 
+
+
 def createIndex(query,tablename):
     """Create an index on a SQL table in the user database
 
@@ -50,6 +55,18 @@ def createIndex(query,tablename):
         logger.info("Created indexes on %s"%tablename)
     except:
         logger.warning("Could not create index on %s. Possibly it already exists"%tablename)
+
+def executeCommand(command,comment):
+    """Exports a SQL table into a file
+
+    :arg command: str, the command used to export the 
+    :arg comment: str, comment for logging stream
+    """
+    try:        
+        logger.info(comment)
+        os.system(command)        
+    except:
+        logger.info('Failed executing command: %s'%command)
 
 
 
@@ -76,7 +93,12 @@ def process():
         dropTable(REV_LEN_CHANGED)
         dropTable(EDITOR_YEAR_MONTH)
         dropTable(EDITOR_YEAR_MONTH_NAMESPACE)
-        dropTable(EDITOR_YEAR_MONTH_DAY_NAMESPACE)
+        # dropTable(EDITOR_YEAR_MONTH_DAY_NAMESPACE)
+
+        dropTable(TIME_YEAR_MONTH_NAMESPACE)
+        # dropTable(TIME_YEAR_MONTH_DAY_NAMESPACE)
+
+        dropTable(BOT_LIST)
 
     else:
         logger.info('No tables are being dropped! If they already exist nothing will be created in the next step.')
@@ -98,12 +120,16 @@ def process():
     # createTable(CREATE_EDITOR_YEAR_MONTH_DAY_NAMESPACE,EDITOR_YEAR_MONTH_DAY_NAMESPACE)
 
     createTable(CREATE_TIME_YEAR_MONTH_NAMESPACE,TIME_YEAR_MONTH_NAMESPACE)
+
     
     # not creating the 'day' table, it can be used for time series analysis, it is not useful for cohort visualizations.
     # createTable(CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE,TIME_YEAR_MONTH_DAY_NAMESPACE)
 
+    createTable(CREATE_BOT_LIST,BOT_LIST)
+    createIndex(INDEX_BOT_LIST,BOT_LIST)
 
-
+    
+    executeCommand(EXPORT_BOT_LIST,'Exporting bot list for cohort analysis')
 
 
 

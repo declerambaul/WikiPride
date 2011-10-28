@@ -16,11 +16,8 @@ language = None
 '''The language of the Wikipedia (e.g. 'en','pt')
 '''
 
-nobots = None
+filterbots = None
 '''Filter out known bots?
-'''
-botfile = None
-'''Path to the file containing all known bot user_ids
 '''
 
 
@@ -62,6 +59,9 @@ basedirectory = None
 '''
 datadirectory = None
 '''Path to directory for cohort data
+'''
+userlistdirectory = None
+'''Path to directory for user lists
 '''
 reportdirectory = None
 '''Path to store report 
@@ -113,7 +113,6 @@ mongoQueryVars = None
 '''
 
 
-
 def readConfig(configfile):
 	'''
 	Reads the configuration from `ConfigParser` instance into the runtime settings.
@@ -121,7 +120,7 @@ def readConfig(configfile):
 	:arg configfile: A file that can be read by a `ConfigParser` instance
 	'''
 
-	global language,nobots,botfile,basedirectory,datadirectory,reportdirectory,wikipridedirectory,sqlhost,sqlwikidb,sqluserdb,sqlconfigfile,sqldroptables
+	global language,nobots,botfile,basedirectory,datadirectory,userlistdirectory,reportdirectory,wikipridedirectory,sqlhost,sqlwikidb,sqluserdb,sqlconfigfile,sqldroptables
 
 
 	import ConfigParser
@@ -134,9 +133,8 @@ def readConfig(configfile):
 
 	# general settings
 	language = config.get('General','language') 
-	nobots = config.get('General','nobots')
-	botfile = config.get('General','botfile')
-	utils.setFilterBots(nobots,botfile)
+	filterbots = config.get('General','filterbots')	
+	
 	
 	(time_stamps,time_stamps_index) = utils.create_time_stamps_month(fromym='200401',toym='201106')
 
@@ -144,23 +142,20 @@ def readConfig(configfile):
 		language = None
 
 
-	# directories
+	# directories	
 	basedirectory = config.get('Directories','basedirectory')
 	datadirectory = config.get('Directories','datadirectory')
+	userlistdirectory = config.get('Directories','userlistdirectory')
 	reportdirectory = config.get('Directories','reportdirectory')
 	wikipridedirectory = config.get('Directories','wikipridedirectory')
 
 	if not os.path.isdir(basedirectory):
-		print basedirectory
-		logging.warning("%s not a valid basedirectory"%basedirectory)
-	if not os.path.isdir(datadirectory):
-		print datadirectory
-		logging.warning("%s not a valid datadirectory"%datadirectory)
-	if not os.path.isdir(reportdirectory):
-		logging.warning("%s not a valid reportdirectory"%reportdirectory)
-	if not os.path.isdir(wikipridedirectory):
-		logging.warning("%s not a valid wikipridedirectory"%wikipridedirectory)
-
+		logging.error("%s not a valid basedirectory"%basedirectory)
+	else:
+		os.system('mkdir -p %s'%datadirectory)
+		os.system('mkdir -p %s'%reportdirectory)
+		os.system('mkdir -p %s'%wikipridedirectory)
+		os.system('mkdir -p %s'%userlistdirectory)
 
 	# sql
 	sqlhost = config.get('MySQL','sqlhost')
