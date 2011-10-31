@@ -16,7 +16,7 @@ TIME_YEAR_MONTH_DAY_NAMESPACE = "%s.%swiki_time_centric_year_month_day_namespace
 
 CREATE_USER_COHORTS = """
 CREATE TABLE IF NOT EXISTS %s
-SELECT
+SELECT /* SLOW_OK */
     user_id,
     user_name,
     REPLACE(user_name, ' ', '_') as user_name_title,
