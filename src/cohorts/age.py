@@ -88,7 +88,7 @@ class AbsoluteAgePerMonth(Age):
 
             editor_id = row['user_id']
 
-            if utils.checkBot(editor_id,ints=True):
+            if utils.isBot(editor_id):
                 return
 
             year = row['rev_year']
@@ -179,7 +179,7 @@ class RelativeAgePerMonth(Age):
 
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']
@@ -264,7 +264,7 @@ class RelativeAgePerDay(Age):
 
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']
@@ -388,7 +388,7 @@ class AbsoluteAgeAllNamespaces(Cohort):
         # try:
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']

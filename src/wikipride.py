@@ -4,11 +4,12 @@ Main entry point into the wikipride framework
 
 import os,io
 import argparse
-import utils
-import logging
 
+import utils
 import settings
 
+import logging
+logger = logging.getLogger('WikiPride Main')
 
 
 def main():
@@ -54,7 +55,7 @@ def main():
 	if os.path.isfile(args.config): 
 		settings.readConfig(args.config)			
 	else:
-		logging.warning('Invalid config file: %s'%args.config)
+		logger.warning('Invalid config file: %s'%args.config)
 		return
 
 	if args.droptables is not None:

@@ -20,14 +20,14 @@ def setFilterBots(fb,botfile):
         except:
             logging.warning("Botlist (%s) could not be loaded, Bots will not be filtered"%botfile)
             
-def checkBot(u_id, ints = False):
+def isBot(u_id):
     '''
     Returns true if we filter for bots and  u_id is a known bot.
 
     :arg ints: Boolean, if True compares u_id as int (default is False)    
     '''    
     if filterBots:
-        if ints:
+        if isinstance(u_id,int):
             if u_id in bots_int:
                 return True
         elif u_id in bots_str:

@@ -13,7 +13,6 @@ except:
     raise Exception('Numpy is a requirement')
 
 
-from utils import checkBot
 
 import settings
 

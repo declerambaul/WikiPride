@@ -83,7 +83,7 @@ class OneYearCohort(Cohort):
 
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']
@@ -179,7 +179,7 @@ class ProjectSpaceCohorts(Cohort):
 
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']
@@ -275,7 +275,7 @@ class NameSpaces(Cohort):
 
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             logging.info("exclude bot: %s"%(editor_id))
             return
         

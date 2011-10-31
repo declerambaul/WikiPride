@@ -82,7 +82,7 @@ class AbsoluteAgeReverts(Revert):
         # try:
         editor_id = row['%s_user_id'%self.reverttype]
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['%s_year'%self.reverttype]
@@ -162,7 +162,7 @@ class RelativeAgeReverts(Revert):
         # try:
         editor_id = row['%s_user_id'%self.reverttype]
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['%s_year'%self.reverttype]

@@ -57,7 +57,7 @@ class EditsHistogram(Cohort):
         editor_id = editor['user_id']
 
 
-        if utils.checkBot(editor_id):
+        if utils.isBot(editor_id):
             return
 
         for year,edity in editor['edit_count'].items():        
@@ -189,7 +189,7 @@ class EditorActivity(Cohort):
         # try:
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
         year = row['rev_year']
@@ -299,7 +299,7 @@ class NewEditorActivity(Cohort):
         # try:
         editor_id = row['user_id']
 
-        if utils.checkBot(editor_id,ints=True):
+        if utils.isBot(editor_id):
             return
 
 

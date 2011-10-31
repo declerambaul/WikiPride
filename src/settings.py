@@ -7,6 +7,8 @@ import logging
 
 # Configure logging
 logging.basicConfig( level=logging.DEBUG, format='%(asctime)s - %(name)s: %(message)s', datefmt='%b-%d %H:%M')
+logger = logging.getLogger('Settings')
+
 
 
 ###
@@ -135,27 +137,24 @@ def readConfig(configfile):
 	language = config.get('General','language') 
 	filterbots = config.get('General','filterbots')	
 	
+	startYM = config.get('General','startYM') 
+	endYM = config.get('General','endYM') 
+	(time_stamps,time_stamps_index) = utils.create_time_stamps_month(fromym=startYM,toym=endYM)
 	
-	(time_stamps,time_stamps_index) = utils.create_time_stamps_month(fromym='200401',toym='201106')
-
-	if language == 'None':
-		language = None
-
-
 	# directories	
-	basedirectory = config.get('Directories','basedirectory')
-	datadirectory = config.get('Directories','datadirectory')
-	userlistdirectory = config.get('Directories','userlistdirectory')
-	reportdirectory = config.get('Directories','reportdirectory')
-	wikipridedirectory = config.get('Directories','wikipridedirectory')
+	basedirectory = os.path.expanduser(config.get('Directories','basedirectory'))
+	datadirectory = os.path.expanduser(config.get('Directories','datadirectory'))
+	userlistdirectory = os.path.expanduser(config.get('Directories','userlistdirectory'))
+	reportdirectory = os.path.expanduser(config.get('Directories','reportdirectory'))
+	wikipridedirectory = os.path.expanduser(config.get('Directories','wikipridedirectory'))
 
 	if not os.path.isdir(basedirectory):
-		logging.error("%s not a valid basedirectory"%basedirectory)
-	else:
-		os.system('mkdir -p %s'%datadirectory)
-		os.system('mkdir -p %s'%reportdirectory)
-		os.system('mkdir -p %s'%wikipridedirectory)
-		os.system('mkdir -p %s'%userlistdirectory)
+		logger.error("%s not a valid basedirectory"%basedirectory)
+	else:		
+		os.makedirs(datadirectory)
+		os.makedirs(reportdirectory)
+		os.makedirs(wikipridedirectory)
+		os.makedirs(userlistdirectory)
 
 	# sql
 	sqlhost = config.get('MySQL','sqlhost')
@@ -164,13 +163,9 @@ def readConfig(configfile):
 	sqlconfigfile = config.get('MySQL','sqlconfigfile')	
 	sqldroptables = config.getboolean('MySQL','sqldroptables')	
 
-	# the default config sqlhost host is set to LANUAGEwiki-p.rrdb.toolserver.org	
-	if 'LANUAGE' in sqlhost and language is not None:
-		sqlhost = sqlhost.replace('LANUAGE',language)
-
 	sqlconfigfile = os.path.expanduser(sqlconfigfile)
 	if not os.path.isfile(sqlconfigfile):
-		logging.warning("%s sql config file not found"%sqlconfigfile)
+		logger.warning("%s sql config file not found"%sqlconfigfile)
 		
 
 
