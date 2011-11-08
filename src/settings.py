@@ -21,6 +21,11 @@ language = None
 filterbots = None
 '''Filter out known bots?
 '''
+#TODO REMOVE FILTER BOTS FROM SETTINGS!!!
+#legacy
+@property
+def nobots():
+	return filterbots
 
 
 ''' MOVE INTO COHORT DEFINITIONS WHERE NEEDED!
@@ -43,13 +48,6 @@ time_stamps_index = None
 ###
 cmapName = 'spectral'
 '''Colormap to use. Has to be a valid name in matplotlib.pyplot.cm.datad
-'''
-ncolors = None
-'''The number of colors to use in colormap. None defaults to the number
-of colors defined by the cohorts, usually equal to the number of cohorts
-'''
-wikiprideDirectory = '../wikipride'
-'''Path to wikipride visualizations (no / at the end!)
 '''
 
 
@@ -122,7 +120,7 @@ def readConfig(configfile):
 	:arg configfile: A file that can be read by a `ConfigParser` instance
 	'''
 
-	global language,nobots,botfile,basedirectory,datadirectory,userlistdirectory,reportdirectory,wikipridedirectory,sqlhost,sqlwikidb,sqluserdb,sqlconfigfile,sqldroptables
+	global language,filterbots,time_stamps,time_stamps_index,botfile,basedirectory,datadirectory,userlistdirectory,reportdirectory,wikipridedirectory,sqlhost,sqlwikidb,sqluserdb,sqlconfigfile,sqldroptables
 
 
 	import ConfigParser
@@ -150,11 +148,11 @@ def readConfig(configfile):
 
 	if not os.path.isdir(basedirectory):
 		logger.error("%s not a valid basedirectory"%basedirectory)
-	else:		
-		os.makedirs(datadirectory)
-		os.makedirs(reportdirectory)
-		os.makedirs(wikipridedirectory)
-		os.makedirs(userlistdirectory)
+	# else:		
+	# 	os.system('mkdir -p %s'%datadirectory)
+	# 	os.system('mkdir -p %s'%reportdirectory)
+	# 	os.system('mkdir -p %s'%wikipridedirectory)
+	# 	os.system('mkdir -p %s'%userlistdirectory)
 
 	# sql
 	sqlhost = config.get('MySQL','sqlhost')

@@ -1,11 +1,15 @@
 '''
 Creates a database connection to the slave replica on alpha and implements methods for querying the database
 '''
-
-
 import os
 import settings
 import logging
+
+
+try:
+    import MySQLdb,MySQLdb.cursors
+except:
+    logging.error("SQL module MySQLdb could not be imported.")    
 
 
 db = None
@@ -16,11 +20,6 @@ def connect():
     """
     Connect to the MySQL database
     """
-    try:
-        import MySQLdb,MySQLdb.cursors
-    except:
-        logging.error("SQL module MySQLdb could not be imported.")    
-
     global db
     if db is None:
         db = MySQLdb.connect(db=settings.sqluserdb, host=settings.sqlhost, read_default_file=settings.sqlconfigfile)

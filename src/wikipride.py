@@ -67,11 +67,11 @@ def main():
 		from data import preprocessing
 		preprocessing.process()		
 	elif args.workstep == 'data':
-		from data import cohortdata
-		cohortdata.process()
-		
+		from data import report
+		report.processData()		
 	elif args.workstep == 'report':	
-		pass
+		from data import report
+		report.report()		
 
 	
 	# for row in map(args.dump, args.processor.process, noop=args.noop, threads=args.threads):

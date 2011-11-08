@@ -53,8 +53,8 @@ GROUP BY user_id, user_name;
 
 
 INDEX_USER_COHORTS="""
-CREATE INDEX user_id on %s (user_id);
-CREATE INDEX user_title on %s (user_name_title);
+CREATE INDEX /* SLOW_OK */ user_id on %s (user_id);
+CREATE INDEX /* SLOW_OK */ user_title on %s (user_name_title);
 """%(USER_COHORT,USER_COHORT)
 
 
@@ -82,7 +82,7 @@ INNER JOIN %s.page cp
 """%(REV_LEN_CHANGED,settings.sqlwikidb,settings.sqlwikidb,settings.sqlwikidb)
 
 INDEX_REV_LEN_CHANGED="""
-CREATE INDEX compound on %s (user_id,rev_year,rev_month,rev_day,namespace);
+CREATE INDEX /* SLOW_OK */ compound on %s (user_id,rev_year,rev_month,rev_day,namespace);
 """%REV_LEN_CHANGED
 
 

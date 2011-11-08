@@ -132,6 +132,9 @@ def create_time_stamps_day(fromymd='20010101',toymd='20101231'):
 def computeMonthStartEndtime(ym):
     '''
     Returns the starting and end datetime object for the yyyymm passed. I.e. the first and last day of the month
+
+    :arg ym: str, 'yyyymm' format
+    :returns: tuple of datetime objects
     '''
     from datetime import datetime
     import calendar
@@ -149,6 +152,25 @@ def computeMonthStartEndtime(ym):
 
     return (start,end)
 
+def numberOfMonths(ymStart,ymEnd):
+    '''Returns the number of months between the parameters.
+
+    :arg ymStart: str, 'yyyymm' format
+    :arg ymEnd: str, 'yyyymm' format
+    :returns: int, number of month
+    '''
+    months = 0
+    months += (int(ymEnd[:4])-(int(ymStart[:4])+1)) * 12
+    if int(ymEnd[:4])==int(ymStart[:4]):
+        #same year
+        months += (int(ymEnd[4:])-int(ymStart[4:]))+1
+    else:
+        months += 12-int(ymStart[4:])+1
+        months += int(ymEnd[4:])
+
+    return months
+
+
 def cmap_discretize(cmapName, N):
     """
     From http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations
@@ -160,12 +182,12 @@ def cmap_discretize(cmapName, N):
     """
     
     try:
-        from numpy import array, linspace,zeros
+        from numpy import array, linspace, zeros, interp
         import matplotlib 
         from matplotlib import pyplot as plt
     except:
         logging.error('matplotlib or numpy not installed')
-        logging.error("cmap_discretize() returns invalid cmap; you can't plot without these packages")
+        logging.error("cmap_discretize() returns invalid cmap; you can't plot without these packages anyways")
         return cmapName
 
 
@@ -176,12 +198,12 @@ def cmap_discretize(cmapName, N):
     
 
 
-    try: 
-        from scipy import interpolate
-    except:
-        logging.error('scipy not installed')
-        logging.info("cmap_discretize() can't interpolate the colormap, returns cmap %s unchanged"%cmapName)
-        return cmap
+    # try: 
+    #     from scipy import interpolate
+    # except:
+    #     logging.error('scipy not installed')
+    #     logging.info("cmap_discretize() can't interpolate the colormap, returns cmap %s unchanged"%cmapName)
+    #     return cmap
 
 
     cdict = cmap._segmentdata.copy()
@@ -192,8 +214,14 @@ def cmap_discretize(cmapName, N):
     for key in ('red','green','blue'):
         # Find the N colors
         D = array(cdict[key])
-        I = interpolate.interp1d(D[:,0], D[:,1])
-        colors = I(colors_i)
+        
+        # using scipy 
+        # I = interpolate.interp1d(D[:,0], D[:,1])
+        # colors = I(colors_i)
+        
+        # using numpy
+        colors = interp(colors_i,D[:,0], D[:,1])
+
         # Place these colors at the correct indices.
         A = zeros((N+1,3), float)
         A[:,0] = indices

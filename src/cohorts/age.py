@@ -3,9 +3,6 @@
 
 import sys,logging
 
-
-
-
 try:
     import numpy as N
 except:
@@ -16,7 +13,9 @@ except:
 import settings
 import utils
 
+
 from cohorts.base import Cohort
+from data import tables
 
 
 class Age(Cohort):
@@ -335,7 +334,7 @@ class RelativeAgePerDay(Age):
 class AbsoluteAgeAllNamespaces(Cohort):
     '''A cohort is the group of people that have started editing in the same month. 
     '''
-    def __init__(self,activation=1):
+    def __init__(self,minedits=1,maxedits=None):
 
         self.cohorts = [int(i) for i in range(0,len(settings.time_stamps))]
         '''Cohort definition
@@ -344,10 +343,19 @@ class AbsoluteAgeAllNamespaces(Cohort):
         '''Cohort labels
         '''     
         
-        self.sqlQuery = 'SELECT * FROM u_declerambaul.ptwiki_editor_centric_year_month;'
+        self.sqlQuery = 'SELECT * FROM %s;'%tables.EDITOR_YEAR_MONTH
+        '''The SQL query returns edit information for each editor for each ym she has edited.'''
 
-        self.activation = activation
-        '''Minimum number of edits by editor to be included'''
+        self.minedits = minedits
+        '''Minimum number of edits by editor in a given month to be included'''
+
+        self.maxedits = maxedits
+        '''Maximum number of edits by editor in a given month to be included'''
+
+        self.ncolors = utils.numberOfMonths(settings.time_stamps[0],settings.time_stamps[-1])/6
+        '''
+        Number of visible colors in the wikipride plots. E.g. one color for every six month for wikipride plots
+        '''
 
         Cohort.__init__(self)
 
@@ -367,21 +375,23 @@ class AbsoluteAgeAllNamespaces(Cohort):
     def initDataDescription(self):
         '''Initialize the self.data_description dictionary with additional information
         '''
-        self.data_description['added'] = {  'title' : 'Megabytes added by editor activity ( %s, %s, namespaces:All)'%(self.activation, 'no bots' if self.nobots else 'including bots'), \
+        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+
+        self.data_description['added'] = {  'title' : 'Megabytes added by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Megabytes',\
                                             'ytickslabel' : lambda x : '%d'%(x/1e6) }
-        self.data_description['removed'] = {  'title' : 'Megabytes removed by editor activity ( %s, %s, namespaces:All)'%(self.activation, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['removed'] = {  'title' : 'Megabytes removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Megabytes',\
                                             'ytickslabel' : lambda x : '%d'%(x/1e6) }
 
-        self.data_description['net'] = {  'title' : 'Megabytes Added-Removed by editor activity ( %s, %s, namespaces:All)'%(self.activation, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['net'] = {  'title' : 'Megabytes Added-Removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Megabytes',\
                                             'ytickslabel' : lambda x : '%d'%(x/1e6) }
 
-        self.data_description['edits'] = {  'title' : 'Number of edits by editor activity ( %s, %s, namespaces:All)'%(self.activation, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['edits'] = {  'title' : 'Number of edits by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Edits' }
 
-        self.data_description['editors'] = {  'title' : 'Active editor histogram ( %s, %s, namespaces:All)'%(self.activation, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['editors'] = {  'title' : 'Active editor histogram ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                              'ylabel': 'Number of Editors' }
 
     def processSQLrow(self,row):
@@ -416,7 +426,7 @@ class AbsoluteAgeAllNamespaces(Cohort):
         if row['noop_edits'] is not None:
             edits += int(row['noop_edits'])
 
-        if edits < self.activation:
+        if edits < self.minedits or (edits > self.maxedits and self.maxedits is not None):                        
             return
 
         self.data['editors'][cohorts_index,time_index] += 1
@@ -454,3 +464,9 @@ class AbsoluteAgeAllNamespaces(Cohort):
         labels = ['%s / %s'%('1-6' if int(self.cohort_labels[i][:2])<=6 else '7-12',self.cohort_labels[i][-4:]) for i in skip]
             
         return ticks,labels
+
+    def __repr__(self):
+        '''String representation of cohort.
+        '''
+        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+        return "Absolute Age Cohort (%s)"%editspan
