@@ -81,10 +81,10 @@ sqlhost = None
 '''The host name of the MySql server
 '''
 sqlwikidb = None
-'''The name of the database on db host where the Mediawiki database is stored. On the toolserver, this is for example 'ptwiki_p'
+'''The name of the database on db host where the Mediawiki database is stored. On the toolserver, this is for example `ptwiki_p`
 '''
 sqluserdb = None
-'''The name of the database on db host where the aggregated tables will be stored. On the toolserver, this is the username prepended by a 'u_', e.e. 'u_delcerambaul'
+'''The name of the database on db host where the aggregated tables will be stored. On the toolserver, this is the username prepended by a `u_`, e.e. `u_delcerambaul`
 '''
 sqlconfigfile = None
 '''

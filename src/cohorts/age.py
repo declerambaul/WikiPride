@@ -455,10 +455,6 @@ class AbsoluteAgeAllNamespaces(Cohort):
 
         nlabels = ncolors+1
 
-        # too many dates are unreadable
-        if nlabels > 15:
-            nlabels = 15
-
         ticks = N.linspace(0, (1.-1./nlabels), nlabels) +0.5/nlabels
         skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels) ]                
         labels = ['%s / %s'%('1-6' if int(self.cohort_labels[i][:2])<=6 else '7-12',self.cohort_labels[i][-4:]) for i in skip]
@@ -470,3 +466,141 @@ class AbsoluteAgeAllNamespaces(Cohort):
         '''
         editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
         return "Absolute Age Cohort (%s)"%editspan
+
+
+class RelativeAgeAllNamespaces(Cohort):
+    '''A cohort is the group of people that have the same age at the time of an edit. During the first month of editing, a contributor will be in the 1-month old cohort, then he switches to the 2-month cohort and so forth.
+    '''
+    def __init__(self,minedits=1,maxedits=None):
+
+        self.cohorts = [int(i) for i in range(0,len(settings.time_stamps))]        
+        '''Cohort definition
+        '''
+        self.cohort_labels = ['%s month old'% i for i in self.cohorts]
+        '''Cohort labels
+        '''                   
+        
+        self.sqlQuery = 'SELECT * FROM %s;'%tables.EDITOR_YEAR_MONTH
+        '''The SQL query returns edit information for each editor for each ym she has edited.'''
+
+        self.minedits = minedits
+        '''Minimum number of edits by editor in a given month to be included'''
+
+        self.maxedits = maxedits
+        '''Maximum number of edits by editor in a given month to be included'''
+
+        self.ncolors = utils.numberOfMonths(settings.time_stamps[0],settings.time_stamps[-1])/6
+        '''
+        Number of visible colors in the wikipride plots. E.g. one color for every six month for wikipride plots
+        '''
+
+        Cohort.__init__(self)
+
+
+    def initData(self):
+
+        self.data['added'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+        self.data['removed'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+        self.data['net'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+        self.data['edits'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+        self.data['editors'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+
+        self.initDataDescription()
+
+
+
+    def initDataDescription(self):
+        '''Initialize the self.data_description dictionary with additional information
+        '''
+        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+
+        self.data_description['added'] = {  'title' : 'Megabytes added by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                            'ylabel': 'Megabytes',\
+                                            'ytickslabel' : lambda x : '%d'%(x/1e6) }
+        self.data_description['removed'] = {  'title' : 'Megabytes removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                            'ylabel': 'Megabytes',\
+                                            'ytickslabel' : lambda x : '%d'%(x/1e6) }
+
+        self.data_description['net'] = {  'title' : 'Megabytes Added-Removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                            'ylabel': 'Megabytes',\
+                                            'ytickslabel' : lambda x : '%d'%(x/1e6) }
+
+        self.data_description['edits'] = {  'title' : 'Number of edits by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                            'ylabel': 'Edits' }
+
+        self.data_description['editors'] = {  'title' : 'Active editor histogram ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                             'ylabel': 'Number of Editors' }
+
+    def processSQLrow(self,row):
+        # try:
+        editor_id = row['user_id']
+
+        if utils.isBot(editor_id):
+            return
+
+        year = row['rev_year']
+        month = row['rev_month']
+
+        ym = '%d%02d'%(year,month)
+
+        time_index = self.time_stamps_index.get(ym,None)
+        if time_index is None:
+            return
+
+        firstedit = '%d%02d'%(row['first_edit_year'],row['first_edit_month'])
+
+        fe_index = self.time_stamps_index.get(firstedit,None)
+        if fe_index is None:
+            return
+
+        cohorts_index = self.getIndex(time_index, fe_index)
+
+
+        edits = 0
+        if row['add_edits'] is not None:
+            edits += int(row['add_edits'])
+        if row['remove_edits'] is not None:
+            edits += int(row['remove_edits'])
+        if row['noop_edits'] is not None:
+            edits += int(row['noop_edits'])
+
+        if edits < self.minedits or (edits > self.maxedits and self.maxedits is not None):                        
+            return
+
+        self.data['editors'][cohorts_index,time_index] += 1
+
+        if row['len_added'] is not None:
+            self.data['added'][cohorts_index,time_index] += int(row['len_added'])
+        if row['len_removed'] is not None:    
+            self.data['removed'][cohorts_index,time_index] += -int(row['len_removed'])
+        if row['len_added'] is not None and row['len_removed'] is not None:
+            self.data['net'][cohorts_index,time_index] += int(row['len_added']) + int(row['len_removed'])
+        
+        self.data['edits'][cohorts_index,time_index] += edits
+
+        # except:
+        #     raise Exception('row:\n%s'%row)
+   
+    def getIndex(self,ti,fe):
+        '''
+        Returns the index of the cohort (i.e. the relative age of the editor) from the time index of the edit and time index of the first edit
+        '''
+        return ti-fe
+
+    def colorbarTicksAndLabels(self,ncolors):
+        '''Returns ticks and labels for the colorbar of a WikiPride visualization
+        '''
+
+        nlabels = ncolors+1
+
+        ticks = N.linspace(0, 1., nlabels) +1./(nlabels-1)*1/2
+        skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels) ]                
+        labels = ['%s-%s months old'%(self.cohorts[skip[i+1]],self.cohorts[skip[i]+1]) for i in range(0,len(skip)-2)]
+        labels.append('%s-%s months old'%(self.cohorts[-1],self.cohorts[skip[-2]+1]))
+        return ticks,labels
+
+    def __repr__(self):
+        '''String representation of cohort.
+        '''
+        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+        return "Relative Age Cohort (%s)"%editspan

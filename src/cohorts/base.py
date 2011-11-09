@@ -276,17 +276,10 @@ class Cohort:
 
     def wikiPride(self, varName,varDesc=None, normal=True, percentage=True, colorbar=True, ncolors=None, flip=False, pdf=True,dest=None,verbose=False):
         '''
-        Plots the cohort trends using the famous WikiPride stacked bar chart!
-
-        If `normal` is True, the absolute values are visualized
-
-        If `percentage` is True, the relative values are visualized (i.e. the percentages)
-
-        If `flip` is True, the numpy.array is flipped upside down. This results in the bars
-        added in reverse order. The order of the cohort labels is also reversed as a result.
+        Plots the cohort trends using the famous WikiPride stacked bar chart! If `normal` is True, the absolute values are visualized. If `percentage` is True, the relative values are visualized (i.e. the percentages). If `flip` is True, the numpy.array is flipped upside down. This results in the bars added in reverse order. The order of the cohort labels is also reversed as a result.
 
         :arg varName: str, the name of the numpy.array in self.data to visualize
-        :arg varDesc: str. Alternative name for the data description. If None, `varName' will be used.
+        :arg varDesc: str. Alternative name for the data description. If None, `varName` will be used.
         :arg normal: Boolean. Visualize absolute values.
         :arg percentage: Boolean. Visualize percentages.
         :arg colorbar: Boolean. Add color bar legend.
@@ -324,6 +317,7 @@ class Cohort:
         if flip:
             data = N.flipud(data)
             self.cohort_labels.reverse()
+            self.cohorts.reverse()
 
 
         if normal and percentage:
@@ -365,8 +359,15 @@ class Cohort:
 
             if percentage:       
                 # scale to 1 
-                t = data.sum(axis=0) + 1
+                t = data.sum(axis=0)
+                t[t==0] = 1
                 b = data[0:i,:].sum(axis=0) / t
+
+                # print 'cohort '+self.cohort_labels[i]
+                # print 'total \n%s'%t
+                # print 'bottom \n%s'%b
+                # print 'box \n%s'%(data[i,:]/t)
+
                 axP.bar(xt,data[i,:]/t,bottom=b,color=colors[i],linewidth=0)
             
         if verbose:
@@ -445,6 +446,7 @@ class Cohort:
         # reverse cohort_labels back if data has been flipped
         if flip: 
             self.cohort_labels.reverse()
+            self.cohorts.reverse()
 
 
 
