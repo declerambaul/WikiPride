@@ -134,14 +134,14 @@ def processData():
     createDirectories(REPORTDATA)
 
     # aggregate and save cohort data
-    # processCohortData(cohort=absMore1,destination=getDirectory(REPORTDATA,ABS_MORE1))
-    # processCohortData(cohort=absMore5,destination=getDirectory(REPORTDATA,ABS_MORE5))
-    # processCohortData(cohort=absMore100,destination=getDirectory(REPORTDATA,ABS_MORE100))
-    # processCohortData(cohort=absLess100,destination=getDirectory(REPORTDATA,ABS_LESS100))
+    processCohortData(cohort=absMore1,destination=getDirectory(REPORTDATA,ABS_MORE1))
+    processCohortData(cohort=absMore5,destination=getDirectory(REPORTDATA,ABS_MORE5))
+    processCohortData(cohort=absMore100,destination=getDirectory(REPORTDATA,ABS_MORE100))
+    processCohortData(cohort=absLess100,destination=getDirectory(REPORTDATA,ABS_LESS100))
 
-    # processCohortData(cohort=relMore1,destination=getDirectory(REPORTDATA,REL_MORE1))
-    # processCohortData(cohort=relMore5,destination=getDirectory(REPORTDATA,REL_MORE5))
-    # processCohortData(cohort=relMore100,destination=getDirectory(REPORTDATA,REL_MORE100))
+    processCohortData(cohort=relMore1,destination=getDirectory(REPORTDATA,REL_MORE1))
+    processCohortData(cohort=relMore5,destination=getDirectory(REPORTDATA,REL_MORE5))
+    processCohortData(cohort=relMore100,destination=getDirectory(REPORTDATA,REL_MORE100))
     processCohortData(cohort=relLess100,destination=getDirectory(REPORTDATA,REL_LESS100))
 
 
@@ -158,8 +158,8 @@ def produceWikiPrideGraphs(cohort,destination,flip=False):
     pdf = False
     verbose = True
 
-    # cohort.wikiPride(varName='added',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
-    # cohort.wikiPride(varName='edits',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
+    cohort.wikiPride(varName='added',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
+    cohort.wikiPride(varName='edits',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
     cohort.wikiPride(varName='editors',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
 
 
@@ -170,25 +170,21 @@ def produceGraphs():
     '''
 
     createDirectories(REPORTGRAPHS)
+    produceWikiPrideGraphs(cohort=absMore1,destination=getDirectory(REPORTGRAPHS,ABS_MORE1))
+    produceWikiPrideGraphs(cohort=absMore5,destination=getDirectory(REPORTGRAPHS,ABS_MORE5))
+    produceWikiPrideGraphs(cohort=absMore100,destination=getDirectory(REPORTGRAPHS,ABS_MORE100))
+    produceWikiPrideGraphs(cohort=absLess100,destination=getDirectory(REPORTGRAPHS,ABS_LESS100))
 
-    # produceWikiPrideGraphs(cohort=absMore1,destination=getDirectory(REPORTGRAPHS,ABS_MORE1))
-    # produceWikiPrideGraphs(cohort=absMore5,destination=getDirectory(REPORTGRAPHS,ABS_MORE5))
-    # produceWikiPrideGraphs(cohort=absMore100,destination=getDirectory(REPORTGRAPHS,ABS_MORE100))
-    # produceWikiPrideGraphs(cohort=absLess100,destination=getDirectory(REPORTGRAPHS,ABS_LESS100))
-
-    # produceWikiPrideGraphs(cohort=relMore1,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE1))
-    # produceWikiPrideGraphs(cohort=relMore5,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE5))
-    # produceWikiPrideGraphs(cohort=relMore100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE100))
+    produceWikiPrideGraphs(cohort=relMore1,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE1))
+    produceWikiPrideGraphs(cohort=relMore5,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE5))
+    produceWikiPrideGraphs(cohort=relMore100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE100))
     produceWikiPrideGraphs(cohort=relLess100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_LESS100))
     
 
 def report():
     '''Executes the `report` step. I.e. both the `data` and the `graphs` work flow step.
     '''    
-    
-
     processData()
-
     produceGraphs()
 
 
