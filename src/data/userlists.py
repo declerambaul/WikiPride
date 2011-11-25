@@ -24,11 +24,12 @@ CREATE INDEX user_id on %s (user_id);
 """%(BOT_LIST)
 
 
-BOT_LIST_FILE = "%s/%swiki_bots.tsv"
+BOT_LIST_FILE = "%s/%swiki_bots.tsv"%(settings.userlistdirectory,settings.language)
 EXPORT_BOT_LIST = """
-mysql -h %swiki-p.rrdb.toolserver.org -e 'select user_id from %s;' > %s/%swiki_bots.tsv;
+mkdir -p %s;
+mysql -h %swiki-p.rrdb.toolserver.org -e 'select user_id from %s;' > %s;
 sed -i '1d' %s
-"""%(settings.language,BOT_LIST,settings.userlistdirectory,settings.language,BOT_LIST_FILE)
+"""%(settings.userlistdirectory,settings.language,BOT_LIST,BOT_LIST_FILE,BOT_LIST_FILE)
 
 
 

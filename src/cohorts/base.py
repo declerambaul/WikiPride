@@ -380,7 +380,7 @@ class Cohort:
 
         if normal:
             # axN.set_title('Net contributions of cohorts (namespace 0, bots filtered)')
-            title = data_description.get('title','')
+            title = '%s_WP - %s'%(settings.language.upper() ,data_description.get('title',''))
             axN.set_title(title)
 
             if 'ylim' in data_description:
@@ -404,7 +404,7 @@ class Cohort:
             axP.set_ylabel('Percentage')   
             axP.twinx()
         
-            title = data_description.get('title','')
+            title = '%s_WP - %s'%(settings.language.upper() ,data_description.get('title',''))
             axP.set_title('Percentage - %s'%title)            
 
             # x ticks / labels

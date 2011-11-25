@@ -71,6 +71,16 @@ relMore5 = age.RelativeAgeAllNamespaces(minedits = 5)
 relMore100 = age.RelativeAgeAllNamespaces(minedits = 100)
 relLess100 = age.RelativeAgeAllNamespaces(minedits = 1,maxedits = 100)
 
+from cohorts import histogram
+
+edact = histogram.EditorActivity()
+
+from cohorts import simple
+
+nscohort = simple.NameSpaces()
+
+
+
 
 
 def getDirectory(base,reporttype):
@@ -106,8 +116,8 @@ def createDirectories(base):
     os.mkdir(getDirectory(base, REL_LESS100))
 
     # os.mkdir(getDirectory(base, NEWEDITORS))
-    # os.mkdir(getDirectory(base, HISTOGRAM))
-    # os.mkdir(getDirectory(base, NAMESPACES))
+    os.mkdir(getDirectory(base, HISTOGRAM))
+    os.mkdir(getDirectory(base, NAMESPACES))
 
     # except:
     #     logger.info('Failed to create report directory structure (directories already exists?)')
@@ -134,15 +144,18 @@ def processData():
     createDirectories(REPORTDATA)
 
     # aggregate and save cohort data
-    processCohortData(cohort=absMore1,destination=getDirectory(REPORTDATA,ABS_MORE1))
-    processCohortData(cohort=absMore5,destination=getDirectory(REPORTDATA,ABS_MORE5))
-    processCohortData(cohort=absMore100,destination=getDirectory(REPORTDATA,ABS_MORE100))
-    processCohortData(cohort=absLess100,destination=getDirectory(REPORTDATA,ABS_LESS100))
+    # processCohortData(cohort=absMore1,destination=getDirectory(REPORTDATA,ABS_MORE1))
+    # processCohortData(cohort=absMore5,destination=getDirectory(REPORTDATA,ABS_MORE5))
+    # processCohortData(cohort=absMore100,destination=getDirectory(REPORTDATA,ABS_MORE100))
+    # processCohortData(cohort=absLess100,destination=getDirectory(REPORTDATA,ABS_LESS100))
 
-    processCohortData(cohort=relMore1,destination=getDirectory(REPORTDATA,REL_MORE1))
-    processCohortData(cohort=relMore5,destination=getDirectory(REPORTDATA,REL_MORE5))
-    processCohortData(cohort=relMore100,destination=getDirectory(REPORTDATA,REL_MORE100))
-    processCohortData(cohort=relLess100,destination=getDirectory(REPORTDATA,REL_LESS100))
+    # processCohortData(cohort=relMore1,destination=getDirectory(REPORTDATA,REL_MORE1))
+    # processCohortData(cohort=relMore5,destination=getDirectory(REPORTDATA,REL_MORE5))
+    # processCohortData(cohort=relMore100,destination=getDirectory(REPORTDATA,REL_MORE100))
+    # processCohortData(cohort=relLess100,destination=getDirectory(REPORTDATA,REL_LESS100))
+
+    # processCohortData(cohort=edact,destination=getDirectory(REPORTDATA,HISTOGRAM))
+    processCohortData(cohort=nscohort,destination=getDirectory(REPORTDATA,NAMESPACES))
 
 
 
@@ -170,16 +183,24 @@ def produceGraphs():
     '''
 
     createDirectories(REPORTGRAPHS)
-    produceWikiPrideGraphs(cohort=absMore1,destination=getDirectory(REPORTGRAPHS,ABS_MORE1))
-    produceWikiPrideGraphs(cohort=absMore5,destination=getDirectory(REPORTGRAPHS,ABS_MORE5))
-    produceWikiPrideGraphs(cohort=absMore100,destination=getDirectory(REPORTGRAPHS,ABS_MORE100))
-    produceWikiPrideGraphs(cohort=absLess100,destination=getDirectory(REPORTGRAPHS,ABS_LESS100))
 
-    produceWikiPrideGraphs(cohort=relMore1,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE1))
-    produceWikiPrideGraphs(cohort=relMore5,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE5))
-    produceWikiPrideGraphs(cohort=relMore100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE100))
-    produceWikiPrideGraphs(cohort=relLess100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_LESS100))
-    
+    # produce wikipride graphs
+    # produceWikiPrideGraphs(cohort=absMore1,destination=getDirectory(REPORTGRAPHS,ABS_MORE1))
+    # produceWikiPrideGraphs(cohort=absMore5,destination=getDirectory(REPORTGRAPHS,ABS_MORE5))
+    # produceWikiPrideGraphs(cohort=absMore100,destination=getDirectory(REPORTGRAPHS,ABS_MORE100))
+    # produceWikiPrideGraphs(cohort=absLess100,destination=getDirectory(REPORTGRAPHS,ABS_LESS100))
+
+    # produceWikiPrideGraphs(cohort=relMore1,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE1))
+    # produceWikiPrideGraphs(cohort=relMore5,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE5))
+    # produceWikiPrideGraphs(cohort=relMore100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE100))
+    # produceWikiPrideGraphs(cohort=relLess100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_LESS100))
+
+    # produceWikiPrideGraphs(cohort=edact,destination=getDirectory(REPORTGRAPHS,HISTOGRAM))
+
+    # producing wikipride manually because the number of editors editing are not counted (yet)
+    nscohort.wikiPride(varName='added',dest=getDirectory(REPORTGRAPHS,NAMESPACES))
+    nscohort.wikiPride(varName='edits',dest=getDirectory(REPORTGRAPHS,NAMESPACES))
+
 
 def report():
     '''Executes the `report` step. I.e. both the `data` and the `graphs` work flow step.

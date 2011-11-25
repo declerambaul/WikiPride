@@ -6,31 +6,27 @@ import logging
 
 
 # Set of bots read from a bot tsv file
-bots_str = None
-bots_int = None
+bots = None
 filterBots = False
 def setFilterBots(fb,botfile):
-    global filterBots,bots_str,bots_int
-    if fb is True:
+    global filterBots,bots
+    
+    if fb:
         try:
-            bots_str = set(bot.strip() for bot in open(botfile,'r'))
-            bots_int = set(int(b) for b in bots_str)
-        
+            bots = set(long(bot) for bot in open(botfile,'r'))
+
             filterBots = fb
         except:
-            logging.warning("Botlist (%s) could not be loaded, Bots will not be filtered"%botfile)
+            logging.error("Botlist (%s) could not be loaded, Bots will not be filtered"%botfile)
             
 def isBot(u_id):
     '''
     Returns true if we filter for bots and  u_id is a known bot.
 
     :arg ints: Boolean, if True compares u_id as int (default is False)    
-    '''    
+    '''       
     if filterBots:
-        if isinstance(u_id,int):
-            if u_id in bots_int:
-                return True
-        elif u_id in bots_str:
+        if u_id in bots:
             return True
     return False        
 

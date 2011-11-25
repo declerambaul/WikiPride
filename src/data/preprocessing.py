@@ -26,6 +26,19 @@ def dropTable(tablename):
     except:
         pass
 
+def tableExists(tablename):
+    """Returns True if the table exists in the user database
+
+    :arg tablename: str, name of the table
+    """
+    cur = sql.getCursor()
+    cur.execute("show tables from %s like '%s';"%(settings.sqluserdb, tablename.split('.')[1]))
+    
+    if cur.fetchone()  is None:
+        return False
+    else:
+        return True
+
 
 def createTable(query,tablename):
     """Create a SQL table in the user database
@@ -33,11 +46,20 @@ def createTable(query,tablename):
     :arg tablename: str, name of the table
     :arg query: str, query to execute
     """
-    try:        
-        logger.info('Creating %s table'%tablename)
-        cur = sql.getCursor()
-        cur.execute(query)
-        logger.info('Finished creating %s table'%tablename)
+    try:
+        if settings.sqldroptables:
+            dropTable(tablename)
+        else:
+            # logger.info('Table %s not dropped.'tablename)    
+            pass
+        
+        if not tableExists(tablename):
+            cur = sql.getCursor()
+            logger.info('Creating %s table'%tablename)
+            cur.execute(query)
+            logger.info('Finished creating %s table'%tablename)
+        else:
+            logger.info('Table %s exists already! Do nothing'%tablename)
     except:
         logger.exception("Could not create table %s"%tablename)
 
@@ -85,25 +107,6 @@ def process():
     logger.info('Preprocessing data for %swiki'%settings.language)
 
     
-
-    # DROP TABLES 
-    if settings.sqldroptables:
-        
-        dropTable(USER_COHORT)        
-        dropTable(REV_LEN_CHANGED)
-        dropTable(EDITOR_YEAR_MONTH)
-        dropTable(EDITOR_YEAR_MONTH_NAMESPACE)
-        # dropTable(EDITOR_YEAR_MONTH_DAY_NAMESPACE)
-
-        dropTable(TIME_YEAR_MONTH_NAMESPACE)
-        # dropTable(TIME_YEAR_MONTH_DAY_NAMESPACE)
-
-        dropTable(BOT_LIST)
-
-    else:
-        logger.info('No tables are being dropped! If they already exist nothing will be created in the next step.')
-
-
 
     # CREATE TABLES AND INDEXES    
     

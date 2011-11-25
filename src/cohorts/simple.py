@@ -16,6 +16,8 @@ import settings
 import utils
 
 from cohorts.base import Cohort
+from data import tables
+
 
 class OneYearCohort(Cohort):
     '''A cohort that is comprised of active editors that started editing in a given year.
@@ -239,7 +241,9 @@ class NameSpaces(Cohort):
 
         self.cohort_index = {'0':0, '1':1, '2':2, '3':3, '4':4, '5':5}
 
-        self.sqlQuery = 'SELECT * FROM ptwiki_editor_centric_month;'
+        self.sqlQuery = 'SELECT * FROM %s;'%tables.EDITOR_YEAR_MONTH_NAMESPACE
+        '''The SQL query returns edit information for each editor for each ym she has edited.'''
+
 
         Cohort.__init__(self)
 
@@ -275,8 +279,7 @@ class NameSpaces(Cohort):
 
         editor_id = row['user_id']
 
-        if utils.isBot(editor_id):
-            logging.info("exclude bot: %s"%(editor_id))
+        if utils.isBot(editor_id):            
             return
         
         year = row['rev_year']
@@ -291,15 +294,14 @@ class NameSpaces(Cohort):
 
         cohorts_index = self.getIndex(ns)
 
-        if ns in self.NS:
-            if row['len_added'] is not None:
-                self.data['added'][cohorts_index,time_index] += int(row['len_added'])
-            if row['len_removed'] is not None:    
-                self.data['removed'][cohorts_index,time_index] += -int(row['len_removed'])
-            if row['len_removed'] is not None and row['len_removed'] is not None:
-                self.data['net'][cohorts_index,time_index] += int(row['len_added']) + int(row['len_removed'])
-            if row['len_removed'] is not None and row['remove_edits'] is not None:
-                self.data['edits'][cohorts_index,time_index] += int(row['add_edits'])+int(row['remove_edits'])
+        if row['len_added'] is not None:
+            self.data['added'][cohorts_index,time_index] += int(row['len_added'])
+        if row['len_removed'] is not None:    
+            self.data['removed'][cohorts_index,time_index] += -int(row['len_removed'])
+        if row['len_removed'] is not None and row['len_removed'] is not None:
+            self.data['net'][cohorts_index,time_index] += int(row['len_added']) + int(row['len_removed'])
+        if row['len_removed'] is not None and row['remove_edits'] is not None:
+            self.data['edits'][cohorts_index,time_index] += int(row['add_edits'])+int(row['remove_edits'])
 
    
     def getIndex(self, ns):

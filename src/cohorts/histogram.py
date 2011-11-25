@@ -16,9 +16,11 @@ import settings
 import utils
 
 from cohorts.base import Cohort
+from data import tables
+
 
 class EditsHistogram(Cohort):
-    '''The cohorts are based on the number of edits they have done in a given month.
+    '''The cohorts are based on the number of edits they have done in a given month. Implemented only for MongoDB.
     '''
     def __init__(self):
 
@@ -124,8 +126,7 @@ class EditorActivity(Cohort):
     def __init__(self):
 
         # We don't take into consideration people who have 0 edits as the data is coded sparse and we don't have
-        # this information
-        # Note that len(self.cohorts) has to be equal the number of bins in the numpy.array
+        # this information        
         self.cohorts = [1,5,50,100,500,1000,'>1000 edits']
         '''Cohort definition
         '''
@@ -137,8 +138,9 @@ class EditorActivity(Cohort):
         '''Cohort labels
         '''                        
 
-        self.sqlQuery = 'SELECT * FROM u_declerambaul.ptwiki_editor_centric_year_month;'
-        # query on the toolserver
+        self.sqlQuery = 'SELECT * FROM %s;'%tables.EDITOR_YEAR_MONTH
+        '''The SQL query returns edit information for each editor for each ym she has edited.'''
+
 
         Cohort.__init__(self)
     
