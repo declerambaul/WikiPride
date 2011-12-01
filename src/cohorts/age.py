@@ -2,11 +2,12 @@
 '''
 
 import sys,logging
+logger = logging.getLogger('Age cohorts')
 
 try:
     import numpy as N
 except:
-    logging.error('Numpy not installed')
+    logger.error('Numpy not installed')
     
 
 
@@ -24,7 +25,7 @@ class Age(Cohort):
     def __init__(self):
 
         if self.cohorts is None or self.cohort_labels is None:
-            logging.error("self.cohorts or self.cohort_labels not properly defined")
+            logger.error("self.cohorts or self.cohort_labels not properly defined")
             # raise Exception("self.cohorts or self.cohort_labels not properly defined")
         Cohort.__init__(self)
 
@@ -60,6 +61,7 @@ class Age(Cohort):
 
         self.data_description['editors'] = {  'title' : 'Number of editors active ( %s, namespaces:%s)'%('no bots' if self.nobots else 'including bots', ','.join(self.NS) if len(self.NS)<16 else 'all'), \
                                                                                   'ylabel': 'Editors' }
+
 
 
 class AbsoluteAgePerMonth(Age):
@@ -514,21 +516,21 @@ class RelativeAgeAllNamespaces(Cohort):
         '''
         editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
 
-        self.data_description['added'] = {  'title' : 'Megabytes added by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['added'] = {  'title' : 'Megabytes added ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Megabytes',\
                                             'ytickslabel' : lambda x : '%d'%(x/1e6) }
-        self.data_description['removed'] = {  'title' : 'Megabytes removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
-                                            'ylabel': 'Megabytes',\
-                                            'ytickslabel' : lambda x : '%d'%(x/1e6) }
-
-        self.data_description['net'] = {  'title' : 'Megabytes Added-Removed by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['removed'] = {  'title' : 'Megabytes removed ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Megabytes',\
                                             'ytickslabel' : lambda x : '%d'%(x/1e6) }
 
-        self.data_description['edits'] = {  'title' : 'Number of edits by editor activity ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['net'] = {  'title' : 'Megabytes Added-Removed ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+                                            'ylabel': 'Megabytes',\
+                                            'ytickslabel' : lambda x : '%d'%(x/1e6) }
+
+        self.data_description['edits'] = {  'title' : 'Number of edits ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                             'ylabel': 'Edits' }
 
-        self.data_description['editors'] = {  'title' : 'Active editor histogram ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
+        self.data_description['editors'] = {  'title' : 'Number of active editors ( %s, %s, all namespaces)'%(editspan, 'no bots' if self.nobots else 'including bots'), \
                                              'ylabel': 'Number of Editors' }
 
     def processSQLrow(self,row):
@@ -604,3 +606,76 @@ class RelativeAgeAllNamespaces(Cohort):
         '''
         editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
         return "Relative Age Cohort (%s)"%editspan
+
+    def linePlots(self,dest):
+        '''Graphs for relative age cohorts include
+
+        * Bytes added per edit (new vs. old editors)
+        * Contribution percentage of bytes added for each one year cohort
+        * Editor percentage for each one year cohort        
+
+        
+        '''
+        logger.info('Creating line plots for %s'%self)
+
+        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+
+        # Bytes added per edit (new vs. old editors)
+
+        added = self.data['added']
+        edits = self.data['edits']
+        editors = self.data['editors']
+
+        six = added[0:6,:].sum(axis=0)/(edits[0:6,:].sum(axis=0)+1)
+        moresix = added[7:,:].sum(axis=0)/(edits[7:,:].sum(axis=0)+1)
+
+        six = utils.movingAverage(array=six, WINDOW=3)
+        moresix = utils.movingAverage(array=moresix, WINDOW=3)
+
+        fig = self.addLine(data=six,label='new editors (0-6 months active)')
+        fig = self.addLine(data=moresix,fig=fig,label='older editors (>6 months active)')        
+
+        # l = 12  
+        # fig = None      
+        # for i in range(0,(added.shape[1]/l)*l,l):
+        #     e = edits[(i):(i+l-1),:].sum(axis=0)
+        #     e[e==0] = 1
+        #     data = added[(i):(i+l-1),:].sum(axis=0)/e
+        #     fig = self.addLine(data=data,fig=fig,label='%s-%s months active'%(i,(i+l-1)))
+
+       
+        self.saveFigure(name='bytes_per_edit_new_vs_old', fig=fig, dest=dest, title='Bytes added per edit (new vs. old editors, %s)'%editspan,ylabel='Bytes', legendpos=1)
+
+
+        # Contribution percentage of bytes added for each one year cohort
+        total = added.sum(axis=0)
+        total[total==0] = 1
+
+        l = 12  
+        fig = None      
+        for i in range(0,(added.shape[1]/l)*l,l):
+            data = added[(i):(i+l-1),:].sum(axis=0)/total
+            fig = self.addLine(data=data,fig=fig,label='%s-%s months active'%(i,(i+l-1)))
+
+
+        self.saveFigure(name='percentage_added_line', fig=fig, dest=dest, title='Contribution percentage of bytes added for editors with %s'%editspan,ylabel='Percentage', legendpos=1)
+
+        # Editor percentage for each one year cohort
+        total = editors.sum(axis=0)
+        total[total==0] = 1
+
+        l = 12  
+        fig = None      
+        for i in range(0,(added.shape[1]/l)*l,l):
+            data = editors[(i):(i+l-1),:].sum(axis=0)/total
+            fig = self.addLine(data=data,fig=fig,label='%s-%s months active'%(i,(i+l-1)))
+
+
+        self.saveFigure(name='percentage_editor_line', fig=fig, dest=dest, title='Editor age percentage for editors with %s'%editspan,ylabel='Percentage', legendpos=1)
+
+
+
+
+
+
+

@@ -44,8 +44,9 @@ def main():
 		type=str, 
 		choices=['all','preprocessing','data','report'],
 		help="""the part of the workflow to be executed. all: preprocessing, data and report. 
-		preprocessing: aggregate the required MediaWiki SQL tables into a analytic-friendly format. data: compute the cohort analysis data (preprocessing must have been run on the same language wiki before)
-		report: create a set of standard reports (data must have been run on the same language wiki before)."""
+		preprocessing: aggregate the required MediaWiki SQL tables into a analytic-friendly format. 
+		data: compute the cohort analysis data (prerequisite: preprocessing workstep)
+		report: create a set of standard reports (prerequisite: data workstep)."""
 	)
 
 	args = parser.parse_args()
@@ -71,7 +72,7 @@ def main():
 		report.processData()		
 	elif args.workstep == 'report':	
 		from data import report
-		report.report()		
+		report.processReport()		
 
 	
 	# for row in map(args.dump, args.processor.process, noop=args.noop, threads=args.threads):

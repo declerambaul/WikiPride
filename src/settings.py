@@ -122,14 +122,11 @@ def readConfig(configfile):
 
 	global language,filterbots,time_stamps,time_stamps_index,botfile,basedirectory,datadirectory,userlistdirectory,reportdirectory,wikipridedirectory,sqlhost,sqlwikidb,sqluserdb,sqlconfigfile,sqldroptables
 
-
+	import os
 	import ConfigParser
 
 	config = ConfigParser.ConfigParser()
 	config.read(configfile)
-
-
-	import os
 
 	# general settings
 	language = config.get('General','language') 
@@ -146,13 +143,14 @@ def readConfig(configfile):
 	reportdirectory = os.path.expanduser(config.get('Directories','reportdirectory'))
 	wikipridedirectory = os.path.expanduser(config.get('Directories','wikipridedirectory'))
 
-	if not os.path.isdir(basedirectory):
-		logger.error("%s not a valid basedirectory"%basedirectory)
-	# else:		
-	# 	os.system('mkdir -p %s'%datadirectory)
-	# 	os.system('mkdir -p %s'%reportdirectory)
-	# 	os.system('mkdir -p %s'%wikipridedirectory)
-	# 	os.system('mkdir -p %s'%userlistdirectory)
+	# if not os.path.isdir(basedirectory):
+	# 	import errno
+	# 	try:
+	# 	    os.makedirs(p)
+	# 	except OSError as exc: # Python >2.5
+	# 	    if exc.errno == errno.EEXIST:
+	# 	        pass
+	# 	    else: raise
 
 	# sql
 	sqlhost = config.get('MySQL','sqlhost')

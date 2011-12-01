@@ -4,12 +4,12 @@
 '''
 
 import sys,logging
-
+logger = logging.getLogger('Age cohorts')
 
 try:
     import numpy as N
 except:
-    logging.error('Numpy not installed')
+    logger.error('Numpy not installed')
     
 
 import settings
@@ -143,7 +143,6 @@ class ProjectSpaceCohorts(Cohort):
         '''
 
         # self.sqlQuery = 'SELECT * FROM fabian WHERE namespace IN (4,5) AND add_edits > %s AND first_edit_year in (%s)'%(self.activation,','.join([str(c) for c in self.cohorts]))
-        self.sqlQuery = 'SELECT * FROM declerambaul.project_namespaces_nosandbox WHERE add_edits > %s AND first_edit_year in (%s)'%(self.activation,','.join([str(c) for c in self.cohorts]))
 
 
         Cohort.__init__(self)
@@ -324,5 +323,108 @@ class NameSpaces(Cohort):
         labels = self.cohort_labels
 
         return ticks,labels
+
+
+class NewEditors(Cohort):
+    '''There is just one cohort, which contains the number of of editors who started contributing in any given month. The sql query aggregates the counts::
+
+        SELECT  
+    first_edit_year, 
+    first_edit_month, 
+    count(*) AS recruits
+FROM
+    xxx.xxwiki_user_cohort
+GROUP BY
+    first_edit_year,
+    first_edit_month;
+
+    :meth:`.NewEditors.linePlot` creates a line plot.
+    '''
+    def __init__(self):
+
+
+        self.cohorts = ['New Editors']
+        '''Cohort definition
+        '''
+        self.cohort_labels = self.cohorts
+        '''Cohort labels
+        '''
+                
+
+        self.sqlQuery = """SELECT  
+            first_edit_year, 
+            first_edit_month, 
+            count(*) AS recruits
+        FROM
+            %s
+        GROUP BY
+            first_edit_year,
+            first_edit_month;"""%tables.USER_COHORT
+        '''The SQL query returns the new editor count for each ym.'''
+
+        Cohort.__init__(self)
+
+   
+    def initData(self):
+
+        self.data['editors'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+        # self.data['size'] = N.zeros((len(self.cohorts), len(self.time_stamps)))
+
+        self.initDataDescription()
+
+    def initDataDescription(self):
+        '''Initialize the self.data_description dictionary with additional information
+        '''
+        self.data_description['editors'] = {  'title' : 'Number of new editors (first edit)', \
+                                            'ylabel': '# Editors' }
+
+
+    def processSQLrow(self,row):
+
+        firstedit = '%d%02d'%(row['first_edit_year'],row['first_edit_month'])
+
+        fe_index = self.time_stamps_index.get(firstedit,None)
+
+        if fe_index is None:
+            return
+
+        # there is only one cohort
+        cohorts_index = 0
+
+        self.data['editors'][cohorts_index,fe_index] += row['recruits']
+        
+
+   
+    def getIndex(self, ns):
+        '''
+        Not needed in this cohort!
+        '''
+        raise Exception("NO!")
+        
+
+    def colorbarTicksAndLabels(self,ncolors):
+        '''Returns ticks and labels for the colorbar of a WikiPride visualization
+        '''
+
+        nlabels = ncolors
+
+
+        ticks = N.linspace(0, (1.-1./nlabels), nlabels) +0.5/nlabels
+        # skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels+1) ]                
+        # labels = [self.cohort_labels[i] for i in skip]
+        labels = self.cohort_labels
+
+        return ticks,labels
+
+    def linePlots(self,dest):
+        '''Creates a line plot for the number of new editors and saves it to disk.
+
+        :arg dest: str, destination directory
+        '''
+        logger.info('Creating line plots for New editors cohort.')
+
+        fig = self.addLine(self.data['editors'][0,:])
+        
+        self.saveFigure(name='line', fig=fig, dest=dest, title=self.data_description['editors']['title'],ylabel=self.data_description['editors']['ylabel'])
 
 

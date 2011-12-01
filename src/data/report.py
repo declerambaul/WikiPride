@@ -18,33 +18,110 @@
 
 
 """
-import os
+import os, errno
 import logging
 logger = logging.getLogger('Report')
 
 import utils
 import settings
 
-
 from data import userlists
 
+
+class ReportItem():
+    """
+    A report consists of a collection of report items. A report item consists of a cohort instance and methods to generate the data and the plots.
+    """
+    def __init__(self, cohort, dest):
+
+        self.cohort = cohort
+        '''Cohort instance
+        '''
+
+        self.relDest = dest
+        '''Relative path to the destination directory'''
+
+    def createDirectory(self,base):
+        '''Creates the directory if it doesn't exist already. The `base` directory is joined with the relative destination directory and returned.
+
+        :arg base: base directory (e.g. settings.datadirectory or settings.wikipridedirectory)
+        :returns: absolute path
+        '''
+        p = os.path.join(base,self.relDest)
+
+        try:
+            os.makedirs(p)
+        except OSError as exc: # Python >2.5
+            if exc.errno == errno.EEXIST:
+                pass
+            else: raise
+        return p
+
+    def loadData(self):
+        '''Loads the data from disk if available
+        '''    
+        for varName in self.cohort.data_description.keys():  
+            self.cohort.loadDataFromDisk(varName=varName,destination=os.path.join(REPORTDATA,self.relDest))
+
+    def freeData(self):
+        '''Frees the data in hope of reducing the memory usage of the process.        
+        '''  
+        for varName in self.cohort.data.keys():  
+            del self.cohort.data[varName]
+        
+
+
+
+    def generateData(self):
+        '''Generates and saves the cohort data. Calls the :meth:`.aggregateDataFromSQL` method from the :class:`.Cohort` instance passed as argument. The collected data matrices are stored in the :attr:`.Cohort.data` attribute. The data matrices are saved as txt files in the data destination directory.'''
+        
+        self.cohort.aggregateDataFromSQL(verbose=True)   
+        
+        dest = self.createDirectory(base=REPORTDATA)
+        self.cohort.dataToDisk(destination=dest)
+
+        
+        self.freeData()
+
+
+    def generateVisualizations(self,varNames, **kargs):
+        '''For the variables names in `varNames`, produces the WikiPride graphs using :meth:`.wikiPride` (e.g. `added`, `editors`, ...).
+
+        :arg varNames: list of str, containing the names of the variables for which wikipride should be produced.
+        :arg **kargs: arguments passed directly to :meth:`.wikiPride`. E.g. `flip=True`, `percentage=False`
+        '''
+        
+        self.loadData()
+
+        dest = self.createDirectory(base=REPORTGRAPHS)
+
+        for v in varNames:
+            self.cohort.wikiPride(varName=v,dest=dest,**kargs)
+        
+        self.cohort.linePlots(dest=dest)
+
+        self.freeData()
+
+
+#Absolute path directories
 
 REPORTDATA = os.path.join(settings.reportdirectory,'data')
 REPORTGRAPHS = os.path.join(settings.reportdirectory,'graphs')
 REPORTLISTS = os.path.join(settings.reportdirectory,'lists')
 
-# Directories
 
-COMMUNITY = "Community_roles" # os.path.join(settings.datadirectory,"Community_roles")
+#Relative path directory tree for the report
 
-COHORTTREND =  "Cohort_trends" # os.path.join(settings.datadirectory,"Cohort_trends")
+COMMUNITY = "Community_roles" 
+
+COHORTTREND =  "Cohort_trends"
 AGE = os.path.join(COHORTTREND,"Age_cohorts")
-ABS_AGE = os.path.join(COHORTTREND,"Absolute_Age")
+ABS_AGE = os.path.join(COHORTTREND,"Absolute_age")
 ABS_MORE1 = os.path.join(ABS_AGE,"More_than_1_edit")
 ABS_MORE5 = os.path.join(ABS_AGE,"More_than_5_edits")
 ABS_MORE100 = os.path.join(ABS_AGE,"More_than_100_edits")
 ABS_LESS100 = os.path.join(ABS_AGE,"Less_than_100_edits")
-REL_AGE = os.path.join(COHORTTREND,"Relative_Age")
+REL_AGE = os.path.join(COHORTTREND,"Relative_age")
 REL_MORE1 = os.path.join(REL_AGE,"More_than_1_edit")
 REL_MORE5 = os.path.join(REL_AGE,"More_than_5_edits")
 REL_MORE100 = os.path.join(REL_AGE,"More_than_100_edits")
@@ -54,84 +131,32 @@ NEWEDITORS = os.path.join(COHORTTREND,"New_editors")
 HISTOGRAM = os.path.join(COHORTTREND,"Histogram_cohorts")
 NAMESPACES = os.path.join(COHORTTREND,"Namespaces")
 
-USERLISTS = "User_lists" # os.path.join(settings.datadirectory,"User_lists")
+USERLISTS = "User_lists" 
 
 
-# Cohort instances that are part of the report
-
+# Report items
+    
 from cohorts import age
-
-absMore1 = age.AbsoluteAgeAllNamespaces(minedits = 1)
-absMore5 = age.AbsoluteAgeAllNamespaces(minedits = 5)
-absMore100 = age.AbsoluteAgeAllNamespaces(minedits = 100)
-absLess100 = age.AbsoluteAgeAllNamespaces(minedits = 1,maxedits = 100)
-
-relMore1 = age.RelativeAgeAllNamespaces(minedits = 1)
-relMore5 = age.RelativeAgeAllNamespaces(minedits = 5)
-relMore100 = age.RelativeAgeAllNamespaces(minedits = 100)
-relLess100 = age.RelativeAgeAllNamespaces(minedits = 1,maxedits = 100)
-
 from cohorts import histogram
-
-edact = histogram.EditorActivity()
-
 from cohorts import simple
 
-nscohort = simple.NameSpaces()
+absMore1 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1), dest=ABS_MORE1)
+absMore5 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 5), dest=ABS_MORE5)
+absMore100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 100), dest=ABS_MORE100)
+absLess100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1,maxedits = 100), dest=ABS_LESS100)
 
 
+relMore1 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1), dest=REL_MORE1)
+relMore5 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 5), dest=REL_MORE5)
+relMore100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 100), dest=REL_MORE100)
+relLess100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1,maxedits = 100), dest=REL_LESS100)
 
 
+editorActivity = ReportItem(cohort=histogram.EditorActivity(), dest=HISTOGRAM)
 
-def getDirectory(base,reporttype):
-    """Joins the base directory with the specific report type directory
+nsCohort = ReportItem(cohort=simple.NameSpaces(), dest=NAMESPACES)
+newEditors = ReportItem(cohort=simple.NewEditors(), dest=NEWEDITORS)
 
-    :arg base: base directory (e.g. settings.datadirectory or settings.wikipridedirectory)
-    """
-    return os.path.join(base,reporttype)
-
-
-def createDirectories(base):
-    """Create the directory structure of the report as described in :mod:`.cohortdata`.
-
-    :arg base: base directory (e.g. settings.datadirectory or settings.wikipridedirectory)
-    """
-    # try:        
-    #     logger.info("Creating directory structure for cohort data")
-
-    os.system('rm -Rf %s'%base)
-    os.system('mkdir -p %s'%base)
-
-    os.mkdir(getDirectory(base, COHORTTREND))
-    os.mkdir(getDirectory(base, ABS_AGE))
-    os.mkdir(getDirectory(base, ABS_MORE1))
-    os.mkdir(getDirectory(base, ABS_MORE5))
-    os.mkdir(getDirectory(base, ABS_MORE100))
-    os.mkdir(getDirectory(base, ABS_LESS100))
-
-    os.mkdir(getDirectory(base, REL_AGE))
-    os.mkdir(getDirectory(base, REL_MORE1))
-    os.mkdir(getDirectory(base, REL_MORE5))
-    os.mkdir(getDirectory(base, REL_MORE100))
-    os.mkdir(getDirectory(base, REL_LESS100))
-
-    # os.mkdir(getDirectory(base, NEWEDITORS))
-    os.mkdir(getDirectory(base, HISTOGRAM))
-    os.mkdir(getDirectory(base, NAMESPACES))
-
-    # except:
-    #     logger.info('Failed to create report directory structure (directories already exists?)')
-
-
-
-def processCohortData(cohort,destination):
-    """Calls the :meth:`.aggregateDataFromSQL` method from the :class:`.Cohort` instance passed as argument. The collected data matrices are stored in the :attr:`.Cohort.data` attribute. The data matrices are saved as txt files in the `destination` directory.
-
-    :arg cohort: :class:`.Cohort` instance
-    :arg destination: destination directory for saved data
-    """
-    cohort.aggregateDataFromSQL(verbose=True)    
-    cohort.dataToDisk(destination=destination)
 
     
 def processData():
@@ -141,72 +166,45 @@ def processData():
 
     utils.setFilterBots(settings.filterbots,userlists.BOT_LIST_FILE)
 
-    createDirectories(REPORTDATA)
-
     # aggregate and save cohort data
-    processCohortData(cohort=absMore1,destination=getDirectory(REPORTDATA,ABS_MORE1))
-    processCohortData(cohort=absMore5,destination=getDirectory(REPORTDATA,ABS_MORE5))
-    processCohortData(cohort=absMore100,destination=getDirectory(REPORTDATA,ABS_MORE100))
-    processCohortData(cohort=absLess100,destination=getDirectory(REPORTDATA,ABS_LESS100))
+    absMore1.generateData()
+    absMore5.generateData()
+    absMore100.generateData()
+    absLess100.generateData()
+    
+    relMore1.generateData()
+    relMore5.generateData()
+    relMore100.generateData()
+    relLess100.generateData()
 
-    processCohortData(cohort=relMore1,destination=getDirectory(REPORTDATA,REL_MORE1))
-    processCohortData(cohort=relMore5,destination=getDirectory(REPORTDATA,REL_MORE5))
-    processCohortData(cohort=relMore100,destination=getDirectory(REPORTDATA,REL_MORE100))
-    processCohortData(cohort=relLess100,destination=getDirectory(REPORTDATA,REL_LESS100))
+    editorActivity.generateData()
 
-    processCohortData(cohort=edact,destination=getDirectory(REPORTDATA,HISTOGRAM))
-    processCohortData(cohort=nscohort,destination=getDirectory(REPORTDATA,NAMESPACES))
-
-
-
-
-def produceWikiPrideGraphs(cohort,destination,flip=False):
-    '''Produces the `added`, `edits`, `editors` WikiPride graphs using :meth:`.wikiPride`.
-
-    :arg cohort: :class:`.Cohort` instance
-    :arg destination: str, destination directory for plots
-    :arg flip: bool, see :meth:`.Cohort.wikiPride`
-    '''
-
-    pdf = False
-    verbose = True
-
-    cohort.wikiPride(varName='added',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
-    cohort.wikiPride(varName='edits',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
-    cohort.wikiPride(varName='editors',dest=destination,pdf=pdf,flip=flip,verbose=verbose)
+    nsCohort.generateData()
+    
+    newEditors.generateData()
 
 
-
-def produceGraphs():
-    '''
-    Given all the cohort data, this method produces a set of visualizations and stores them in a directory structure
-    '''
-
-    createDirectories(REPORTGRAPHS)
-
-    # produce wikipride graphs
-    produceWikiPrideGraphs(cohort=absMore1,destination=getDirectory(REPORTGRAPHS,ABS_MORE1))
-    produceWikiPrideGraphs(cohort=absMore5,destination=getDirectory(REPORTGRAPHS,ABS_MORE5))
-    produceWikiPrideGraphs(cohort=absMore100,destination=getDirectory(REPORTGRAPHS,ABS_MORE100))
-    produceWikiPrideGraphs(cohort=absLess100,destination=getDirectory(REPORTGRAPHS,ABS_LESS100))
-
-    produceWikiPrideGraphs(cohort=relMore1,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE1))
-    produceWikiPrideGraphs(cohort=relMore5,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE5))
-    produceWikiPrideGraphs(cohort=relMore100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_MORE100))
-    produceWikiPrideGraphs(cohort=relLess100,flip=True,destination=getDirectory(REPORTGRAPHS,REL_LESS100))
-
-    produceWikiPrideGraphs(cohort=edact,destination=getDirectory(REPORTGRAPHS,HISTOGRAM))
-
-    # producing wikipride manually because the number of editors editing are not counted (yet)
-    nscohort.wikiPride(varName='added',dest=getDirectory(REPORTGRAPHS,NAMESPACES))
-    nscohort.wikiPride(varName='edits',dest=getDirectory(REPORTGRAPHS,NAMESPACES))
-
-
-def report():
-    '''Executes the `report` step. I.e. both the `data` and the `graphs` work flow step.
+def processReport():
+    '''Creates a set of graphs which requires that :func:`data.report.processData` has been executed and the data thus aggregated. The data is loaded from disk.
     '''    
-    processData()
-    produceGraphs()
+
+    stdVars = ['added','edits','editors']
+
+    absMore1.generateVisualizations(varNames=stdVars)
+    absMore5.generateVisualizations(varNames=stdVars)
+    absMore100.generateVisualizations(varNames=stdVars)
+    absLess100.generateVisualizations(varNames=stdVars)
+
+    relMore1.generateVisualizations(varNames=stdVars, flip=True)
+    relMore5.generateVisualizations(varNames=stdVars, flip=True)
+    relMore100.generateVisualizations(varNames=stdVars, flip=True)
+    relLess100.generateVisualizations(varNames=stdVars, flip=True)
+
+    editorActivity.generateVisualizations(varNames=stdVars)
+
+    nsCohort.generateVisualizations(varNames=['added','edits'])
+
+    newEditors.generateVisualizations(varNames=['editors'], percentage=False,colorbar=False)
 
 
 

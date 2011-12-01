@@ -2,13 +2,13 @@
 '''
 
 import sys,logging
-
+logger = logging.getLogger('Histogram cohorts')
 
 
 try:
     import numpy as N
 except:
-    logging.error('Numpy not installed')
+    logger.error('Numpy not installed')
     
 
 
@@ -245,7 +245,62 @@ class EditorActivity(Cohort):
         labels = [self.cohort_labels[i] for i in skip]
             
         return ticks,labels
+    
+    
+    def linePlots(self,dest):
+        '''Graphs for editor activity histogram cohort include
 
+        * Number of editors by activity
+        * Number of edits by activity
+        * Bytes added by activity
+        * Bytes added per editor
+        * Bytes added per edit
+        * Edits per editor
+        * The first year of one-year cohorts in one plot (x-axis is age, not time)
+
+        
+        '''
+        logger.info('Creating line plots for %s'%self)
+        
+        def graph(d,title,ylabel,ylog=False,loc=None):
+            fig = None 
+            for i in range(d.shape[0]):
+                
+                label = self.cohort_labels[i]
+
+                fig = self.addLine(data=d[i,:],fig=fig,label=label)
+            
+            self.saveFigure(name=title, fig=fig, dest=dest, title=title,ylabel=ylabel,ylog=ylog,legendpos=loc)
+
+        
+        added = self.data['added']
+        edits = self.data['edits']
+        editors = self.data['editors']
+
+        graph(d=editors,title="Number of editors by activity", ylabel="# of editors",loc=2)
+        graph(d=edits,title="Number of edits by activity", ylabel="# of edits",loc=2)
+        graph(d=added,title="Bytes added by activity", ylabel="Bytes",loc=2)
+
+        editors[editors==0]=1
+        edits[edits==0]=1
+
+        graph(d=added/editors,title="Bytes added per editor", ylabel="Bytes (log scale)",ylog=True,loc=2)
+        graph(d=edits/editors,title="Edits per editor", ylabel="# of edits (log scale)",ylog=True,loc=1)
+        graph(d=added/edits,title="Bytes added per edit", ylabel="Bytes",loc=1)
+
+        # The first year of one-year cohorts in one plot (x-axis is age, not time)
+
+        editors = self.data['editors']
+        
+        l = 12  
+        fig = None      
+        for i in range(0,(added.shape[1]/l)*l,l):
+            e = edits[(i):(i+l-1),:].sum(axis=0)
+            e[e==0] = 1
+            data = added[(i):(i+l-1),:].sum(axis=0)/e
+            fig = self.addLine(data=data,fig=fig,label='%s-%s months active'%(i,(i+l-1)))
+
+        
 
 class NewEditorActivity(Cohort):
     '''The cohorts are based on the number of edits they have done in a given month.

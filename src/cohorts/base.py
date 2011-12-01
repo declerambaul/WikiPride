@@ -5,7 +5,7 @@
 
 import sys
 import logging
-logger = logging.getLogger('Cohort Core')
+logger = logging.getLogger('Cohort core')
 
 
 
@@ -76,31 +76,17 @@ class Cohort:
         Hash from time_stamp to index in self.time_stamps
         '''
         
-        # self.ncolors = settings.ncolors if ('ncolors' in settings.__dict__ and settings.ncolors is not None)  else len(self.cohorts)
-        # '''
-        # Number of colors in the colormap
-        # '''
-        # self.cmap = None
-        # '''
-        # Colormap used for wikipride visualization
-        # '''
-        # self.colors = None
-        # '''
-        # Hash from cohort index to a color of the colormap 
-        # '''
-
         if 'ncolors' not in self.__dict__:
             self.ncolors = len(self.cohorts)                                                
             '''The number of colors used for the wikipride graphs. If required, it should be defined in the child class definition.
             '''
         
-        if 'sqlQuery' not in self.__dict__:
-            self.sqlQuery = None
-            '''The sql query used to aggregate the data. Should be defined in the child class definition.
-            '''
         self.mongoQueryVars = 'settings' # {'user_id':1,'edit_count':1}
         '''The Mongo query variables used to aggregate the data. If None, all fields will be returned by mongo. If 'settings', the mongoQueryVars from the settings will be used
         '''
+
+        # initialize the data description (not the data itself)
+        self.initDataDescription()
                 
     def getFileName(self,varName,destination=None,ftype='data'):
         '''Generates the path and file name based on properties of the cohort. Additional identifying features might be used in file names by overwriting this method in subclasses of the base :class:`.Cohort` class. 
@@ -145,14 +131,21 @@ class Cohort:
             N.savetxt(fn,data)
 
 
-    def loadDataFromDisk(self,varName):
+    def loadDataFromDisk(self,varName,destination=None):
         '''Loads the data from disk. It will populate self.data with {names[i] : numpy.array}.
         An error is raised if there is no corresponding datafile stored
 
         :args varName: variable name
+        :arg destination: str, destination directory. If None, settings will be used
+
         '''
-        fn = self.getFileName(varName,ftype='data')
-        self.data[varName] = N.loadtxt('%s.txt'%fn)
+        fn = None
+        if destination is None:
+            fn = self.getFileName(varName,ftype='data')
+        else:
+            fn = self.getFileName(varName,destination=destination)
+
+        self.data[varName] = N.atleast_2d(N.loadtxt('%s.txt'%fn))
 
         self.initDataDescription()        
 
@@ -274,7 +267,7 @@ class Cohort:
         '''
         return self.__class__.__name__
 
-    def wikiPride(self, varName,varDesc=None, normal=True, percentage=True, colorbar=True, ncolors=None, flip=False, pdf=True,dest=None,verbose=False):
+    def wikiPride(self, varName,varDesc=None, normal=True, percentage=True, colorbar=True, ncolors=None, flip=False, pdf=False,dest=None,verbose=False):
         '''
         Plots the cohort trends using the famous WikiPride stacked bar chart! If `normal` is True, the absolute values are visualized. If `percentage` is True, the relative values are visualized (i.e. the percentages). If `flip` is True, the numpy.array is flipped upside down. This results in the bars added in reverse order. The order of the cohort labels is also reversed as a result.
 
@@ -440,13 +433,90 @@ class Cohort:
         if verbose:
             logger.info('Saving WikiPride plot')
         fig.savefig('%s.%s'%(fn,'pdf' if pdf else 'png'))
-        fig.clear()
+        # fig.clear()
+        plt.close(fig)
+
 
 
         # reverse cohort_labels back if data has been flipped
         if flip: 
             self.cohort_labels.reverse()
             self.cohorts.reverse()
+
+    def linePlots(self, dest):
+        '''This method allows to produce line plots using the cohort data stored in `self.data`. Usually line plots illustrate interesting trends/ratios that depend on the cohort definition. Thus this method in the base cohort definition does nothing and should be overwritten in the cohort class itself.'''
+        logging.warning("linePlots() is called on a cohort instance (%s) for which no line plots have been defined."%self.__class__.__name__)
+        pass
+
+    def addLine(self, data,fig=None, label=''):
+        '''Adds a line to the matplotlib figure passed as argument. The dimension the data has to match the length of the `time_stamps`. It is assumed that the figure contains only one axes.
+
+        :arg data: numpy.array of same length as `time_stamps`
+        :arg fig: matplotlib figure. If none, a new figure is created.
+        :arg label: str, label for the legend. Defaults to an empty string.
+
+        :returns: matplotlib figure
+
+        '''
+        # the axis
+        ax=None
+        if fig is None:
+            size = (3*11,8.5)
+            fig = plt.figure(figsize=size)
+            ax = fig.add_axes([0.05,0.1,0.85,0.8],frame_on=False)
+        else:
+            ax = fig.axes[0]
+        
+        ax.plot(range(data.shape[0]),data,label=label)    
+
+        return fig
+        
+
+    def saveFigure(self, name, fig, dest,title='',ylabel='',xlabel=None,ylog=False,legendpos=None,pdf=False):
+        """Saves a matplotlib figure to disk.
+
+        :arg name: str, name of resulting file
+        :arg fig: matplotlib figure to be saved.
+        :arg dest: str, destination folder.
+        :arg title: str, plot title. Defaults to an empty string.        
+        :arg ylabel: str, plot y axis label. Defaults to an empty string.
+        :arg xlabel: str, plot x axis label. If none, time stamps xticks will be used.
+        :arg ylog: If True the log scale is used for the y-axis, default is False. 
+        :arg legendpos: int, the position of the legend. If None, no legend will be displayed.
+        :arg pdf: If True the file will be saved as pdf, otherwise as png.
+
+        """
+
+        ax = fig.axes[0]
+
+        
+        ax.set_title('%s_WP - %s'%(settings.language.upper() ,title))
+        ax.set_ylabel(ylabel)
+
+        if xlabel is not None:
+            ax.xlabel(xlabel)
+        else:            
+            # x ticks / labels
+            xt = N.arange(len(self.time_stamps))
+            xtskip = [ int(i) for i in N.linspace(0,xt.shape[0]-1,(xt.shape[0]-1)/5)]
+            xtlabels = ['%s / %s'%(self.time_stamps[i][4:],self.time_stamps[i][:4]) for i in xtskip]
+            
+            ax.set_xticks(xtskip)
+            ax.set_xticklabels(xtlabels,rotation=20,verticalalignment='top')#,size='small')
+
+        
+        if ylog:
+            ax.set_yscale('log')
+
+        if legendpos is not None:
+            ax.legend(loc=legendpos)
+
+
+
+        fn = self.getFileName( name, destination=dest)
+        fig.savefig('%s.%s'%(fn,'pdf' if pdf else 'png'))
+        # fig.clear()
+        plt.close(fig)
 
 
 
