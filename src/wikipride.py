@@ -54,7 +54,7 @@ def main():
 	# read config passed as argument
 
 	if os.path.isfile(args.config): 
-		settings.readConfig(args.config)			
+		settings.readConfig(args.config)
 	else:
 		logger.warning('Invalid config file: %s'%args.config)
 		return
@@ -75,8 +75,5 @@ def main():
 		report.processReport()		
 
 	
-	# for row in map(args.dump, args.processor.process, noop=args.noop, threads=args.threads):
-	# 	print('\t'.join(encode(v) for v in row))
-
 if __name__ == "__main__":
 	main()

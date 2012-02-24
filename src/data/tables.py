@@ -3,6 +3,9 @@
 
 import settings
 
+
+CREATE_USER_DATABASE = 'CREATE DATABASE IF NOT EXISTS %s;'%settings.sqluserdb
+
 USER_COHORT = "%s.%swiki_user_cohort"%(settings.sqluserdb,settings.language)
 REV_LEN_CHANGED = "%s.%swiki_rev_len_changed"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH = "%s.%swiki_editor_centric_year_month"%(settings.sqluserdb,settings.language)

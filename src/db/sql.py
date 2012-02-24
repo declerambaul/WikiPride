@@ -22,7 +22,9 @@ def connect():
     """
     global db
     if db is None:
+        # db = MySQLdb.connect(db=settings.sqlwikidb, host=settings.sqlhost, read_default_file=settings.sqlconfigfile)
         db = MySQLdb.connect(db=settings.sqluserdb, host=settings.sqlhost, read_default_file=settings.sqlconfigfile)
+
 
 
 def getSSDictCursor():

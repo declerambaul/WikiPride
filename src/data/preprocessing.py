@@ -106,8 +106,12 @@ def process():
     
     logger.info('Preprocessing data for %swiki'%settings.language)
 
+    # Create the user database if it doesn't exist
     
-
+    logger.info('Creating Database %s'%settings.sqluserdb)
+    cur = sql.getCursor()
+    cur.execute(CREATE_USER_DATABASE)
+    
     # CREATE TABLES AND INDEXES    
     
     createTable(CREATE_USER_COHORTS,USER_COHORT)

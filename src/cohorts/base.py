@@ -121,8 +121,38 @@ class Cohort:
 
         return fn
 
+    def saveDataToCSV(self,destination=settings.datadirectory):
+        '''Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names is uniquely constructed from the properties of the variable and cohort. The format of the CSV doesn't follow the numpy representation as it transposes the matrix. Thus the temporal axis is vertical instead of horizontal, each row is a measurement for a different time unit. This format is used by the visualization library `dygraphs <http://dygraphs.com/>`_ . 
+
+        .. warning:
+            Atm, this is a hack for a frontend mockup
+                
+        :arg destination: str, destination directory. If None, the data directory from the settings will be used 
+        '''
+
+        for name,data in self.data.items():
+            fn = '%s.csv'%self.getFileName(varName=name,destination=destination)         
+            
+            with open(fn,'wb') as f:
+                #write header line which will be used as label names                            
+                headers = 'Date,%s\n'%(','.join(['%s'%l for l in self.cohort_labels]))
+
+
+                f.write(headers)
+
+
+
+                for i in range(data.shape[1]):
+                    # iterate through columns and save each as one row
+                    ts = '%s-%s'%(self.time_stamps[i][:4],self.time_stamps[i][4:])
+                    val = [str(d) for d in data[:,i]]
+                    values = '%s,%s\n'%(ts,','.join(val))
+                    f.write(values)
+               
+            
+
         
-    def dataToDisk(self,destination=settings.datadirectory):
+    def saveDataToDisk(self,destination=settings.datadirectory):
         '''Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names 
         is uniquely constructed from the properties of the variable and cohort.
         '''
@@ -284,7 +314,7 @@ class Cohort:
 
         from utils import cmap_discretize    
 
-        logger.info('Creating WikiPride graph for %s - %s'%(varName,self))
+        logger.info("Creating WikiPride graph for %s - %s - %s"%(settings.language.upper(),varName.upper(),self))
 
         # configure the color map    
         if ncolors is not None:

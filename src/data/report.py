@@ -78,7 +78,7 @@ class ReportItem():
         self.cohort.aggregateDataFromSQL(verbose=True)   
         
         dest = self.createDirectory(base=REPORTDATA)
-        self.cohort.dataToDisk(destination=dest)
+        self.cohort.saveDataToDisk(destination=dest)
 
         
         self.freeData()
@@ -182,6 +182,33 @@ def processData():
     nsCohort.generateData()
     
     newEditors.generateData()
+
+
+def processCSV():
+    '''The aggregation of the cohort data requires that  :func:`data.preprocessing.process` has been executed and the data thus preprocessed. The :func:`data.cohortdata.processData` method will use the report definition in :mod:`.report` to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of `numpy` matrices.                
+    '''
+    logger.info('Aggregating the cohort data for %swiki'%settings.language)
+
+    utils.setFilterBots(settings.filterbots,userlists.BOT_LIST_FILE)
+
+    # aggregate and save cohort data
+    absMore1.generateCSV()
+    absMore5.generateCSV()
+    absMore100.generateCSV()
+    absLess100.generateCSV()
+    
+    relMore1.generateData()
+    relMore5.generateData()
+    relMore100.generateData()
+    relLess100.generateData()
+
+    editorActivity.generateData()
+
+    nsCohort.generateData()
+    
+    newEditors.generateData()
+
+
 
 
 def processReport():

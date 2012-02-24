@@ -6,7 +6,15 @@ import utils
 import logging
 
 # Configure logging
-logging.basicConfig( level=logging.DEBUG, format='%(asctime)s - %(name)s: %(message)s', datefmt='%b-%d %H:%M')
+format='%(asctime)s - %(name)s: %(message)s'
+logging.basicConfig( level=logging.DEBUG, format=format, datefmt='%b-%d %H:%M',filename='wikipride.log')
+# Log to file and in console
+console = logging.StreamHandler()
+formatter = logging.Formatter(format)
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
+
+
 logger = logging.getLogger('Settings')
 
 
@@ -27,13 +35,6 @@ filterbots = None
 def nobots():
 	return filterbots
 
-
-''' MOVE INTO COHORT DEFINITIONS WHERE NEEDED!
-NS = ( '-2','-1','0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '100', '101','108','109')
-# NS = ( '4', '5' )
-# NS = ( '0' )
-Filter for namespaces
-'''
 
 time_stamps = None
 '''List containing all YM (e.g. '200401' for January 2004) that we want to analyze
@@ -112,6 +113,10 @@ mongoQueryVars = None
 '''The Mongo query variables used to aggregate the data.
 '''
 
+def setTimeStamps(startYM,endYM):
+	global time_stamps,time_stamps_index
+	(time_stamps,time_stamps_index) = utils.create_time_stamps_month(fromym=startYM,toym=endYM)
+
 
 def readConfig(configfile):
 	'''
@@ -130,6 +135,9 @@ def readConfig(configfile):
 
 	# general settings
 	language = config.get('General','language') 
+	if len(language) != 2:
+		raise Exception('Language code should be two characters (%s)'%language)
+
 	filterbots = config.get('General','filterbots')	
 	
 	startYM = config.get('General','startYM') 
