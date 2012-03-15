@@ -84,6 +84,17 @@ class ReportItem():
         self.freeData()
 
 
+    def generateCSV(self):
+        '''Stores a simple csv file in a format used by the javascript `dygraphs <http://dygraphs.com/>`_ library.    
+        '''
+        
+        self.loadData()
+
+        dest = self.createDirectory(base=REPORTCSV)
+
+        self.cohort.saveDataToCSV(destination=dest)
+
+
     def generateVisualizations(self,varNames, **kargs):
         '''For the variables names in `varNames`, produces the WikiPride graphs using :meth:`.wikiPride` (e.g. `added`, `editors`, ...).
 
@@ -108,7 +119,7 @@ class ReportItem():
 REPORTDATA = os.path.join(settings.reportdirectory,'data')
 REPORTGRAPHS = os.path.join(settings.reportdirectory,'graphs')
 REPORTLISTS = os.path.join(settings.reportdirectory,'lists')
-
+REPORTCSV = os.path.join(settings.reportdirectory,'csv')
 
 #Relative path directory tree for the report
 
@@ -187,7 +198,7 @@ def processData():
 def processCSV():
     '''The aggregation of the cohort data requires that  :func:`data.preprocessing.process` has been executed and the data thus preprocessed. The :func:`data.cohortdata.processData` method will use the report definition in :mod:`.report` to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of `numpy` matrices.                
     '''
-    logger.info('Aggregating the cohort data for %swiki'%settings.language)
+    logger.info('Saving dygraph CSV data files for %swiki'%settings.language)
 
     utils.setFilterBots(settings.filterbots,userlists.BOT_LIST_FILE)
 
@@ -197,16 +208,16 @@ def processCSV():
     absMore100.generateCSV()
     absLess100.generateCSV()
     
-    relMore1.generateData()
-    relMore5.generateData()
-    relMore100.generateData()
-    relLess100.generateData()
+    relMore1.generateCSV()
+    relMore5.generateCSV()
+    relMore100.generateCSV()
+    relLess100.generateCSV()
 
-    editorActivity.generateData()
+    editorActivity.generateCSV()
 
-    nsCohort.generateData()
+    nsCohort.generateCSV()
     
-    newEditors.generateData()
+    newEditors.generateCSV()
 
 
 

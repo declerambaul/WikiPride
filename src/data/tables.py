@@ -10,6 +10,7 @@ USER_COHORT = "%s.%swiki_user_cohort"%(settings.sqluserdb,settings.language)
 REV_LEN_CHANGED = "%s.%swiki_rev_len_changed"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH = "%s.%swiki_editor_centric_year_month"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH_NAMESPACE = "%s.%swiki_editor_centric_year_month_namespace"%(settings.sqluserdb,settings.language)
+EDITOR_YEAR_MONTH_NS0_NOREDIRECT = "%s.%swiki_editor_centric_year_month_ns0_noredirect"%(settings.sqluserdb,settings.language)
 EDITOR_YEAR_MONTH_DAY_NAMESPACE = "%s.%swiki_editor_centric_year_month_day_namespace"%(settings.sqluserdb,settings.language)
 TIME_YEAR_MONTH_NAMESPACE ="%s.%swiki_time_centric_year_month_namespace"%(settings.sqluserdb,settings.language)
 TIME_YEAR_MONTH_DAY_NAMESPACE = "%s.%swiki_time_centric_year_month_day_namespace"%(settings.sqluserdb,settings.language)
@@ -135,6 +136,34 @@ GROUP BY
     rlc.rev_month,
     rlc.namespace;
 """%(EDITOR_YEAR_MONTH_NAMESPACE,REV_LEN_CHANGED,USER_COHORT)
+
+CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT = """
+CREATE TABLE IF NOT EXISTS %s
+SELECT /* SLOW_OK */
+    rlc.user_id,    
+    rlc.rev_year,
+    rlc.rev_month,
+    uc.first_edit,
+    uc.first_edit_year,
+    uc.first_edit_month,
+    SUM(len_change = 0)                    AS noop_edits,
+    SUM(len_change > 0)                    AS add_edits,
+    SUM(len_change < 0)                    AS remove_edits,
+    SUM(IF(len_change > 0, len_change, 0)) AS len_added,
+    SUM(IF(len_change < 0, len_change, 0)) AS len_removed
+FROM %s rlc
+INNER JOIN %s uc USING(user_id)
+INNER JOIN %s.page p
+    ON rlc.page_id = p.page_id;
+WHERE
+    rlc.namespace=0 AND
+    p.page_is_redirect = 0
+GROUP BY
+    rlc.user_id,
+    rlc.rev_year,
+    rlc.rev_month,
+"""%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,USER_COHORT,settings.sqlwikidb)
+
 
 CREATE_EDITOR_YEAR_MONTH_DAY_NAMESPACE = """
 CREATE TABLE IF NOT EXISTS %s

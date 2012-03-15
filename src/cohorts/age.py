@@ -72,7 +72,7 @@ class AbsoluteAgePerMonth(Age):
         self.cohorts = [int(i) for i in range(0,len(settings.time_stamps))]
         '''Cohort definition
         '''                
-        self.cohort_labels = ['%s / %s'%(settings.time_stamps[i][4:],settings.time_stamps[i][:4]) for i in self.cohorts]
+        self.cohort_labels = ['%s-%s'%(settings.time_stamps[i][:4],settings.time_stamps[i][4:]) for i in self.cohorts]
         '''Cohort labels
         '''         
         
@@ -341,7 +341,7 @@ class AbsoluteAgeAllNamespaces(Cohort):
         self.cohorts = [int(i) for i in range(0,len(settings.time_stamps))]
         '''Cohort definition
         '''                
-        self.cohort_labels = ['%s / %s'%(settings.time_stamps[i][4:],settings.time_stamps[i][:4]) for i in self.cohorts]
+        self.cohort_labels = ['%s-%s'%(settings.time_stamps[i][:4],settings.time_stamps[i][4:]) for i in self.cohorts]
         '''Cohort labels
         '''     
         
@@ -459,7 +459,7 @@ class AbsoluteAgeAllNamespaces(Cohort):
 
         ticks = N.linspace(0, (1.-1./nlabels), nlabels) +0.5/nlabels
         skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels) ]                
-        labels = ['%s / %s'%('1-6' if int(self.cohort_labels[i][:2])<=6 else '7-12',self.cohort_labels[i][-4:]) for i in skip]
+        labels = ['%s-%s'%('1-6' if int(self.cohort_labels[i][:2])<=6 else '7-12',self.cohort_labels[i][-4:]) for i in skip]
             
         return ticks,labels
 

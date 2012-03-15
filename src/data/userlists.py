@@ -7,7 +7,6 @@ BOT_LIST = "%s.%swiki_bots"%(settings.sqluserdb,settings.language)
 
 
 
-
 CREATE_BOT_LIST = """
 CREATE TABLE IF NOT EXISTS %s
 SELECT  

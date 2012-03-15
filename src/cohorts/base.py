@@ -135,7 +135,7 @@ class Cohort:
             
             with open(fn,'wb') as f:
                 #write header line which will be used as label names                            
-                headers = 'Date,%s\n'%(','.join(['%s'%l for l in self.cohort_labels]))
+                headers = 'Date,%s\n'%(','.join(self.cohort_labels))
 
 
                 f.write(headers)
@@ -148,6 +148,37 @@ class Cohort:
                     val = [str(d) for d in data[:,i]]
                     values = '%s,%s\n'%(ts,','.join(val))
                     f.write(values)
+            
+            fnyaml = '%s.yaml'%self.getFileName(varName=name,destination=destination)         
+            # try:
+            import yaml
+
+            d = {}
+            d['id'] = '_'.join([name, self.__class__.__name__])
+            d['name'] = self.data_description[name]['title']
+
+            d['url'] = 'data/%s.csv'%d['id']
+            d['format'] = 'csv'
+            # d['url'] = fn
+
+            d['timespan'] = {}
+            d['timespan']['start'] = '%s-%s'%(self.time_stamps[0][:4],self.time_stamps[0][4:])
+            d['timespan']['end'] = '%s-%s'%(self.time_stamps[data.shape[1]-1][:4],self.time_stamps[data.shape[1]-1][4:])
+            d['timespan']['step'] = '1mo'
+
+            d['columns'] = {}
+            d['columns']['labels'] = ['Month'] + self.cohort_labels
+            d['columns']['types'] = ['date']+['int']*len(self.cohort_labels)
+
+            d['chart'] = {}
+            d['chart']['libary'] = 'dygraphs'
+            d['chart']['options'] = {'title':self.data_description[name]['title'],'ylabel':self.data_description[name]['ylabel'],'stackedGraph':True}
+
+            yaml.dump(d, open(fnyaml,'w'))
+
+            # except:
+            #     logger.warning('saving yaml file %s failed\npyyaml not installed.'%fnyaml)
+            
                
             
 
