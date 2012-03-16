@@ -161,7 +161,7 @@ WHERE
 GROUP BY
     rlc.user_id,
     rlc.rev_year,
-    rlc.rev_month,
+    rlc.rev_month;
 """%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,USER_COHORT,settings.sqlwikidb)
 
 
