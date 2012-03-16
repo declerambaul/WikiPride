@@ -33,7 +33,7 @@ class EditorTrends(Cohort):
         '''Cohort labels
         '''     
         
-        self.sqlQuery = 'SELECT *,(noop_edits+add_edits+remove_edits) as total_edits FROM %s;'%tables.EDITOR_YEAR_MONTH_NS0_NOREDIRECT
+        self.sqlQuery = 'SELECT * FROM %s;'%tables.EDITOR_YEAR_MONTH_NS0_NOREDIRECT
         '''The SQL query returns edit information for each editor for each ym she has edited.'''
 
         # self.ncolors = utils.numberOfMonths(settings.time_stamps[0],settings.time_stamps[-1])/6
@@ -93,7 +93,14 @@ class EditorTrends(Cohort):
         if time_index is None:
             return
 
-        totaledits = int(row['total_edits'])
+        totaledits = 0
+        if row['add_edits'] is not None:
+            edits += int(row['add_edits'])
+        if row['remove_edits'] is not None:
+            edits += int(row['remove_edits'])
+        if row['noop_edits'] is not None:
+            edits += int(row['noop_edits'])
+        
         for i,al in enumerate(self.cohorts):
             # for each activity level al
 
