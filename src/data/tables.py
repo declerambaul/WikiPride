@@ -137,32 +137,57 @@ GROUP BY
     rlc.namespace;
 """%(EDITOR_YEAR_MONTH_NAMESPACE,REV_LEN_CHANGED,USER_COHORT)
 
+# CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT = """
+# CREATE TABLE IF NOT EXISTS %s
+# SELECT /* SLOW_OK */
+#     rlc.user_id,    
+#     rlc.rev_year,
+#     rlc.rev_month,
+#     uc.first_edit,
+#     uc.first_edit_year,
+#     uc.first_edit_month,
+#     SUM(len_change = 0)                    AS noop_edits,
+#     SUM(len_change > 0)                    AS add_edits,
+#     SUM(len_change < 0)                    AS remove_edits,
+#     SUM(IF(len_change > 0, len_change, 0)) AS len_added,
+#     SUM(IF(len_change < 0, len_change, 0)) AS len_removed
+# FROM %s rlc
+# INNER JOIN %s uc USING(user_id)
+# INNER JOIN %s.page p
+#     ON rlc.page_id = p.page_id;
+# WHERE
+#     p.page_namespace = 0 AND
+#     p.page_is_redirect = 0
+# GROUP BY
+#     rlc.user_id,
+#     rlc.rev_year,
+#     rlc.rev_month;
+# """%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,USER_COHORT,settings.sqlwikidb)
+
 CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT = """
 CREATE TABLE IF NOT EXISTS %s
 SELECT /* SLOW_OK */
     rlc.user_id,    
     rlc.rev_year,
     rlc.rev_month,
-    uc.first_edit,
-    uc.first_edit_year,
-    uc.first_edit_month,
     SUM(len_change = 0)                    AS noop_edits,
     SUM(len_change > 0)                    AS add_edits,
     SUM(len_change < 0)                    AS remove_edits,
     SUM(IF(len_change > 0, len_change, 0)) AS len_added,
     SUM(IF(len_change < 0, len_change, 0)) AS len_removed
 FROM %s rlc
-INNER JOIN %s uc USING(user_id)
 INNER JOIN %s.page p
     ON rlc.page_id = p.page_id;
 WHERE
-    rlc.namespace=0 AND
+    p.page_namespace = 0 AND
     p.page_is_redirect = 0
 GROUP BY
     rlc.user_id,
     rlc.rev_year,
     rlc.rev_month;
-"""%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,USER_COHORT,settings.sqlwikidb)
+"""%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,settings.sqlwikidb)
+
+
 
 
 CREATE_EDITOR_YEAR_MONTH_DAY_NAMESPACE = """
