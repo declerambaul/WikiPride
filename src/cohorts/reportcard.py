@@ -95,11 +95,11 @@ class EditorTrends(Cohort):
 
         totaledits = 0
         if row['add_edits'] is not None:
-            edits += int(row['add_edits'])
+            totaledits += int(row['add_edits'])
         if row['remove_edits'] is not None:
-            edits += int(row['remove_edits'])
+            totaledits += int(row['remove_edits'])
         if row['noop_edits'] is not None:
-            edits += int(row['noop_edits'])
+            totaledits += int(row['noop_edits'])
         
         for i,al in enumerate(self.cohorts):
             # for each activity level al
