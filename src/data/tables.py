@@ -177,7 +177,7 @@ SELECT /* SLOW_OK */
     SUM(IF(len_change < 0, len_change, 0)) AS len_removed
 FROM %s rlc
 INNER JOIN %s.page p
-    ON rlc.page_id = p.page_id;
+    ON rlc.page_id = p.page_id
 WHERE
     p.page_namespace = 0 AND
     p.page_is_redirect = 0
