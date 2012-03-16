@@ -13,9 +13,9 @@ def setFilterBots(fb,botfile):
     
     if fb:
         try:
-            bots = set(long(bot) for bot in open(botfile,'r'))
-
+            bots = set(long(bot) for bot in open(botfile,'r'))            
             filterBots = fb
+            logging.info("%s Bots loaded from %s"%(len(bots),botfile))
         except:
             logging.error("Botlist (%s) could not be loaded, Bots will not be filtered"%botfile)
             
