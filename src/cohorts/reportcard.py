@@ -58,8 +58,7 @@ class EditorTrends(Cohort):
 
     def initDataDescription(self):
         '''Initialize the self.data_description dictionary with additional information
-        '''
-        editspan = "%s<edits%s"%(self.minedits,'<%s'%self.maxedits if self.maxedits is not None else '')
+        '''        
 
         self.data_description['added'] = {  'title' : 'Megabytes added by editor activity ( no redirects, excl. bots, namespace 0)', \
                                             'ylabel': 'Megabytes',\
