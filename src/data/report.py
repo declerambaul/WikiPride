@@ -3,7 +3,6 @@
 * Community roles
     * User  
     * Administrators
-    * .... other roles ....
 * Cohort trends
     * Age Cohorts            
         * More than 1 edit 
@@ -15,7 +14,6 @@
     * Namespaces
 * User lists
     * Most active editors
-
 
 """
 import os, errno
@@ -96,10 +94,10 @@ class ReportItem():
 
 
     def generateVisualizations(self,varNames, **kargs):
-        '''For the variables names in `varNames`, produces the WikiPride graphs using :meth:`.wikiPride` (e.g. `added`, `editors`, ...).
+        '''For the variables names in `varNames`, produces the WikiPride graphs using :meth:`.wikiPride` (e.g. `added`, `editors`, ...). If the cohort defines `linePlots`, they are also generated.
 
+        :arg kargs: arguments passed directly to :meth:`.wikiPride`. E.g. `flip=True`, `percentage=False`.
         :arg varNames: list of str, containing the names of the variables for which wikipride should be produced.
-        :arg **kargs: arguments passed directly to :meth:`.wikiPride`. E.g. `flip=True`, `percentage=False`
         '''
         
         self.loadData()
@@ -114,61 +112,66 @@ class ReportItem():
         self.freeData()
 
 
-#Absolute path directories
+#hackz
+try:
 
-REPORTDATA = os.path.join(settings.reportdirectory,'data')
-REPORTGRAPHS = os.path.join(settings.reportdirectory,'graphs')
-REPORTLISTS = os.path.join(settings.reportdirectory,'lists')
-REPORTCSV = os.path.join(settings.reportdirectory,'csv')
+    #Absolute path directories
 
-#Relative path directory tree for the report
+    REPORTDATA = os.path.join(settings.reportdirectory,'data')
+    REPORTGRAPHS = os.path.join(settings.reportdirectory,'graphs')
+    REPORTLISTS = os.path.join(settings.reportdirectory,'lists')
+    REPORTCSV = os.path.join(settings.reportdirectory,'csv')
 
-COMMUNITY = "Community_roles" 
+    #Relative path directory tree for the report
 
-COHORTTREND =  "Cohort_trends"
-AGE = os.path.join(COHORTTREND,"Age_cohorts")
-ABS_AGE = os.path.join(COHORTTREND,"Absolute_age")
-ABS_MORE1 = os.path.join(ABS_AGE,"More_than_1_edit")
-ABS_MORE5 = os.path.join(ABS_AGE,"More_than_5_edits")
-ABS_MORE100 = os.path.join(ABS_AGE,"More_than_100_edits")
-ABS_LESS100 = os.path.join(ABS_AGE,"Less_than_100_edits")
-REL_AGE = os.path.join(COHORTTREND,"Relative_age")
-REL_MORE1 = os.path.join(REL_AGE,"More_than_1_edit")
-REL_MORE5 = os.path.join(REL_AGE,"More_than_5_edits")
-REL_MORE100 = os.path.join(REL_AGE,"More_than_100_edits")
-REL_LESS100 = os.path.join(REL_AGE,"Less_than_100_edits")
+    COMMUNITY = "Community_roles" 
 
-NEWEDITORS = os.path.join(COHORTTREND,"New_editors")
-HISTOGRAM = os.path.join(COHORTTREND,"Histogram_cohorts")
-NAMESPACES = os.path.join(COHORTTREND,"Namespaces")
+    COHORTTREND =  "Cohort_trends"
+    AGE = os.path.join(COHORTTREND,"Age_cohorts")
+    ABS_AGE = os.path.join(COHORTTREND,"Absolute_age")
+    ABS_MORE1 = os.path.join(ABS_AGE,"More_than_1_edit")
+    ABS_MORE5 = os.path.join(ABS_AGE,"More_than_5_edits")
+    ABS_MORE100 = os.path.join(ABS_AGE,"More_than_100_edits")
+    ABS_LESS100 = os.path.join(ABS_AGE,"Less_than_100_edits")
+    REL_AGE = os.path.join(COHORTTREND,"Relative_age")
+    REL_MORE1 = os.path.join(REL_AGE,"More_than_1_edit")
+    REL_MORE5 = os.path.join(REL_AGE,"More_than_5_edits")
+    REL_MORE100 = os.path.join(REL_AGE,"More_than_100_edits")
+    REL_LESS100 = os.path.join(REL_AGE,"Less_than_100_edits")
 
-USERLISTS = "User_lists" 
+    NEWEDITORS = os.path.join(COHORTTREND,"New_editors")
+    HISTOGRAM = os.path.join(COHORTTREND,"Histogram_cohorts")
+    NAMESPACES = os.path.join(COHORTTREND,"Namespaces")
 
-
-# Report items
-    
-from cohorts import age
-from cohorts import histogram
-from cohorts import simple
-
-absMore1 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1), dest=ABS_MORE1)
-absMore5 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 5), dest=ABS_MORE5)
-absMore100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 100), dest=ABS_MORE100)
-absLess100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1,maxedits = 100), dest=ABS_LESS100)
+    USERLISTS = "User_lists" 
 
 
-relMore1 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1), dest=REL_MORE1)
-relMore5 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 5), dest=REL_MORE5)
-relMore100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 100), dest=REL_MORE100)
-relLess100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1,maxedits = 100), dest=REL_LESS100)
+    # Report items
+        
+    from cohorts import age
+    from cohorts import histogram
+    from cohorts import simple
+
+    absMore1 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1), dest=ABS_MORE1)
+    absMore5 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 5), dest=ABS_MORE5)
+    absMore100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 100), dest=ABS_MORE100)
+    absLess100 = ReportItem(cohort=age.AbsoluteAgeAllNamespaces(minedits = 1,maxedits = 100), dest=ABS_LESS100)
 
 
-editorActivity = ReportItem(cohort=histogram.EditorActivity(), dest=HISTOGRAM)
+    relMore1 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1), dest=REL_MORE1)
+    relMore5 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 5), dest=REL_MORE5)
+    relMore100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 100), dest=REL_MORE100)
+    relLess100 = ReportItem(cohort=age.RelativeAgeAllNamespaces(minedits = 1,maxedits = 100), dest=REL_LESS100)
 
-nsCohort = ReportItem(cohort=simple.NameSpaces(), dest=NAMESPACES)
-newEditors = ReportItem(cohort=simple.NewEditors(), dest=NEWEDITORS)
 
+    editorActivity = ReportItem(cohort=histogram.EditorActivity(), dest=HISTOGRAM)
 
+    nsCohort = ReportItem(cohort=simple.NameSpaces(), dest=NAMESPACES)
+    newEditors = ReportItem(cohort=simple.NewEditors(), dest=NEWEDITORS)
+
+except:
+    logger.error("Exception when creating report structure. Likely settings haven't been read. Failure very likely...")
+    pass
     
 def processData():
     '''The aggregation of the cohort data requires that  :func:`data.preprocessing.process` has been executed and the data thus preprocessed. The :func:`data.cohortdata.processData` method will use the report definition in :mod:`.report` to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of `numpy` matrices.                

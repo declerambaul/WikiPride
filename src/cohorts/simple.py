@@ -326,17 +326,7 @@ class NameSpaces(Cohort):
 
 
 class NewEditors(Cohort):
-    '''There is just one cohort, which contains the number of of editors who started contributing in any given month. The sql query aggregates the counts::
-
-        SELECT  
-    first_edit_year, 
-    first_edit_month, 
-    count(*) AS recruits
-FROM
-    xxx.xxwiki_user_cohort
-GROUP BY
-    first_edit_year,
-    first_edit_month;
+    '''There is just one cohort, which contains the number of of editors who started contributing in any given month. 
 
     :meth:`.NewEditors.linePlot` creates a line plot.
     '''

@@ -44,7 +44,7 @@ def main():
 		type=str, 
 		choices=['all','preprocessing','data','report'],
 		help="""the part of the workflow to be executed. all: preprocessing, data and report. 
-		preprocessing: aggregate the required MediaWiki SQL tables into a analytic-friendly format. 
+		preprocessing: aggregate mediawiki SQL tables into analytic-friendly auxialiary tables.
 		data: compute the cohort analysis data (prerequisite: preprocessing workstep)
 		report: create a set of standard reports (prerequisite: data workstep)."""
 	)

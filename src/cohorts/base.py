@@ -179,9 +179,7 @@ class Cohort:
             # except:
             #     logger.warning('saving yaml file %s failed\npyyaml not installed.'%fnyaml)
             
-               
-            
-
+                       
         
     def saveDataToDisk(self,destination=settings.datadirectory):
         '''Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names 
@@ -211,10 +209,11 @@ class Cohort:
         self.initDataDescription()        
 
 
-    def aggregateDataFromSQL(self,verbose=False):
+    def aggregateDataFromSQL(self,verbose=False,callback=None):
         '''Iterates over the SQL data and calls self.processSQLrow() which needs to be implemented by the parent cohort class
 
         :arg verbose: bool, display progress on stdout
+        :arg callback: function, a callback function that can be used for data transformations after the query has executed.
         '''
 
         logger.info('Aggregating data from SQL for %s'%self)
@@ -255,6 +254,9 @@ class Cohort:
         if verbose:
             sys.stdout.write('\n')                    
             sys.stdout.flush()  
+
+        if callback:
+            callback()
 
 
 

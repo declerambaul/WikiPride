@@ -113,7 +113,7 @@ def createAutoConfirmedUserTable():
 	            # ins = '"%s","%s",1,"%s"'%(u_id,u_text,auto)
 	            ins = (u_id,u_text,1,auto)
 	            
-	    
+	    logger.info('\t'.join(str(v) for v in ins))
 	    output.write('\t'.join(str(v) for v in ins)+'\n')
 
 	    if i%100==0:          

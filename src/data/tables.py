@@ -54,7 +54,8 @@ GROUP BY user_id
 ) AS whocares_doesntmatter
 GROUP BY user_id, user_name;
 """%(USER_COHORT,settings.sqlwikidb,settings.sqlwikidb,settings.sqlwikidb,settings.sqlwikidb)
-
+"""Query to create an augmented user table. Includes time stamp for first edit of user, also considering archived revisions. A detailed description is available `here <http://meta.wikimedia.org/wiki/WSoR_datasets/user_cohort>`_.
+"""
 
 INDEX_USER_COHORTS="""
 CREATE INDEX /* SLOW_OK */ user_id on %s (user_id);
@@ -88,7 +89,8 @@ INNER JOIN %s.page cp
 INDEX_REV_LEN_CHANGED="""
 CREATE INDEX /* SLOW_OK */ compound on %s (user_id,rev_year,rev_month,rev_day,namespace);
 """%REV_LEN_CHANGED
-
+"""Query to create an augmented revision table. Includes namespace and change of the size of the articel `len_change`. Costly query, a detailed description is available `here <http://meta.wikimedia.org/wiki/WSoR_datasets/rev_len_changed>`_.
+"""
 
 
 CREATE_EDITOR_YEAR_MONTH = """
@@ -112,6 +114,9 @@ GROUP BY
     rlc.rev_year,
     rlc.rev_month;
 """%(EDITOR_YEAR_MONTH,REV_LEN_CHANGED,USER_COHORT)
+"""Query to editor centric table. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.
+"""
+
 
 CREATE_EDITOR_YEAR_MONTH_NAMESPACE = """
 CREATE TABLE IF NOT EXISTS %s
@@ -136,6 +141,8 @@ GROUP BY
     rlc.rev_month,
     rlc.namespace;
 """%(EDITOR_YEAR_MONTH_NAMESPACE,REV_LEN_CHANGED,USER_COHORT)
+"""Query to editor centric table. Same as `EDITOR_YEAR_MONTH` but including namespace. For each user and each year/month/namespace, it contains the number of add/remove edits as well as number bytes added/removed.
+"""
 
 # CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT = """
 # CREATE TABLE IF NOT EXISTS %s
@@ -186,7 +193,8 @@ GROUP BY
     rlc.rev_year,
     rlc.rev_month;
 """%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,settings.sqlwikidb)
-
+"""Query to editor centric table. Same as `EDITOR_YEAR_MONTH` but including only for namespace 0 (main) and only for pages that are no redirects. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.
+"""
 
 CREATE_EDITOR_YEAR_MONTH_DAY_NAMESPACE = """
 CREATE TABLE IF NOT EXISTS %s
@@ -232,6 +240,8 @@ GROUP BY
     edc.rev_month,
     edc.namespace;
 """%(TIME_YEAR_MONTH_NAMESPACE,EDITOR_YEAR_MONTH_NAMESPACE)
+"""Query to time centric table. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.
+"""
 
 CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE = """
 CREATE TABLE %s
@@ -253,5 +263,6 @@ GROUP BY
     edc.rev_day,
     edc.namespace;
 """%(TIME_YEAR_MONTH_DAY_NAMESPACE,EDITOR_YEAR_MONTH_DAY_NAMESPACE)
-
+"""Query to time centric table. Same as `TIME_YEAR_MONTH_NAMESPACE` but including namespace. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.
+"""
 

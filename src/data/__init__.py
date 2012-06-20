@@ -1,13 +1,22 @@
-"""This module interacts with the MediaWiki SQL database. It creates a set of new tables in the database specified in the settings that will then be used to compute the cohort trend data.
+"""This module interacts with the MediaWiki SQL database. 
 
-* Data preprocessing module :mod:`data.preprocessing`
-* Data aggregation
-
-
+Preprocessing
+--------------------
 
 .. automodule:: data.preprocessing
     :members:
 
+Tables
+--------------------
 
+.. automodule:: data.tables
+    :members:
+
+
+Report
+--------------------
+
+.. automodule:: data.report
+    :members:
 
 """
