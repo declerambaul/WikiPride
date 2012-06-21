@@ -34,7 +34,8 @@ def main():
 	parser.add_argument(
 		'-d', '--droptables',		
 		action='store_true',
-        dest='droptables', 		
+        dest='droptables', 	
+        default=False,	
 		help='if True, all SQL tables will be dropped before being created',
 	)
 
@@ -58,8 +59,9 @@ def main():
 		logger.warning('Invalid config file: %s'%args.config)
 		return
 
-	if args.droptables is not None:
-		settings.droptables = args.droptables
+	settings.droptables = args.droptables
+		
+		
 	
 	if args.workstep == 'all':
 		from data import preprocessing
