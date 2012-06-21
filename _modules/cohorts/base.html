@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cohorts.base &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cohorts.base</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;This module defines the abstract class :class:`.Cohort`. All cohort definitions must inherit this class.</span>
+
+<span class="sd">.. inheritance-diagram:: cohorts.base.Cohort</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;Cohort core&#39;</span><span class="p">)</span>
+
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">N</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Numpy not installed&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Numpy is a requirement&#39;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># if pdf:</span>
+    <span class="c">#     from matplotlib import use</span>
+    <span class="c">#     use(&#39;PDF&#39;)</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">mpl</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Matplotlib not installed, no plotting possible&quot;</span><span class="p">)</span>
+
+
+
+<span class="kn">import</span> <span class="nn">settings</span>
+
+
+
+<span class="c"># (time_stamps,time_stamps_index) = create_time_stamps(fromym=&#39;200101&#39;,toym=&#39;201101&#39;)</span>
+
+<div class="viewcode-block" id="Cohort"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort">[docs]</a><span class="k">class</span> <span class="nc">Cohort</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Abstract class that defines common properties of cohorts, which are defined in the :mod:`cohorts` modules</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c"># cohorts and cohort_labels should be defined by now as this is an abstract class</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;self.cohorts or self.cohort_labels not properly defined&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohorts or cohort labels not properly defined for </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sd">&#39;&#39;&#39;Dictionary that contains the data. {name : numpy.array }. Different aggregates </span>
+<span class="sd">        can be saved; for example &#39;bytesadded&#39;,&#39;edits&#39;,&#39;bytesremovedPerEditor&#39;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="sd">&#39;&#39;&#39;Dictionary that holds descriptive information about self.data. For example, an</span>
+<span class="sd">        &#39;addedBytes&#39; data description might be:</span>
+
+<span class="sd">        self.data_description[&#39;addedBytes&#39;] = { title}</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c"># TODO : REMOVE</span>
+        <span class="c"># if &#39;NS&#39; not in self.__dict__:</span>
+        <span class="c">#     self.NS = settings.NS</span>
+        <span class="c"># &#39;&#39;&#39;</span>
+        <span class="c"># Set of namesspaces that we are interested in</span>
+        <span class="c"># &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">nobots</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        True if the bots are filtered from the cohort</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s">&#39;time_stamps&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">time_stamps</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        List of timestamps</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s">&#39;time_stamps_index&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">time_stamps_index</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Hash from time_stamp to index in self.time_stamps</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="s">&#39;ncolors&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ncolors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">)</span>                                                
+            <span class="sd">&#39;&#39;&#39;The number of colors used for the wikipride graphs. If required, it should be defined in the child class definition.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongoQueryVars</span> <span class="o">=</span> <span class="s">&#39;settings&#39;</span> <span class="c"># {&#39;user_id&#39;:1,&#39;edit_count&#39;:1}</span>
+        <span class="sd">&#39;&#39;&#39;The Mongo query variables used to aggregate the data. If None, all fields will be returned by mongo. If &#39;settings&#39;, the mongoQueryVars from the settings will be used</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c"># initialize the data description (not the data itself)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+                
+<div class="viewcode-block" id="Cohort.getFileName"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.getFileName">[docs]</a>    <span class="k">def</span> <span class="nf">getFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">varName</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s">&#39;data&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Generates the path and file name based on properties of the cohort. Additional identifying features might be used in file names by overwriting this method in subclasses of the base :class:`.Cohort` class. </span>
+
+<span class="sd">        If no `destination` argument is passed, the method uses the `ftype` argument to determine which base directory should be used. Only the name of the data feature (e.g. &#39;added&#39;) and the cohort name (e.g. `AbsoluteAgePerMonth`) is used in the basic method.</span>
+
+<span class="sd">        :arg varName: name of the self.data variable</span>
+<span class="sd">        :arg destination: str, destination directory. If None, settings will be used</span>
+<span class="sd">        :arg ftype: str, &#39;data&#39; or &#39;wikipride&#39;</span>
+<span class="sd">        :returns: A path without file format</span>
+<span class="sd">        &#39;&#39;&#39;</span>   
+        <span class="kn">import</span> <span class="nn">os</span> 
+
+        <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="n">ftype</span><span class="o">==</span><span class="s">&#39;data&#39;</span><span class="p">:</span>
+                <span class="n">destination</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">datadirectory</span>
+            <span class="k">elif</span> <span class="n">ftype</span><span class="o">==</span><span class="s">&#39;wikipride&#39;</span><span class="p">:</span>
+                <span class="n">destination</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">wikipridedirectory</span>
+        
+             
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">[</span><span class="n">varName</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">]</span>
+        <span class="c"># if self.nobots:</span>
+        <span class="c">#     desc.append(&#39;nobots&#39;)</span>
+        <span class="c"># else:</span>
+        <span class="c">#     desc.append(&#39;bots&#39;)</span>
+        <span class="c"># if len(self.NS) &lt; 16:</span>
+        <span class="c">#     desc.append(&#39;NS-&#39;+ &#39;-&#39;.join(self.NS))</span>
+        
+        <span class="n">desc</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">desc</span><span class="p">)</span>
+
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span><span class="n">desc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fn</span>
+</div>
+<div class="viewcode-block" id="Cohort.saveDataToCSV"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.saveDataToCSV">[docs]</a>    <span class="k">def</span> <span class="nf">saveDataToCSV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">datadirectory</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names is uniquely constructed from the properties of the variable and cohort. The format of the CSV doesn&#39;t follow the numpy representation as it transposes the matrix. Thus the temporal axis is vertical instead of horizontal, each row is a measurement for a different time unit. This format is used by the visualization library `dygraphs &lt;http://dygraphs.com/&gt;`_ . </span>
+
+<span class="sd">        .. warning:</span>
+<span class="sd">            Atm, this is a hack for a frontend mockup</span>
+<span class="sd">                </span>
+<span class="sd">        :arg destination: str, destination directory. If None, the data directory from the settings will be used </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.csv&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">varName</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">)</span>         
+            
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c">#write header line which will be used as label names                            </span>
+                <span class="n">headers</span> <span class="o">=</span> <span class="s">&#39;Date,</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span><span class="p">))</span>
+
+
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+
+
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="c"># iterate through columns and save each as one row</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">:])</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[:,</span><span class="n">i</span><span class="p">]]</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">,</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            
+            <span class="n">fnyaml</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.yaml&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">varName</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">)</span>         
+            <span class="c"># try:</span>
+            <span class="kn">import</span> <span class="nn">yaml</span>
+
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">])</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s">&#39;title&#39;</span><span class="p">]</span>
+
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;data/</span><span class="si">%s</span><span class="s">.csv&#39;</span><span class="o">%</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;csv&#39;</span>
+            <span class="c"># d[&#39;url&#39;] = fn</span>
+
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;timespan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;timespan&#39;</span><span class="p">][</span><span class="s">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">4</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">:])</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;timespan&#39;</span><span class="p">][</span><span class="s">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">4</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">:])</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;timespan&#39;</span><span class="p">][</span><span class="s">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;1mo&#39;</span>
+
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;columns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;columns&#39;</span><span class="p">][</span><span class="s">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Month&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;columns&#39;</span><span class="p">][</span><span class="s">&#39;types&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;date&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="s">&#39;int&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span><span class="p">)</span>
+
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;chart&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;chart&#39;</span><span class="p">][</span><span class="s">&#39;libary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;dygraphs&#39;</span>
+            <span class="n">d</span><span class="p">[</span><span class="s">&#39;chart&#39;</span><span class="p">][</span><span class="s">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;title&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s">&#39;title&#39;</span><span class="p">],</span><span class="s">&#39;ylabel&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s">&#39;ylabel&#39;</span><span class="p">],</span><span class="s">&#39;stackedGraph&#39;</span><span class="p">:</span><span class="bp">True</span><span class="p">}</span>
+
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">fnyaml</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">))</span>
+
+            <span class="c"># except:</span>
+            <span class="c">#     logger.warning(&#39;saving yaml file %s failed\npyyaml not installed.&#39;%fnyaml)</span>
+            
+                       
+        </div>
+<div class="viewcode-block" id="Cohort.saveDataToDisk"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.saveDataToDisk">[docs]</a>    <span class="k">def</span> <span class="nf">saveDataToDisk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">datadirectory</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names </span>
+<span class="sd">        is uniquely constructed from the properties of the variable and cohort.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.txt&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">varName</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">)</span>            
+            <span class="n">N</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Cohort.loadDataFromDisk"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.loadDataFromDisk">[docs]</a>    <span class="k">def</span> <span class="nf">loadDataFromDisk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">varName</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Loads the data from disk. It will populate self.data with {names[i] : numpy.array}.</span>
+<span class="sd">        An error is raised if there is no corresponding datafile stored</span>
+
+<span class="sd">        :args varName: variable name</span>
+<span class="sd">        :arg destination: str, destination directory. If None, settings will be used</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">destination</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">varName</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">varName</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.txt&#39;</span><span class="o">%</span><span class="n">fn</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>        
+
+</div>
+<div class="viewcode-block" id="Cohort.aggregateDataFromSQL"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.aggregateDataFromSQL">[docs]</a>    <span class="k">def</span> <span class="nf">aggregateDataFromSQL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Iterates over the SQL data and calls self.processSQLrow() which needs to be implemented by the parent cohort class</span>
+
+<span class="sd">        :arg verbose: bool, display progress on stdout</span>
+<span class="sd">        :arg callback: function, a callback function that can be used for data transformations after the query has executed.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Aggregating data from SQL for </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="bp">self</span><span class="p">)</span>
+        
+
+        <span class="kn">from</span> <span class="nn">db</span> <span class="kn">import</span> <span class="n">sql</span>
+
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">sql</span><span class="o">.</span><span class="n">getSSDictCursor</span><span class="p">()</span>
+        <span class="c"># try:</span>
+        <span class="c">#     from db import sql</span>
+        <span class="c"># except:</span>
+        <span class="c">#     logger.error(&quot;Couldn&#39;t connect to SQL&quot;)</span>
+        <span class="c">#     raise Exception(&quot;SQL connection needed!&quot;)</span>
+        
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No valid SQL query has been supplied.&quot;</span><span class="p">)</span>     
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;SQL query needed!&quot;</span><span class="p">)</span>
+                   
+        <span class="bp">self</span><span class="o">.</span><span class="n">initData</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;SQL query: </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span><span class="p">)</span>
+            <span class="c"># logger.info(&quot;Progress (every `.` is 10000 rows)&quot;)     </span>
+
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">count</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cur</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processSQLrow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>            
+                <span class="k">if</span> <span class="n">count</span><span class="o">%</span><span class="mi">10000</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>                    
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> 
+                    <span class="c"># print &#39;.&#39;,</span>
+                    <span class="c"># logger.info(&#39;Processed %s million SQL rows&#39;%(count/1000000))</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>                    
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  
+
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">()</span>
+
+
+</div>
+<div class="viewcode-block" id="Cohort.processSQLrow"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.processSQLrow">[docs]</a>    <span class="k">def</span> <span class="nf">processSQLrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Processes a row of the SQL result set</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">aggregateDataFromMongo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Aggregating data from Mongo DB&#39;</span><span class="p">)</span>
+        
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">db</span> <span class="kn">import</span> <span class="n">mongo</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Couldn&#39;t connect to Mongo db&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Mongo connection needed!&quot;</span><span class="p">)</span>
+        
+        <span class="n">mongo</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mongoQueryVars</span> <span class="o">==</span> <span class="s">&#39;settings&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;mongoQueryVars&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mongoQueryVars</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">mongoQueryVars</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;No valid query variables have been supplied. Returning all variables instead.&quot;</span><span class="p">)</span>     
+                <span class="bp">self</span><span class="o">.</span><span class="n">mongoQueryVars</span> <span class="o">=</span> <span class="bp">None</span>
+                                   
+        <span class="bp">self</span><span class="o">.</span><span class="n">initData</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">count</span><span class="p">,</span><span class="n">document</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mongo</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">find</span><span class="p">({},</span><span class="bp">self</span><span class="o">.</span><span class="n">mongoQueryVars</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">processMongoDocument</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="Cohort.processMongoDocument"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.processMongoDocument">[docs]</a>    <span class="k">def</span> <span class="nf">processMongoDocument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Processes a document of the Mogo DB result set</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Cohort.initData"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.initData">[docs]</a>    <span class="k">def</span> <span class="nf">initData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data dictionary with the appropriate variable names and numpy.arrays</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Cohort.initDataDescription"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.initDataDescription">[docs]</a>    <span class="k">def</span> <span class="nf">initDataDescription</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data_description dictionary with additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Cohort.finalizeData"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.finalizeData">[docs]</a>    <span class="k">def</span> <span class="nf">finalizeData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This method should is called at the of an aggregateDataFromXXX() method. It allows to manipulate</span>
+<span class="sd">        the time series data in self.data. E.g. and &#39;addedBytes&#39; could be divided by &#39;edits&#39; to create a new </span>
+<span class="sd">        variable &#39;addedPerEdit&#39;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;No manipulations after the data aggregation is implemented for </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>     
+
+    
+</div>
+    <span class="k">def</span> <span class="nf">setColorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Cohort.getIndex"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.getIndex">[docs]</a>    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edits</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the index of the cohort </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cohort subclass should implement this method!&quot;</span><span class="p">)</span>        
+
+</div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;String representation of cohort, abstract :class:`.Cohort` returns the name of the class only.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+
+<div class="viewcode-block" id="Cohort.wikiPride"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.wikiPride">[docs]</a>    <span class="k">def</span> <span class="nf">wikiPride</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varName</span><span class="p">,</span><span class="n">varDesc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">normal</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">percentage</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ncolors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">pdf</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">dest</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots the cohort trends using the famous WikiPride stacked bar chart! If `normal` is True, the absolute values are visualized. If `percentage` is True, the relative values are visualized (i.e. the percentages). If `flip` is True, the numpy.array is flipped upside down. This results in the bars added in reverse order. The order of the cohort labels is also reversed as a result.</span>
+
+<span class="sd">        :arg varName: str, the name of the numpy.array in self.data to visualize</span>
+<span class="sd">        :arg varDesc: str. Alternative name for the data description. If None, `varName` will be used.</span>
+<span class="sd">        :arg normal: Boolean. Visualize absolute values.</span>
+<span class="sd">        :arg percentage: Boolean. Visualize percentages.</span>
+<span class="sd">        :arg colorbar: Boolean. Add color bar legend.</span>
+<span class="sd">        :arg pdf: Boolean. If True, save plot as pdf</span>
+<span class="sd">        :arg flip: Boolean. N.flipud() the numpy.array which inverses the order the boxes are added</span>
+<span class="sd">        :arg dest: str. Path to directory on where to save the plot. If None, the path in settings.py will be used</span>
+<span class="sd">        :arg verbose: Boolean. Displays information about the graphing progress.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">cmap_discretize</span>    
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Creating WikiPride graph for </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="n">varName</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="c"># configure the color map    </span>
+        <span class="k">if</span> <span class="n">ncolors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ncolors</span> <span class="o">=</span> <span class="n">ncolors</span> 
+
+        <span class="n">cmapName</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">cmapName</span> <span class="k">if</span> <span class="s">&#39;cmapName&#39;</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">__dict__</span>  <span class="k">else</span> <span class="s">&#39;spectral&#39;</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap_discretize</span><span class="p">(</span><span class="n">cmapName</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ncolors</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">)))</span>   
+        
+        <span class="c"># the data to plot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span>
+        <span class="n">data_description</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">varDesc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">data_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="n">varDesc</span><span class="p">]</span> <span class="k">if</span> <span class="n">varDesc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span> <span class="k">if</span> <span class="n">varName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="c"># x axis</span>
+        <span class="c"># xt = N.arange(data.shape[1])</span>
+        <span class="n">xt</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">flip</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">flipud</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+
+
+        <span class="k">if</span> <span class="n">normal</span> <span class="ow">and</span> <span class="n">percentage</span><span class="p">:</span>
+            <span class="c">#figure contains both plots</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">11</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="mf">8.5</span><span class="p">)</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>    
+            <span class="n">axN</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.55</span><span class="p">,</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.4</span><span class="p">],</span><span class="n">frame_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>    
+            <span class="n">axP</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.4</span><span class="p">],</span><span class="n">frame_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>    
+            
+        <span class="k">elif</span> <span class="n">normal</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">11</span><span class="p">,</span><span class="mf">8.5</span><span class="p">)</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">axN</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.8</span><span class="p">],</span><span class="n">frame_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">percentage</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">11</span><span class="p">,</span><span class="mf">8.5</span><span class="p">)</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">axP</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.8</span><span class="p">],</span><span class="n">frame_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;No plots to plot while plotting!&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>                    
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span> 
+                <span class="c"># print &#39;.&#39;,</span>
+                <span class="c"># logger.info(&quot;Plotting cohort %s&quot;%self.cohort_labels[i]) </span>
+
+            <span class="k">if</span> <span class="n">normal</span><span class="p">:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">axN</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xt</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">bottom</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>     
+                
+                <span class="c"># rectpatches = axN.patches</span>
+                <span class="c"># pcol = mpl.collections.PatchCollection(rectpatches, match_original=False)</span>
+                <span class="c"># axN.add_collection(pcol) </span>
+                <span class="c"># axN.patches = []</span>
+
+            <span class="k">if</span> <span class="n">percentage</span><span class="p">:</span>       
+                <span class="c"># scale to 1 </span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">t</span><span class="p">[</span><span class="n">t</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">,:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">t</span>
+
+                <span class="c"># print &#39;cohort &#39;+self.cohort_labels[i]</span>
+                <span class="c"># print &#39;total \n%s&#39;%t</span>
+                <span class="c"># print &#39;bottom \n%s&#39;%b</span>
+                <span class="c"># print &#39;box \n%s&#39;%(data[i,:]/t)</span>
+
+                <span class="n">axP</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xt</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">/</span><span class="n">t</span><span class="p">,</span><span class="n">bottom</span><span class="o">=</span><span class="n">b</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>                    
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  
+
+        
+        <span class="n">xtskip</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,(</span><span class="n">xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">5</span><span class="p">)]</span>
+        <span class="n">xtlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> / </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">:],</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xtskip</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">normal</span><span class="p">:</span>
+            <span class="c"># axN.set_title(&#39;Net contributions of cohorts (namespace 0, bots filtered)&#39;)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_WP - </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="p">,</span><span class="n">data_description</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+            <span class="n">axN</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s">&#39;ylim&#39;</span> <span class="ow">in</span> <span class="n">data_description</span><span class="p">:</span>
+                <span class="n">axN</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;ylim&#39;</span><span class="p">])</span>
+
+            <span class="n">ylabel</span> <span class="o">=</span> <span class="n">data_description</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;ylabel&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">axN</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s">&#39;ytickslabel&#39;</span> <span class="ow">in</span> <span class="n">data_description</span><span class="p">:</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">data_description</span><span class="p">[</span><span class="s">&#39;ytickslabel&#39;</span><span class="p">]</span>
+                <span class="n">axN</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">axN</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()),</span><span class="n">size</span><span class="o">=</span><span class="s">&#39;small&#39;</span><span class="p">)</span>
+            
+            <span class="c"># x ticks / labels</span>
+            <span class="n">axN</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xtskip</span><span class="p">)</span>
+            <span class="n">axN</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtlabels</span><span class="p">,</span><span class="n">rotation</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">)</span><span class="c">#,size=&#39;small&#39;)</span>
+
+
+        <span class="k">if</span> <span class="n">percentage</span><span class="p">:</span>
+
+            <span class="n">axP</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">axP</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&#39;Percentage&#39;</span><span class="p">)</span>   
+            <span class="n">axP</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+        
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_WP - </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="p">,</span><span class="n">data_description</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+            <span class="n">axP</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;Percentage - </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">title</span><span class="p">)</span>            
+
+            <span class="c"># x ticks / labels</span>
+            <span class="n">axP</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xtskip</span><span class="p">)</span>
+            <span class="n">axP</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtlabels</span><span class="p">,</span><span class="n">rotation</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">)</span><span class="c">#,size=&#39;small&#39;)</span>
+
+
+        <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>        
+            <span class="c"># color bar axes</span>
+            <span class="n">cba</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.92</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.02</span><span class="p">,</span><span class="mf">0.8</span><span class="p">])</span>
+            <span class="c"># color bar</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">ColorbarBase</span><span class="p">(</span><span class="n">cba</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
+            <span class="c"># getting cohort specific ticks and labels</span>
+            <span class="n">ticks</span><span class="p">,</span><span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colorbarTicksAndLabels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncolors</span><span class="p">)</span>
+
+            <span class="n">cb</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>   
+            <span class="n">cb</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        
+        
+        
+        <span class="k">if</span> <span class="n">percentage</span> <span class="ow">and</span> <span class="n">normal</span><span class="p">:</span>                           
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="mf">8.5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span><span class="mf">8.5</span><span class="p">)</span>
+            
+        <span class="c"># save figure</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">dest</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span> <span class="n">varName</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s">&#39;wikipride&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span> <span class="n">varName</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Saving WikiPride plot&#39;</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;pdf&#39;</span> <span class="k">if</span> <span class="n">pdf</span> <span class="k">else</span> <span class="s">&#39;png&#39;</span><span class="p">))</span>
+        <span class="c"># fig.clear()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+
+
+        <span class="c"># reverse cohort_labels back if data has been flipped</span>
+        <span class="k">if</span> <span class="n">flip</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Cohort.linePlots"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.linePlots">[docs]</a>    <span class="k">def</span> <span class="nf">linePlots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This method allows to produce line plots using the cohort data stored in `self.data`. Usually line plots illustrate interesting trends/ratios that depend on the cohort definition. Thus this method in the base cohort definition does nothing and should be overwritten in the cohort class itself.&#39;&#39;&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;linePlots() is called on a cohort instance (</span><span class="si">%s</span><span class="s">) for which no line plots have been defined.&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="Cohort.addLine"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.addLine">[docs]</a>    <span class="k">def</span> <span class="nf">addLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span><span class="n">fig</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Adds a line to the matplotlib figure passed as argument. The dimension the data has to match the length of the `time_stamps`. It is assumed that the figure contains only one axes.</span>
+
+<span class="sd">        :arg data: numpy.array of same length as `time_stamps`</span>
+<span class="sd">        :arg fig: matplotlib figure. If none, a new figure is created.</span>
+<span class="sd">        :arg label: str, label for the legend. Defaults to an empty string.</span>
+
+<span class="sd">        :returns: matplotlib figure</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c"># the axis</span>
+        <span class="n">ax</span><span class="o">=</span><span class="bp">None</span>
+        <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">11</span><span class="p">,</span><span class="mf">8.5</span><span class="p">)</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.85</span><span class="p">,</span><span class="mf">0.8</span><span class="p">],</span><span class="n">frame_on</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">data</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>    
+
+        <span class="k">return</span> <span class="n">fig</span>
+        
+</div>
+<div class="viewcode-block" id="Cohort.saveFigure"><a class="viewcode-back" href="../../reference.html#cohorts.base.Cohort.saveFigure">[docs]</a>    <span class="k">def</span> <span class="nf">saveFigure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="n">ylabel</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span><span class="n">xlabel</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">ylog</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">legendpos</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">pdf</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Saves a matplotlib figure to disk.</span>
+
+<span class="sd">        :arg name: str, name of resulting file</span>
+<span class="sd">        :arg fig: matplotlib figure to be saved.</span>
+<span class="sd">        :arg dest: str, destination folder.</span>
+<span class="sd">        :arg title: str, plot title. Defaults to an empty string.        </span>
+<span class="sd">        :arg ylabel: str, plot y axis label. Defaults to an empty string.</span>
+<span class="sd">        :arg xlabel: str, plot x axis label. If none, time stamps xticks will be used.</span>
+<span class="sd">        :arg ylog: If True the log scale is used for the y-axis, default is False. </span>
+<span class="sd">        :arg legendpos: int, the position of the legend. If None, no legend will be displayed.</span>
+<span class="sd">        :arg pdf: If True the file will be saved as pdf, otherwise as png.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_WP - </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="p">,</span><span class="n">title</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>            
+            <span class="c"># x ticks / labels</span>
+            <span class="n">xt</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">))</span>
+            <span class="n">xtskip</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,(</span><span class="n">xt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">5</span><span class="p">)]</span>
+            <span class="n">xtlabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> / </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">:],</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xtskip</span><span class="p">]</span>
+            
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xtskip</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtlabels</span><span class="p">,</span><span class="n">rotation</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s">&#39;top&#39;</span><span class="p">)</span><span class="c">#,size=&#39;small&#39;)</span>
+
+        
+        <span class="k">if</span> <span class="n">ylog</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">legendpos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">legendpos</span><span class="p">)</span>
+
+
+
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span> <span class="n">name</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;pdf&#39;</span> <span class="k">if</span> <span class="n">pdf</span> <span class="k">else</span> <span class="s">&#39;png&#39;</span><span class="p">))</span>
+        <span class="c"># fig.clear()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

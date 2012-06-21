@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>WikiPride’s documentation! &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">WikiPride v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">WikiPride&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#editor-cohorts">Editor cohorts</a></li>
+<li><a class="reference internal" href="#data-workflow">Data Workflow</a><ul>
+<li><a class="reference internal" href="#preprocessing">Preprocessing</a></li>
+<li><a class="reference internal" href="#data-aggregation">Data aggregation</a></li>
+<li><a class="reference internal" href="#visualization">Visualization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#wikipride-visualizations">WikiPride visualizations</a><ul>
+<li><a class="reference internal" href="#stacked-bar-chart">Stacked bar chart</a></li>
+<li><a class="reference internal" href="#other-graphs">Other graphs</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="wikipride-s-documentation">
+<h1>WikiPride&#8217;s documentation!<a class="headerlink" href="#wikipride-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>WikiPride is a framework for analyzing and visualizing Wikipedia data. Starting off with the Wikimedia SQL databases (for example on the <a class="reference external" href="http://toolserver.org/">Toolserver</a>), the data is aggregated into an editor trends &#8216;friendly&#8217; format. It can then be visualized in <a class="reference external" href="http://meta.wikimedia.org/wiki/Research:WikiPride">stacked bar charts</a> whose pretty colors have given this framework its name, or analyzed using a time series framework like <a class="reference external" href="http://pandas.sourceforge.net/">panda</a>. This package is built on tools and findings from the <a class="reference external" href="http://meta.wikimedia.org/wiki/Research:Wikimedia_Summer_of_Research_2011">Summer of Research 2011</a> by the Wikimedia foundation.</p>
+<p>Note that this project (hopefully) becomes obselete when the new <a class="reference external" href="http://www.mediawiki.org/wiki/Analytics/Kraken">analytics cluster</a> is up and running.</p>
+</div>
+<div class="section" id="requirements">
+<span id="id1"></span><h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<p>The following packages are used</p>
+<ul class="simple">
+<li>argparse</li>
+<li>numpy</li>
+<li>MySQLdb</li>
+<li>matplotlib</li>
+</ul>
+<p>At the moment only unix environments are supported.</p>
+</div>
+<div class="section" id="usage">
+<span id="id2"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>First, create a configuration file that can be read by WikiPride. The following is an example configuration file (<cite>de.config</cite>) that configures WikiPride for the German wikipedia on the toolserver for the time period from January 2004 until Jan 2012. You also need a user database for storing auxiliary tables, <cite>u_declerambaul</cite> in this case. The directories section specifies the folders where the resulting reports will be stored.</p>
+<div class="highlight-python"><pre>[General]
+language = de
+filterbots = True
+startYM = 200401
+endYM = 201201
+
+
+[Directories]
+cmapname = 'spectral'
+basedirectory = ~/example
+datadirectory = %(basedirectory)s/data
+userlistdirectory = %(basedirectory)s/userlists
+reportdirectory = %(basedirectory)s/report
+wikipridedirectory = %(basedirectory)s/wikipride
+
+[MySQL]
+sqlhost = dewiki-p.rrdb.toolserver.org
+sqlwikidb = dewiki_p
+sqluserdb = u_declerambaul
+sqlconfigfile = ~/.my.cnf
+sqldroptables = False</pre>
+</div>
+<p>Next, one can simply invoke one of the three workflow steps.</p>
+<ul class="simple">
+<li>preprocessing : aggregate mediawiki SQL tables into analytic-friendly auxialiary tables</li>
+<li>data : compute the cohort analysis data (prerequisite: preprocessing workstep)</li>
+<li>report : create a set of standard reports (prerequisite: data workstep)</li>
+<li>all : preprocessing, data and report</li>
+</ul>
+<div class="highlight-python"><pre>python wikipride -c de.config preprocessing
+python wikipride -c de.config data
+python wikipride -c de.config report</pre>
+</div>
+<p>Alternatively, you can use the <cite>example/runLanguages.sh</cite> script to generate complete reports for all language codes passed as parameters.</p>
+</div>
+<div class="section" id="editor-cohorts">
+<span id="cohort-definition"></span><h1>Editor cohorts<a class="headerlink" href="#editor-cohorts" title="Permalink to this headline">¶</a></h1>
+<p>The concept of a cohort is introduced to extract aggregate statistics about editor behaviour.</p>
+<ul>
+<li><p class="first">First a set of editors is selected, the goal being to analyze their contributing trends. Usually this set is comprised of all editors on Wikipedia, though often the users flagged as bots are filtered. Alternatively, the set could contain only users of a certain tool like Huggle.</p>
+</li>
+<li><p class="first">A cohort definition specifies a distribution over the editors. For each time unit, e.g. month, every editor in the set is uniquely associated with one cohort. For example:</p>
+<blockquote>
+<div><ul class="simple">
+<li>For absolute age per month cohorts, <a class="reference internal" href="reference.html#cohorts.age.AbsoluteAgePerMonth" title="cohorts.age.AbsoluteAgePerMonth"><tt class="xref py py-class docutils literal"><span class="pre">cohorts.age.AbsoluteAgePerMonth</span></tt></a>, an editor is assigned to the cohort that corresponds to the number of month since the first edit of the editor.</li>
+<li>For edit activity histogram cohorts, <a class="reference internal" href="reference.html#cohorts.histogram.EditorActivity" title="cohorts.histogram.EditorActivity"><tt class="xref py py-class docutils literal"><span class="pre">cohorts.histogram.EditorActivity</span></tt></a>, a cohort is associated with a range of edits an editor has made in given month (e.g. 100-500 edits). Each editor is assigned to the edits bin he falls into for that month.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Metrics can be collected for each encountered data point. For example:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The number of edits made by the cohort in a given month</li>
+<li>The number of bytes added/removed by each cohort in a given month</li>
+<li>The number of editors in a cohort</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>The abstract class <a class="reference internal" href="reference.html#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">cohorts.base.Cohort</span></tt></a> defines variables and methods that need to be implemented by every subclass:</p>
+<ul class="simple">
+<li><tt class="xref py py-attr docutils literal"><span class="pre">sqlQuery</span></tt>, the SQL query to the preprocessed tables. The aggregate statistics will be computed from the rows of the resultset</li>
+<li><a class="reference internal" href="reference.html#cohorts.base.Cohort.initData" title="cohorts.base.Cohort.initData"><tt class="xref py py-meth docutils literal"><span class="pre">initData()</span></tt></a>, initializes the data structure for the metrics to be collected.</li>
+<li><a class="reference internal" href="reference.html#cohorts.base.Cohort.getIndex" title="cohorts.base.Cohort.getIndex"><tt class="xref py py-meth docutils literal"><span class="pre">getIndex()</span></tt></a>, the method that determines which cohort the current row will be associated with.</li>
+<li><a class="reference internal" href="reference.html#cohorts.base.Cohort.processSQLrow" title="cohorts.base.Cohort.processSQLrow"><tt class="xref py py-meth docutils literal"><span class="pre">processSQLrow()</span></tt></a>, the method that extracts the data and updates the cohort metrics data structure.</li>
+</ul>
+<p>The method <a class="reference internal" href="reference.html#cohorts.base.Cohort.aggregateDataFromSQL" title="cohorts.base.Cohort.aggregateDataFromSQL"><tt class="xref py py-meth docutils literal"><span class="pre">aggregateDataFromSQL()</span></tt></a> is called by the instantiated sublass. It executes the <a class="reference internal" href="reference.html#cohorts.base.Cohort.processSQLrow" title="cohorts.base.Cohort.processSQLrow"><tt class="xref py py-meth docutils literal"><span class="pre">processSQLrow()</span></tt></a> method for every row in the resultset returned by the <tt class="xref py py-attr docutils literal"><span class="pre">sqlQuery</span></tt> query.</p>
+</div>
+<div class="section" id="data-workflow">
+<span id="id3"></span><h1>Data Workflow<a class="headerlink" href="#data-workflow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="preprocessing">
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h2>
+<p>First, the data in the MediaWiki SQL database needs to be preprocessed, which is done in <a class="reference internal" href="reference.html#data.preprocessing.process" title="data.preprocessing.process"><tt class="xref py py-meth docutils literal"><span class="pre">data.preprocessing.process()</span></tt></a>. That method generates auxiliary SQL tables that are stored in the <cite>sqluserdb</cite> db, and all subsequent cohort analysis is done on these tables. The queries that create the tables are stored in the <a class="reference internal" href="reference.html#module-data.tables" title="data.tables"><tt class="xref py py-mod docutils literal"><span class="pre">data.tables</span></tt></a> module.</p>
+</div>
+<div class="section" id="data-aggregation">
+<h2>Data aggregation<a class="headerlink" href="#data-aggregation" title="Permalink to this headline">¶</a></h2>
+<p>Each cohort class implements the <a class="reference internal" href="reference.html#cohorts.base.Cohort.aggregateDataFromSQL" title="cohorts.base.Cohort.aggregateDataFromSQL"><tt class="xref py py-meth docutils literal"><span class="pre">aggregateDataFromSQL()</span></tt></a> method, which computes the cohort statistics using the tables created in the preprocessing step. The <a class="reference internal" href="reference.html#module-data.report" title="data.report"><tt class="xref py py-mod docutils literal"><span class="pre">report</span></tt></a> module specifies a set of cohorts that serve as a report which can be generated automatically. The method <tt class="xref py py-meth docutils literal"><span class="pre">report.processData()</span></tt> is computing the aggregates for all cohort defined in the report.</p>
+</div>
+<div class="section" id="visualization">
+<h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h2>
+<p>The final step is the visualization of the aggregated data. See <a class="reference internal" href="#wikipride-visualizations"><em>WikiPride visualizations</em></a>.</p>
+</div>
+</div>
+<div class="section" id="wikipride-visualizations">
+<span id="id4"></span><h1>WikiPride visualizations<a class="headerlink" href="#wikipride-visualizations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="stacked-bar-chart">
+<h2>Stacked bar chart<a class="headerlink" href="#stacked-bar-chart" title="Permalink to this headline">¶</a></h2>
+<p>WikiPride visualizations represent the trends of editor cohorts using stacked bar charts with a color map. Each bar is on the x-axis represents a set of cohorts who&#8217;s values are stacked. A wikipride plot can be produced for every collected metric (e.g. number of edits, bytes added). The <a class="reference internal" href="reference.html#cohorts.base.Cohort.wikiPride" title="cohorts.base.Cohort.wikiPride"><tt class="xref py py-meth docutils literal"><span class="pre">wikiPride()</span></tt></a> method produces the plot.</p>
+<a class="reference external image-reference" href="_static/wikipride_ex.png"><img alt="_images/wikipride_ex.png" src="_images/wikipride_ex.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="other-graphs">
+<h2>Other graphs<a class="headerlink" href="#other-graphs" title="Permalink to this headline">¶</a></h2>
+<p>Other graphs can be created by implementing <a class="reference internal" href="reference.html#cohorts.base.Cohort.linePlots" title="cohorts.base.Cohort.linePlots"><tt class="xref py py-meth docutils literal"><span class="pre">linePlots()</span></tt></a> in a subclass, for example see <a class="reference internal" href="reference.html#cohorts.age.RelativeAgeAllNamespaces.linePlots" title="cohorts.age.RelativeAgeAllNamespaces.linePlots"><tt class="xref py py-meth docutils literal"><span class="pre">RelativeAgeAllNamespaces.linePlots()</span></tt></a>. Use the helper  methods <a class="reference internal" href="reference.html#cohorts.base.Cohort.addLine" title="cohorts.base.Cohort.addLine"><tt class="xref py py-meth docutils literal"><span class="pre">addLine()</span></tt></a> and <a class="reference internal" href="reference.html#cohorts.base.Cohort.saveFigure" title="cohorts.base.Cohort.saveFigure"><tt class="xref py py-meth docutils literal"><span class="pre">saveFigure()</span></tt></a>. The built-in report generates visualizations with the <a class="reference internal" href="reference.html#data.report.ReportItem.generateVisualizations" title="data.report.ReportItem.generateVisualizations"><tt class="xref py py-meth docutils literal"><span class="pre">ReportItem.generateVisualizations()</span></tt></a> call.</p>
+<a class="reference external image-reference" href="_static/lineplots_ex.png"><img alt="_images/lineplots_ex.png" src="_images/lineplots_ex.png" style="width: 100%;" /></a>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">WikiPride v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

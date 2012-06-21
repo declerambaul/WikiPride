@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>data.tables &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for data.tables</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;This module holds the collection of SQL queries used for the preprocessing of the data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">settings</span>
+
+
+<span class="n">CREATE_USER_DATABASE</span> <span class="o">=</span> <span class="s">&#39;CREATE DATABASE IF NOT EXISTS </span><span class="si">%s</span><span class="s">;&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span>
+
+<span class="n">USER_COHORT</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_user_cohort&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">REV_LEN_CHANGED</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_rev_len_changed&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">EDITOR_YEAR_MONTH</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_editor_centric_year_month&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">EDITOR_YEAR_MONTH_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_editor_centric_year_month_namespace&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">EDITOR_YEAR_MONTH_NS0_NOREDIRECT</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_editor_centric_year_month_ns0_noredirect&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">EDITOR_YEAR_MONTH_DAY_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_editor_centric_year_month_day_namespace&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">TIME_YEAR_MONTH_NAMESPACE</span> <span class="o">=</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_time_centric_year_month_namespace&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+<span class="n">TIME_YEAR_MONTH_DAY_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">wiki_time_centric_year_month_day_namespace&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+
+
+<span class="n">CREATE_USER_COHORTS</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    user_id,</span>
+<span class="s">    user_name,</span>
+<span class="s">    REPLACE(user_name, &#39; &#39;, &#39;_&#39;) as user_name_title,</span>
+<span class="s">    MIN(first_edit)         AS first_edit,</span>
+<span class="s">    YEAR(MIN(first_edit))   AS first_edit_year,</span>
+<span class="s">    MONTH(MIN(first_edit))  AS first_edit_month,</span>
+<span class="s">    MAX(first_edit)         AS last_edit</span>
+<span class="s">FROM</span>
+<span class="s">(</span>
+<span class="s">SELECT</span>
+<span class="s">    user_id,</span>
+<span class="s">    user_name,</span>
+<span class="s">    MIN(rev_timestamp)         AS first_edit,</span>
+<span class="s">    YEAR(MIN(rev_timestamp))   AS first_edit_year,</span>
+<span class="s">    MONTH(MIN(rev_timestamp))  AS first_edit_month,</span>
+<span class="s">    MAX(rev_timestamp)         AS last_edit</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s">.revision r</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s">.user u</span>
+<span class="s">    ON u.user_id = r.rev_user</span>
+<span class="s">GROUP BY user_id</span>
+<span class="s">UNION</span>
+<span class="s">SELECT</span>
+<span class="s">    user_id,</span>
+<span class="s">    user_name,</span>
+<span class="s">    MIN(ar_timestamp)         AS first_edit,</span>
+<span class="s">    YEAR(MIN(ar_timestamp))   AS first_edit_year,</span>
+<span class="s">    MONTH(MIN(ar_timestamp))  AS first_edit_month,</span>
+<span class="s">    MAX(ar_timestamp)         AS last_edit</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s">.archive a</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s">.user u</span>
+<span class="s">    ON u.user_id = a.ar_user</span>
+<span class="s">GROUP BY user_id</span>
+<span class="s">) AS whocares_doesntmatter</span>
+<span class="s">GROUP BY user_id, user_name;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">USER_COHORT</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to create an augmented user table. Includes time stamp for first edit of user, also considering archived revisions. A detailed description is available `here &lt;http://meta.wikimedia.org/wiki/WSoR_datasets/user_cohort&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">INDEX_USER_COHORTS</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE INDEX /* SLOW_OK */ user_id on </span><span class="si">%s</span><span class="s"> (user_id);</span>
+<span class="s">CREATE INDEX /* SLOW_OK */ user_title on </span><span class="si">%s</span><span class="s"> (user_name_title);</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">USER_COHORT</span><span class="p">,</span><span class="n">USER_COHORT</span><span class="p">)</span>
+
+
+
+<span class="n">CREATE_REV_LEN_CHANGED</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    c.rev_id,</span>
+<span class="s">    c.rev_timestamp,</span>
+<span class="s">    YEAR(c.rev_timestamp)             AS rev_year,</span>
+<span class="s">    MONTH(c.rev_timestamp)            AS rev_month,</span>
+<span class="s">    DAY(c.rev_timestamp)              AS rev_day,</span>
+<span class="s">    c.rev_len,</span>
+<span class="s">    c.rev_user                        AS user_id,</span>
+<span class="s">    c.rev_user_text                   AS user_text,</span>
+<span class="s">    c.rev_page                        AS page_id,</span>
+<span class="s">    cp.page_namespace                 AS namespace,</span>
+<span class="s">    c.rev_parent_id                   AS parent_id,</span>
+<span class="s">    c.rev_len - IFNULL(p.rev_len, 0)  AS len_change</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s">.revision c</span>
+<span class="s">LEFT JOIN </span><span class="si">%s</span><span class="s">.revision p</span>
+<span class="s">    ON c.rev_parent_id = p.rev_id</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s">.page cp</span>
+<span class="s">    ON c.rev_page = cp.page_id;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">REV_LEN_CHANGED</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">)</span>
+
+<span class="n">INDEX_REV_LEN_CHANGED</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE INDEX /* SLOW_OK */ compound on </span><span class="si">%s</span><span class="s"> (user_id,rev_year,rev_month,rev_day,namespace);</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="n">REV_LEN_CHANGED</span>
+<span class="sd">&quot;&quot;&quot;Query to create an augmented revision table. Includes namespace and change of the size of the articel `len_change`. Costly query, a detailed description is available `here &lt;http://meta.wikimedia.org/wiki/WSoR_datasets/rev_len_changed&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">CREATE_EDITOR_YEAR_MONTH</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    uc.first_edit,</span>
+<span class="s">    uc.first_edit_year,</span>
+<span class="s">    uc.first_edit_month,</span>
+<span class="s">    SUM(len_change = 0)                    AS noop_edits,</span>
+<span class="s">    SUM(len_change &gt; 0)                    AS add_edits,</span>
+<span class="s">    SUM(len_change &lt; 0)                    AS remove_edits,</span>
+<span class="s">    SUM(IF(len_change &gt; 0, len_change, 0)) AS len_added,</span>
+<span class="s">    SUM(IF(len_change &lt; 0, len_change, 0)) AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> rlc</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s"> uc USING(user_id)</span>
+<span class="s">GROUP BY</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">EDITOR_YEAR_MONTH</span><span class="p">,</span><span class="n">REV_LEN_CHANGED</span><span class="p">,</span><span class="n">USER_COHORT</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to editor centric table. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">CREATE_EDITOR_YEAR_MONTH_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.namespace,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    uc.first_edit,</span>
+<span class="s">    uc.first_edit_year,</span>
+<span class="s">    uc.first_edit_month,</span>
+<span class="s">    SUM(len_change = 0)                    AS noop_edits,</span>
+<span class="s">    SUM(len_change &gt; 0)                    AS add_edits,</span>
+<span class="s">    SUM(len_change &lt; 0)                    AS remove_edits,</span>
+<span class="s">    SUM(IF(len_change &gt; 0, len_change, 0)) AS len_added,</span>
+<span class="s">    SUM(IF(len_change &lt; 0, len_change, 0)) AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> rlc</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s"> uc USING(user_id)</span>
+<span class="s">GROUP BY</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    rlc.namespace;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">EDITOR_YEAR_MONTH_NAMESPACE</span><span class="p">,</span><span class="n">REV_LEN_CHANGED</span><span class="p">,</span><span class="n">USER_COHORT</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to editor centric table. Same as `EDITOR_YEAR_MONTH` but including namespace. For each user and each year/month/namespace, it contains the number of add/remove edits as well as number bytes added/removed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c"># CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT = &quot;&quot;&quot;</span>
+<span class="c"># CREATE TABLE IF NOT EXISTS %s</span>
+<span class="c"># SELECT /* SLOW_OK */</span>
+<span class="c">#     rlc.user_id,    </span>
+<span class="c">#     rlc.rev_year,</span>
+<span class="c">#     rlc.rev_month,</span>
+<span class="c">#     uc.first_edit,</span>
+<span class="c">#     uc.first_edit_year,</span>
+<span class="c">#     uc.first_edit_month,</span>
+<span class="c">#     SUM(len_change = 0)                    AS noop_edits,</span>
+<span class="c">#     SUM(len_change &gt; 0)                    AS add_edits,</span>
+<span class="c">#     SUM(len_change &lt; 0)                    AS remove_edits,</span>
+<span class="c">#     SUM(IF(len_change &gt; 0, len_change, 0)) AS len_added,</span>
+<span class="c">#     SUM(IF(len_change &lt; 0, len_change, 0)) AS len_removed</span>
+<span class="c"># FROM %s rlc</span>
+<span class="c"># INNER JOIN %s uc USING(user_id)</span>
+<span class="c"># INNER JOIN %s.page p</span>
+<span class="c">#     ON rlc.page_id = p.page_id;</span>
+<span class="c"># WHERE</span>
+<span class="c">#     p.page_namespace = 0 AND</span>
+<span class="c">#     p.page_is_redirect = 0</span>
+<span class="c"># GROUP BY</span>
+<span class="c">#     rlc.user_id,</span>
+<span class="c">#     rlc.rev_year,</span>
+<span class="c">#     rlc.rev_month;</span>
+<span class="c"># &quot;&quot;&quot;%(EDITOR_YEAR_MONTH_NS0_NOREDIRECT,REV_LEN_CHANGED,USER_COHORT,settings.sqlwikidb)</span>
+
+<span class="n">CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    rlc.user_id,    </span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    SUM(len_change = 0)                    AS noop_edits,</span>
+<span class="s">    SUM(len_change &gt; 0)                    AS add_edits,</span>
+<span class="s">    SUM(len_change &lt; 0)                    AS remove_edits,</span>
+<span class="s">    SUM(IF(len_change &gt; 0, len_change, 0)) AS len_added,</span>
+<span class="s">    SUM(IF(len_change &lt; 0, len_change, 0)) AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> rlc</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s">.page p</span>
+<span class="s">    ON rlc.page_id = p.page_id</span>
+<span class="s">WHERE</span>
+<span class="s">    p.page_namespace = 0 AND</span>
+<span class="s">    p.page_is_redirect = 0</span>
+<span class="s">GROUP BY</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">EDITOR_YEAR_MONTH_NS0_NOREDIRECT</span><span class="p">,</span><span class="n">REV_LEN_CHANGED</span><span class="p">,</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlwikidb</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to editor centric table. Same as `EDITOR_YEAR_MONTH` but including only for namespace 0 (main) and only for pages that are no redirects. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">CREATE_EDITOR_YEAR_MONTH_DAY_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE IF NOT EXISTS </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.namespace,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    rlc.rev_day,</span>
+<span class="s">    uc.first_edit,</span>
+<span class="s">    uc.first_edit_year,</span>
+<span class="s">    uc.first_edit_month,</span>
+<span class="s">    SUM(len_change = 0)                    AS noop_edits,</span>
+<span class="s">    SUM(len_change &gt; 0)                    AS add_edits,</span>
+<span class="s">    SUM(len_change &lt; 0)                    AS remove_edits,</span>
+<span class="s">    SUM(IF(len_change &gt; 0, len_change, 0)) AS len_added,</span>
+<span class="s">    SUM(IF(len_change &lt; 0, len_change, 0)) AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> rlc</span>
+<span class="s">INNER JOIN </span><span class="si">%s</span><span class="s"> uc USING(user_id)</span>
+<span class="s">GROUP BY</span>
+<span class="s">    rlc.user_id,</span>
+<span class="s">    rlc.rev_year,</span>
+<span class="s">    rlc.rev_month,</span>
+<span class="s">    rlc.rev_day,</span>
+<span class="s">    rlc.namespace;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">EDITOR_YEAR_MONTH_DAY_NAMESPACE</span><span class="p">,</span><span class="n">REV_LEN_CHANGED</span><span class="p">,</span><span class="n">USER_COHORT</span><span class="p">)</span>
+
+<span class="n">CREATE_TIME_YEAR_MONTH_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */ </span>
+<span class="s">    edc.rev_year,</span>
+<span class="s">    edc.rev_month,    </span>
+<span class="s">    edc.namespace,</span>
+<span class="s">    COUNT(edc.user_id)  AS editors,</span>
+<span class="s">    SUM(noop_edits)     AS noop_edits,</span>
+<span class="s">    SUM(add_edits)      AS add_edits,</span>
+<span class="s">    SUM(remove_edits)   AS remove_edits,</span>
+<span class="s">    SUM(len_added)      AS len_added,</span>
+<span class="s">    SUM(len_removed)    AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> as edc</span>
+<span class="s">GROUP BY</span>
+<span class="s">    edc.rev_year,</span>
+<span class="s">    edc.rev_month,</span>
+<span class="s">    edc.namespace;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">TIME_YEAR_MONTH_NAMESPACE</span><span class="p">,</span><span class="n">EDITOR_YEAR_MONTH_NAMESPACE</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to time centric table. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">CREATE TABLE </span><span class="si">%s</span><span class="s"></span>
+<span class="s">SELECT /* SLOW_OK */ </span>
+<span class="s">    edc.rev_year,</span>
+<span class="s">    edc.rev_month,</span>
+<span class="s">    edc.rev_day,</span>
+<span class="s">    edc.namespace,</span>
+<span class="s">    COUNT(edc.user_id)  AS editors,</span>
+<span class="s">    SUM(noop_edits)     AS noop_edits,</span>
+<span class="s">    SUM(add_edits)      AS add_edits,</span>
+<span class="s">    SUM(remove_edits)   AS remove_edits,</span>
+<span class="s">    SUM(len_added)      AS len_added,</span>
+<span class="s">    SUM(len_removed)    AS len_removed</span>
+<span class="s">FROM </span><span class="si">%s</span><span class="s"> as edc</span>
+<span class="s">GROUP BY</span>
+<span class="s">    edc.rev_year,</span>
+<span class="s">    edc.rev_month,</span>
+<span class="s">    edc.rev_day,</span>
+<span class="s">    edc.namespace;</span>
+<span class="s">&quot;&quot;&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">TIME_YEAR_MONTH_DAY_NAMESPACE</span><span class="p">,</span><span class="n">EDITOR_YEAR_MONTH_DAY_NAMESPACE</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Query to time centric table. Same as `TIME_YEAR_MONTH_NAMESPACE` but including namespace. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

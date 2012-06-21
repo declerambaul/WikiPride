@@ -1,0 +1,1486 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Reference &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">WikiPride v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Reference</a></li>
+<li><a class="reference internal" href="#module-cohorts">Cohort definitions</a></li>
+<li><a class="reference internal" href="#module-data">Data Processing</a><ul>
+<li><a class="reference internal" href="#module-data.preprocessing">Preprocessing</a></li>
+<li><a class="reference internal" href="#module-data.tables">Tables</a></li>
+<li><a class="reference internal" href="#module-data.report">Report</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-db">Database configuration</a></li>
+<li><a class="reference internal" href="#module-utils">Utils module</a></li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/reference.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="reference">
+<span id="id1"></span><h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-settings"></span><p>Settings used for cohort analysis. Many of these settings can be overwritten in the cohort class __init__ calls.</p>
+<dl class="data">
+<dt id="settings.basedirectory">
+<tt class="descclassname">settings.</tt><tt class="descname">basedirectory</tt><a class="headerlink" href="#settings.basedirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to base directory for the wikipride project</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.cmapName">
+<tt class="descclassname">settings.</tt><tt class="descname">cmapName</tt><a class="headerlink" href="#settings.cmapName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colormap to use. Has to be a valid name in matplotlib.pyplot.cm.datad</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.datadirectory">
+<tt class="descclassname">settings.</tt><tt class="descname">datadirectory</tt><a class="headerlink" href="#settings.datadirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to directory for cohort data</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.filterbots">
+<tt class="descclassname">settings.</tt><tt class="descname">filterbots</tt><a class="headerlink" href="#settings.filterbots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter out known bots?</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.language">
+<tt class="descclassname">settings.</tt><tt class="descname">language</tt><a class="headerlink" href="#settings.language" title="Permalink to this definition">¶</a></dt>
+<dd><p>The language of the Wikipedia (e.g. &#8216;en&#8217;,&#8217;pt&#8217;)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.mongoQueryVars">
+<tt class="descclassname">settings.</tt><tt class="descname">mongoQueryVars</tt><a class="headerlink" href="#settings.mongoQueryVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Mongo query variables used to aggregate the data.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.mongocol">
+<tt class="descclassname">settings.</tt><tt class="descname">mongocol</tt><a class="headerlink" href="#settings.mongocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the collection</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.mongodb">
+<tt class="descclassname">settings.</tt><tt class="descname">mongodb</tt><a class="headerlink" href="#settings.mongodb" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the db</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="settings.readConfig">
+<tt class="descclassname">settings.</tt><tt class="descname">readConfig</tt><big>(</big><em>configfile</em><big>)</big><a class="reference internal" href="_modules/settings.html#readConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#settings.readConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the configuration from <cite>ConfigParser</cite> instance into the runtime settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>configfile</strong> &#8211; A file that can be read by a <cite>ConfigParser</cite> instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.reportdirectory">
+<tt class="descclassname">settings.</tt><tt class="descname">reportdirectory</tt><a class="headerlink" href="#settings.reportdirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to store report</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.sqlconfigfile">
+<tt class="descclassname">settings.</tt><tt class="descname">sqlconfigfile</tt><a class="headerlink" href="#settings.sqlconfigfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to the MySQL configuration for logging into the server, e.g. &#8216;~/.my.cnf&#8217;</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.sqldroptables">
+<tt class="descclassname">settings.</tt><tt class="descname">sqldroptables</tt><a class="headerlink" href="#settings.sqldroptables" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <cite>True</cite>, all tables that we attempt to create will be dropped if they exist already. If <cite>False</cite>, only tables don&#8217;t exist already will be created</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.sqlhost">
+<tt class="descclassname">settings.</tt><tt class="descname">sqlhost</tt><a class="headerlink" href="#settings.sqlhost" title="Permalink to this definition">¶</a></dt>
+<dd><p>The host name of the MySql server</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.sqluserdb">
+<tt class="descclassname">settings.</tt><tt class="descname">sqluserdb</tt><a class="headerlink" href="#settings.sqluserdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the database on db host where the aggregated tables will be stored. On the toolserver, this is the username prepended by a <cite>u_</cite>, e.e. <cite>u_delcerambaul</cite></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.sqlwikidb">
+<tt class="descclassname">settings.</tt><tt class="descname">sqlwikidb</tt><a class="headerlink" href="#settings.sqlwikidb" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the database on db host where the Mediawiki database is stored. On the toolserver, this is for example <cite>ptwiki_p</cite></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.time_stamps">
+<tt class="descclassname">settings.</tt><tt class="descname">time_stamps</tt><a class="headerlink" href="#settings.time_stamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>List containing all YM (e.g. &#8216;200401&#8217; for January 2004) that we want to analyze</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.time_stamps_index">
+<tt class="descclassname">settings.</tt><tt class="descname">time_stamps_index</tt><a class="headerlink" href="#settings.time_stamps_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary mapping each YM in <cite>time_stamps</cite> to its array index (used to access numpy arrays)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.userlistdirectory">
+<tt class="descclassname">settings.</tt><tt class="descname">userlistdirectory</tt><a class="headerlink" href="#settings.userlistdirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to directory for user lists</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="settings.wikipridedirectory">
+<tt class="descclassname">settings.</tt><tt class="descname">wikipridedirectory</tt><a class="headerlink" href="#settings.wikipridedirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to store wikipride visualizations of user defined cohorts</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cohorts">
+<span id="cohort-definitions"></span><h1>Cohort definitions<a class="headerlink" href="#module-cohorts" title="Permalink to this headline">¶</a></h1>
+<p>This module defines individual cohorts. All cohorts are sub-classes of the <a class="reference internal" href="#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">Cohort</span></tt></a>, and they should overwrite the non-generic methods defined in the parent class. Different kind of cohorts have been defined.</p>
+<span class="target" id="module-cohorts.base"></span><p>This module defines the abstract class <a class="reference internal" href="#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">Cohort</span></tt></a>. All cohort definitions must inherit this class.</p>
+<p class="graphviz">
+digraph inheritance07007f5952 {
+rankdir=LR;
+size=&quot;8.0, 12.0&quot;;
+  &quot;cohorts.base.Cohort&quot; [style=&quot;setlinewidth(0.5)&quot;,URL=&quot;#cohorts.base.Cohort&quot;,fontname=Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans,height=0.25,shape=box,fontsize=10];
+}
+</p>
+<dl class="class">
+<dt id="cohorts.base.Cohort">
+<em class="property">class </em><tt class="descclassname">cohorts.base.</tt><tt class="descname">Cohort</tt><a class="reference internal" href="_modules/cohorts/base.html#Cohort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract class that defines common properties of cohorts, which are defined in the <a class="reference internal" href="#module-cohorts" title="cohorts"><tt class="xref py py-mod docutils literal"><span class="pre">cohorts</span></tt></a> modules</p>
+<dl class="method">
+<dt id="cohorts.base.Cohort.addLine">
+<tt class="descname">addLine</tt><big>(</big><em>data</em>, <em>fig=None</em>, <em>label=''</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.addLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.addLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a line to the matplotlib figure passed as argument. The dimension the data has to match the length of the <cite>time_stamps</cite>. It is assumed that the figure contains only one axes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; numpy.array of same length as <cite>time_stamps</cite></li>
+<li><strong>fig</strong> &#8211; matplotlib figure. If none, a new figure is created.</li>
+<li><strong>label</strong> &#8211; str, label for the legend. Defaults to an empty string.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib figure</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.aggregateDataFromSQL">
+<tt class="descname">aggregateDataFromSQL</tt><big>(</big><em>verbose=False</em>, <em>callback=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.aggregateDataFromSQL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.aggregateDataFromSQL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over the SQL data and calls self.processSQLrow() which needs to be implemented by the parent cohort class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>verbose</strong> &#8211; bool, display progress on stdout</li>
+<li><strong>callback</strong> &#8211; function, a callback function that can be used for data transformations after the query has executed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.base.Cohort.data">
+<tt class="descname">data</tt><a class="headerlink" href="#cohorts.base.Cohort.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary that contains the data. {name : numpy.array }. Different aggregates
+can be saved; for example &#8216;bytesadded&#8217;,&#8217;edits&#8217;,&#8217;bytesremovedPerEditor&#8217;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.base.Cohort.data_description">
+<tt class="descname">data_description</tt><a class="headerlink" href="#cohorts.base.Cohort.data_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary that holds descriptive information about self.data. For example, an
+&#8216;addedBytes&#8217; data description might be:</p>
+<p>self.data_description[&#8216;addedBytes&#8217;] = { title}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.finalizeData">
+<tt class="descname">finalizeData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.finalizeData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.finalizeData" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should is called at the of an aggregateDataFromXXX() method. It allows to manipulate
+the time series data in self.data. E.g. and &#8216;addedBytes&#8217; could be divided by &#8216;edits&#8217; to create a new 
+variable &#8216;addedPerEdit&#8217;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.getFileName">
+<tt class="descname">getFileName</tt><big>(</big><em>varName</em>, <em>destination=None</em>, <em>ftype='data'</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.getFileName"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.getFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the path and file name based on properties of the cohort. Additional identifying features might be used in file names by overwriting this method in subclasses of the base <a class="reference internal" href="#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">Cohort</span></tt></a> class.</p>
+<p>If no <cite>destination</cite> argument is passed, the method uses the <cite>ftype</cite> argument to determine which base directory should be used. Only the name of the data feature (e.g. &#8216;added&#8217;) and the cohort name (e.g. <cite>AbsoluteAgePerMonth</cite>) is used in the basic method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>varName</strong> &#8211; name of the self.data variable</li>
+<li><strong>destination</strong> &#8211; str, destination directory. If None, settings will be used</li>
+<li><strong>ftype</strong> &#8211; str, &#8216;data&#8217; or &#8216;wikipride&#8217;</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A path without file format</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>edits</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.initData">
+<tt class="descname">initData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.initData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.initData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data dictionary with the appropriate variable names and numpy.arrays</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.linePlots">
+<tt class="descname">linePlots</tt><big>(</big><em>dest</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.linePlots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.linePlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method allows to produce line plots using the cohort data stored in <cite>self.data</cite>. Usually line plots illustrate interesting trends/ratios that depend on the cohort definition. Thus this method in the base cohort definition does nothing and should be overwritten in the cohort class itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.loadDataFromDisk">
+<tt class="descname">loadDataFromDisk</tt><big>(</big><em>varName</em>, <em>destination=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.loadDataFromDisk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.loadDataFromDisk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the data from disk. It will populate self.data with {names[i] : numpy.array}.
+An error is raised if there is no corresponding datafile stored</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Args varName:</th><td class="field-body">variable name</td>
+</tr>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination</strong> &#8211; str, destination directory. If None, settings will be used</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.base.Cohort.mongoQueryVars">
+<tt class="descname">mongoQueryVars</tt><a class="headerlink" href="#cohorts.base.Cohort.mongoQueryVars" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Mongo query variables used to aggregate the data. If None, all fields will be returned by mongo. If &#8216;settings&#8217;, the mongoQueryVars from the settings will be used</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.base.Cohort.ncolors">
+<tt class="descname">ncolors</tt><a class="headerlink" href="#cohorts.base.Cohort.ncolors" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of colors used for the wikipride graphs. If required, it should be defined in the child class definition.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.base.Cohort.nobots">
+<tt class="descname">nobots</tt><a class="headerlink" href="#cohorts.base.Cohort.nobots" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the bots are filtered from the cohort</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.processMongoDocument">
+<tt class="descname">processMongoDocument</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.processMongoDocument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.processMongoDocument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes a document of the Mogo DB result set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.processSQLrow">
+<tt class="descname">processSQLrow</tt><big>(</big><em>row</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.processSQLrow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.processSQLrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes a row of the SQL result set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.saveDataToCSV">
+<tt class="descname">saveDataToCSV</tt><big>(</big><em>destination=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.saveDataToCSV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.saveDataToCSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names is uniquely constructed from the properties of the variable and cohort. The format of the CSV doesn&#8217;t follow the numpy representation as it transposes the matrix. Thus the temporal axis is vertical instead of horizontal, each row is a measurement for a different time unit. This format is used by the visualization library <a class="reference external" href="http://dygraphs.com/">dygraphs</a> .</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>destination</strong> &#8211; str, destination directory. If None, the data directory from the settings will be used</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.saveDataToDisk">
+<tt class="descname">saveDataToDisk</tt><big>(</big><em>destination=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.saveDataToDisk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.saveDataToDisk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the aggregated numpy.arrays to file. There is one file for each collected variable, the names 
+is uniquely constructed from the properties of the variable and cohort.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.saveFigure">
+<tt class="descname">saveFigure</tt><big>(</big><em>name</em>, <em>fig</em>, <em>dest</em>, <em>title=''</em>, <em>ylabel=''</em>, <em>xlabel=None</em>, <em>ylog=False</em>, <em>legendpos=None</em>, <em>pdf=False</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.saveFigure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.saveFigure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a matplotlib figure to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; str, name of resulting file</li>
+<li><strong>fig</strong> &#8211; matplotlib figure to be saved.</li>
+<li><strong>dest</strong> &#8211; str, destination folder.</li>
+<li><strong>title</strong> &#8211; str, plot title. Defaults to an empty string.</li>
+<li><strong>ylabel</strong> &#8211; str, plot y axis label. Defaults to an empty string.</li>
+<li><strong>xlabel</strong> &#8211; str, plot x axis label. If none, time stamps xticks will be used.</li>
+<li><strong>ylog</strong> &#8211; If True the log scale is used for the y-axis, default is False.</li>
+<li><strong>legendpos</strong> &#8211; int, the position of the legend. If None, no legend will be displayed.</li>
+<li><strong>pdf</strong> &#8211; If True the file will be saved as pdf, otherwise as png.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.base.Cohort.wikiPride">
+<tt class="descname">wikiPride</tt><big>(</big><em>varName</em>, <em>varDesc=None</em>, <em>normal=True</em>, <em>percentage=True</em>, <em>colorbar=True</em>, <em>ncolors=None</em>, <em>flip=False</em>, <em>pdf=False</em>, <em>dest=None</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/cohorts/base.html#Cohort.wikiPride"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.base.Cohort.wikiPride" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the cohort trends using the famous WikiPride stacked bar chart! If <cite>normal</cite> is True, the absolute values are visualized. If <cite>percentage</cite> is True, the relative values are visualized (i.e. the percentages). If <cite>flip</cite> is True, the numpy.array is flipped upside down. This results in the bars added in reverse order. The order of the cohort labels is also reversed as a result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>varName</strong> &#8211; str, the name of the numpy.array in self.data to visualize</li>
+<li><strong>varDesc</strong> &#8211; str. Alternative name for the data description. If None, <cite>varName</cite> will be used.</li>
+<li><strong>normal</strong> &#8211; Boolean. Visualize absolute values.</li>
+<li><strong>percentage</strong> &#8211; Boolean. Visualize percentages.</li>
+<li><strong>colorbar</strong> &#8211; Boolean. Add color bar legend.</li>
+<li><strong>pdf</strong> &#8211; Boolean. If True, save plot as pdf</li>
+<li><strong>flip</strong> &#8211; Boolean. N.flipud() the numpy.array which inverses the order the boxes are added</li>
+<li><strong>dest</strong> &#8211; str. Path to directory on where to save the plot. If None, the path in settings.py will be used</li>
+<li><strong>verbose</strong> &#8211; Boolean. Displays information about the graphing progress.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-cohorts.age"></span><p>This module implements age cohorts, AbsoluteAge and RelativeAge.</p>
+<dl class="class">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">AbsoluteAgeAllNamespaces</tt><big>(</big><em>minedits=1</em>, <em>maxedits=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgeAllNamespaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort is the group of people that have started editing in the same month.</p>
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgeAllNamespaces.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgeAllNamespaces.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort, which is identical to the time index of the first edit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgeAllNamespaces.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.maxedits">
+<tt class="descname">maxedits</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.maxedits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of edits by editor in a given month to be included</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.minedits">
+<tt class="descname">minedits</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.minedits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum number of edits by editor in a given month to be included</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.ncolors">
+<tt class="descname">ncolors</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.ncolors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of visible colors in the wikipride plots. E.g. one color for every six month for wikipride plots</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgeAllNamespaces.sqlQuery">
+<tt class="descname">sqlQuery</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgeAllNamespaces.sqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SQL query returns edit information for each editor for each ym she has edited.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.age.AbsoluteAgePerMonth">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">AbsoluteAgePerMonth</tt><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgePerMonth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort is the group of people that have started editing in the same month.</p>
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgePerMonth.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgePerMonth.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.AbsoluteAgePerMonth.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgePerMonth.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.AbsoluteAgePerMonth.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#AbsoluteAgePerMonth.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort, which is identical to the time index of the first edit</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.AbsoluteAgePerMonth.old_user_id">
+<tt class="descname">old_user_id</tt><a class="headerlink" href="#cohorts.age.AbsoluteAgePerMonth.old_user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user_id of the previously encountered editor as we iterate through the table</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.age.Age">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">Age</tt><a class="reference internal" href="_modules/cohorts/age.html#Age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.Age" title="Permalink to this definition">¶</a></dt>
+<dd><p>A abstract class for for an age cohort.</p>
+<dl class="method">
+<dt id="cohorts.age.Age.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#Age.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.Age.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.age.RelativeAgeAllNamespaces">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">RelativeAgeAllNamespaces</tt><big>(</big><em>minedits=1</em>, <em>maxedits=None</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgeAllNamespaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort is the group of people that have the same age at the time of an edit. During the first month of editing, a contributor will be in the 1-month old cohort, then he switches to the 2-month cohort and so forth.</p>
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgeAllNamespaces.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>ti</em>, <em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgeAllNamespaces.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort (i.e. the relative age of the editor) from the time index of the edit and time index of the first edit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgeAllNamespaces.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.linePlots">
+<tt class="descname">linePlots</tt><big>(</big><em>dest</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgeAllNamespaces.linePlots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.linePlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphs for relative age cohorts include</p>
+<ul class="simple">
+<li>Bytes added per edit (new vs. old editors)</li>
+<li>Contribution percentage of bytes added for each one year cohort</li>
+<li>Editor percentage for each one year cohort</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.maxedits">
+<tt class="descname">maxedits</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.maxedits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of edits by editor in a given month to be included</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.minedits">
+<tt class="descname">minedits</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.minedits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum number of edits by editor in a given month to be included</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.ncolors">
+<tt class="descname">ncolors</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.ncolors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of visible colors in the wikipride plots. E.g. one color for every six month for wikipride plots</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgeAllNamespaces.sqlQuery">
+<tt class="descname">sqlQuery</tt><a class="headerlink" href="#cohorts.age.RelativeAgeAllNamespaces.sqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SQL query returns edit information for each editor for each ym she has edited.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.age.RelativeAgePerDay">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">RelativeAgePerDay</tt><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerDay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerDay" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort is the group of people that have the same age at the time of an edit.</p>
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgePerDay.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.age.RelativeAgePerDay.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgePerDay.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.age.RelativeAgePerDay.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgePerDay.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerDay.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerDay.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgePerDay.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>ti</em>, <em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerDay.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerDay.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort (i.e. the relative age of the editor) from the time index of the edit and time index of the first edit</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.age.RelativeAgePerMonth">
+<em class="property">class </em><tt class="descclassname">cohorts.age.</tt><tt class="descname">RelativeAgePerMonth</tt><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerMonth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort is the group of people that have the same age at the time of an edit. During the first month of editing, a contributor will be in the 1-month old cohort, then he switches to the 2-month cohort and so forth.</p>
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgePerMonth.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgePerMonth.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgePerMonth.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerMonth.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.age.RelativeAgePerMonth.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>ti</em>, <em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/age.html#RelativeAgePerMonth.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort (i.e. the relative age of the editor) from the time index of the edit and time index of the first edit</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.age.RelativeAgePerMonth.old_user_id">
+<tt class="descname">old_user_id</tt><a class="headerlink" href="#cohorts.age.RelativeAgePerMonth.old_user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user_id of the previously encountered editor as we iterate through the table</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-cohorts.histogram"></span><p>This module implements histograms cohorts, e.g. EditsHistogram.</p>
+<dl class="class">
+<dt id="cohorts.histogram.EditorActivity">
+<em class="property">class </em><tt class="descclassname">cohorts.histogram.</tt><tt class="descname">EditorActivity</tt><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cohorts are based on the number of edits they have done in a given month. It uses a table where the values are aggregated for all namespaces.</p>
+<dl class="attribute">
+<dt id="cohorts.histogram.EditorActivity.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.histogram.EditorActivity.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditorActivity.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditorActivity.getColor">
+<tt class="descname">getColor</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity.getColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity.getColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a color based on the index of the cohort i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditorActivity.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>edits</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditorActivity.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with information used for plotting.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditorActivity.linePlots">
+<tt class="descname">linePlots</tt><big>(</big><em>dest</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditorActivity.linePlots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditorActivity.linePlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graphs for editor activity histogram cohort include</p>
+<ul class="simple">
+<li>Number of editors by activity</li>
+<li>Number of edits by activity</li>
+<li>Bytes added by activity</li>
+<li>Bytes added per editor</li>
+<li>Bytes added per edit</li>
+<li>Edits per editor</li>
+<li>The first year of one-year cohorts in one plot (x-axis is age, not time)</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.histogram.EditorActivity.sqlQuery">
+<tt class="descname">sqlQuery</tt><a class="headerlink" href="#cohorts.histogram.EditorActivity.sqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SQL query returns edit information for each editor for each ym she has edited.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.histogram.EditsHistogram">
+<em class="property">class </em><tt class="descclassname">cohorts.histogram.</tt><tt class="descname">EditsHistogram</tt><a class="reference internal" href="_modules/cohorts/histogram.html#EditsHistogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditsHistogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cohorts are based on the number of edits they have done in a given month. Implemented only for MongoDB.</p>
+<dl class="attribute">
+<dt id="cohorts.histogram.EditsHistogram.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.histogram.EditsHistogram.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditsHistogram.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditsHistogram.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditsHistogram.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditsHistogram.getColor">
+<tt class="descname">getColor</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditsHistogram.getColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditsHistogram.getColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a color based on the index of the cohort i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.EditsHistogram.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>edits</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#EditsHistogram.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.EditsHistogram.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.histogram.NewEditorActivity">
+<em class="property">class </em><tt class="descclassname">cohorts.histogram.</tt><tt class="descname">NewEditorActivity</tt><big>(</big><em>period=3</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#NewEditorActivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.NewEditorActivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cohorts are based on the number of edits they have done in a given month.</p>
+<dl class="attribute">
+<dt id="cohorts.histogram.NewEditorActivity.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.NewEditorActivity.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#NewEditorActivity.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.NewEditorActivity.getColor">
+<tt class="descname">getColor</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#NewEditorActivity.getColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.getColor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a color based on the index of the cohort i</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.NewEditorActivity.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>edits</em><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#NewEditorActivity.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.histogram.NewEditorActivity.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/histogram.html#NewEditorActivity.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with information used for plotting.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.histogram.NewEditorActivity.lastym">
+<tt class="descname">lastym</tt><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.lastym" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ym at the end of the <cite>period</cite> months after the first edit of an editor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.histogram.NewEditorActivity.old_user_id">
+<tt class="descname">old_user_id</tt><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.old_user_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user_id of the previously encountered editor as we iterate through the table</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.histogram.NewEditorActivity.period">
+<tt class="descname">period</tt><a class="headerlink" href="#cohorts.histogram.NewEditorActivity.period" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of month an editor is considered new</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-cohorts.simple"></span><p>For simple cohorts :)</p>
+<dl class="class">
+<dt id="cohorts.simple.NameSpaces">
+<em class="property">class </em><tt class="descclassname">cohorts.simple.</tt><tt class="descname">NameSpaces</tt><a class="reference internal" href="_modules/cohorts/simple.html#NameSpaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NameSpaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>The namespaces themselves are cohorts</p>
+<dl class="attribute">
+<dt id="cohorts.simple.NameSpaces.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.simple.NameSpaces.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.NameSpaces.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.simple.NameSpaces.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NameSpaces.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NameSpaces.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NameSpaces.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NameSpaces.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>ns</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NameSpaces.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NameSpaces.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort, given the year of the first edit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NameSpaces.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NameSpaces.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NameSpaces.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.NameSpaces.sqlQuery">
+<tt class="descname">sqlQuery</tt><a class="headerlink" href="#cohorts.simple.NameSpaces.sqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SQL query returns edit information for each editor for each ym she has edited.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.simple.NewEditors">
+<em class="property">class </em><tt class="descclassname">cohorts.simple.</tt><tt class="descname">NewEditors</tt><a class="reference internal" href="_modules/cohorts/simple.html#NewEditors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NewEditors" title="Permalink to this definition">¶</a></dt>
+<dd><p>There is just one cohort, which contains the number of of editors who started contributing in any given month.</p>
+<p><tt class="xref py py-meth docutils literal"><span class="pre">NewEditors.linePlot()</span></tt> creates a line plot.</p>
+<dl class="attribute">
+<dt id="cohorts.simple.NewEditors.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.simple.NewEditors.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.NewEditors.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.simple.NewEditors.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NewEditors.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NewEditors.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NewEditors.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NewEditors.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>ns</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NewEditors.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NewEditors.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not needed in this cohort!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NewEditors.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NewEditors.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NewEditors.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.NewEditors.linePlots">
+<tt class="descname">linePlots</tt><big>(</big><em>dest</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#NewEditors.linePlots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.NewEditors.linePlots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a line plot for the number of new editors and saves it to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dest</strong> &#8211; str, destination directory</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.NewEditors.sqlQuery">
+<tt class="descname">sqlQuery</tt><a class="headerlink" href="#cohorts.simple.NewEditors.sqlQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>The SQL query returns the new editor count for each ym.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.simple.OneYearCohort">
+<em class="property">class </em><tt class="descclassname">cohorts.simple.</tt><tt class="descname">OneYearCohort</tt><big>(</big><em>year</em>, <em>activation=5</em>, <em>overall=False</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#OneYearCohort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.OneYearCohort" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort that is comprised of active editors that started editing in a given year.</p>
+<dl class="attribute">
+<dt id="cohorts.simple.OneYearCohort.activation">
+<tt class="descname">activation</tt><a class="headerlink" href="#cohorts.simple.OneYearCohort.activation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum number of edits per month to be included in the cohort</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.OneYearCohort.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.simple.OneYearCohort.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.OneYearCohort.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.simple.OneYearCohort.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.OneYearCohort.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>fe</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#OneYearCohort.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.OneYearCohort.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort, which is identical to the time index of the first edit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.OneYearCohort.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#OneYearCohort.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.OneYearCohort.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.OneYearCohort.time_stamps_index">
+<tt class="descname">time_stamps_index</tt><a class="headerlink" href="#cohorts.simple.OneYearCohort.time_stamps_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only take time_stamps starting with self.year</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.OneYearCohort.year">
+<tt class="descname">year</tt><a class="headerlink" href="#cohorts.simple.OneYearCohort.year" title="Permalink to this definition">¶</a></dt>
+<dd><p>The year the cohort started.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cohorts.simple.ProjectSpaceCohorts">
+<em class="property">class </em><tt class="descclassname">cohorts.simple.</tt><tt class="descname">ProjectSpaceCohorts</tt><big>(</big><em>activation=5</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#ProjectSpaceCohorts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>A cohort that is comprised of active editors that started editing in a given year. Only the contributions to the Wikipedia namespaces 4&amp;5 are considered.</p>
+<dl class="attribute">
+<dt id="cohorts.simple.ProjectSpaceCohorts.cohort_labels">
+<tt class="descname">cohort_labels</tt><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.cohort_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.ProjectSpaceCohorts.cohorts">
+<tt class="descname">cohorts</tt><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.cohorts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.ProjectSpaceCohorts.colorbarTicksAndLabels">
+<tt class="descname">colorbarTicksAndLabels</tt><big>(</big><em>ncolors</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#ProjectSpaceCohorts.colorbarTicksAndLabels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.colorbarTicksAndLabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ticks and labels for the colorbar of a WikiPride visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.ProjectSpaceCohorts.getIndex">
+<tt class="descname">getIndex</tt><big>(</big><em>y</em><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#ProjectSpaceCohorts.getIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.getIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the cohort, given the year of the first edit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cohorts.simple.ProjectSpaceCohorts.initDataDescription">
+<tt class="descname">initDataDescription</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/cohorts/simple.html#ProjectSpaceCohorts.initDataDescription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.initDataDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the self.data_description dictionary with additional information</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cohorts.simple.ProjectSpaceCohorts.time_stamps_index">
+<tt class="descname">time_stamps_index</tt><a class="headerlink" href="#cohorts.simple.ProjectSpaceCohorts.time_stamps_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only take time_stamps starting with self.year</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-data">
+<span id="data-processing"></span><h1>Data Processing<a class="headerlink" href="#module-data" title="Permalink to this headline">¶</a></h1>
+<p>This module interacts with the MediaWiki SQL database.</p>
+<div class="section" id="module-data.preprocessing">
+<span id="preprocessing"></span><h2>Preprocessing<a class="headerlink" href="#module-data.preprocessing" title="Permalink to this headline">¶</a></h2>
+<p>Starting with the Wikimedia SQL database schema, this module creates a set of tables that will be used to aggregate the cohort trends.</p>
+<dl class="function">
+<dt id="data.preprocessing.createIndex">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">createIndex</tt><big>(</big><em>query</em>, <em>tablename</em><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#createIndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.createIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an index on a SQL table in the user database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tablename</strong> &#8211; str, name of the table</li>
+<li><strong>query</strong> &#8211; str, query to execute</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.preprocessing.createTable">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">createTable</tt><big>(</big><em>query</em>, <em>tablename</em><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#createTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.createTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a SQL table in the user database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tablename</strong> &#8211; str, name of the table</li>
+<li><strong>query</strong> &#8211; str, query to execute</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.preprocessing.dropTable">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">dropTable</tt><big>(</big><em>tablename</em><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#dropTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.dropTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drops a SQL table in the user database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tablename</strong> &#8211; str, name of the table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.preprocessing.executeCommand">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">executeCommand</tt><big>(</big><em>command</em>, <em>comment</em><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#executeCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.executeCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports a SQL table into a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>command</strong> &#8211; str, the command used to export the</li>
+<li><strong>comment</strong> &#8211; str, comment for logging stream</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.preprocessing.process">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">process</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the auxiliary SQL tables on the user database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.preprocessing.tableExists">
+<tt class="descclassname">data.preprocessing.</tt><tt class="descname">tableExists</tt><big>(</big><em>tablename</em><big>)</big><a class="reference internal" href="_modules/data/preprocessing.html#tableExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.preprocessing.tableExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the table exists in the user database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tablename</strong> &#8211; str, name of the table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-data.tables">
+<span id="tables"></span><h2>Tables<a class="headerlink" href="#module-data.tables" title="Permalink to this headline">¶</a></h2>
+<p>This module holds the collection of SQL queries used for the preprocessing of the data</p>
+<dl class="data">
+<dt id="data.tables.CREATE_EDITOR_YEAR_MONTH">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_EDITOR_YEAR_MONTH</tt><a class="headerlink" href="#data.tables.CREATE_EDITOR_YEAR_MONTH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to editor centric table. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.CREATE_EDITOR_YEAR_MONTH_NAMESPACE">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_EDITOR_YEAR_MONTH_NAMESPACE</tt><a class="headerlink" href="#data.tables.CREATE_EDITOR_YEAR_MONTH_NAMESPACE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to editor centric table. Same as <cite>EDITOR_YEAR_MONTH</cite> but including namespace. For each user and each year/month/namespace, it contains the number of add/remove edits as well as number bytes added/removed.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT</tt><a class="headerlink" href="#data.tables.CREATE_EDITOR_YEAR_MONTH_NS0_NOREDIRECT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to editor centric table. Same as <cite>EDITOR_YEAR_MONTH</cite> but including only for namespace 0 (main) and only for pages that are no redirects. For each user and each year/month, it contains the number of add/remove edits as well as number bytes added/removed.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE</tt><a class="headerlink" href="#data.tables.CREATE_TIME_YEAR_MONTH_DAY_NAMESPACE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to time centric table. Same as <cite>TIME_YEAR_MONTH_NAMESPACE</cite> but including namespace. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.CREATE_TIME_YEAR_MONTH_NAMESPACE">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_TIME_YEAR_MONTH_NAMESPACE</tt><a class="headerlink" href="#data.tables.CREATE_TIME_YEAR_MONTH_NAMESPACE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to time centric table. For each year/month, it contains the number of editors, the number of add/remove edits as well as number bytes added/removed.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.CREATE_USER_COHORTS">
+<tt class="descclassname">data.tables.</tt><tt class="descname">CREATE_USER_COHORTS</tt><a class="headerlink" href="#data.tables.CREATE_USER_COHORTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to create an augmented user table. Includes time stamp for first edit of user, also considering archived revisions. A detailed description is available <a class="reference external" href="http://meta.wikimedia.org/wiki/WSoR_datasets/user_cohort">here</a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="data.tables.INDEX_REV_LEN_CHANGED">
+<tt class="descclassname">data.tables.</tt><tt class="descname">INDEX_REV_LEN_CHANGED</tt><a class="headerlink" href="#data.tables.INDEX_REV_LEN_CHANGED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query to create an augmented revision table. Includes namespace and change of the size of the articel <cite>len_change</cite>. Costly query, a detailed description is available <a class="reference external" href="http://meta.wikimedia.org/wiki/WSoR_datasets/rev_len_changed">here</a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-data.report">
+<span id="report"></span><h2>Report<a class="headerlink" href="#module-data.report" title="Permalink to this headline">¶</a></h2>
+<p>This module defines the content of a report, which consists of the following at the moment.</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Community roles</dt>
+<dd><ul class="first last simple">
+<li>User</li>
+<li>Administrators</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Cohort trends</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Age Cohorts            </dt>
+<dd><ul class="first last simple">
+<li>More than 1 edit</li>
+<li>More than 5 edit</li>
+<li>More than 100 edit</li>
+<li>Less than 100 edits</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">New editors</p>
+</li>
+<li><p class="first">Histogram cohorts</p>
+</li>
+<li><p class="first">Namespaces</p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>User lists</dt>
+<dd><ul class="first last simple">
+<li>Most active editors</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="class">
+<dt id="data.report.ReportItem">
+<em class="property">class </em><tt class="descclassname">data.report.</tt><tt class="descname">ReportItem</tt><big>(</big><em>cohort</em>, <em>dest</em><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>A report consists of a collection of report items. A report item consists of a cohort instance and methods to generate the data and the plots.</p>
+<dl class="attribute">
+<dt id="data.report.ReportItem.cohort">
+<tt class="descname">cohort</tt><a class="headerlink" href="#data.report.ReportItem.cohort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cohort instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.createDirectory">
+<tt class="descname">createDirectory</tt><big>(</big><em>base</em><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.createDirectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.createDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the directory if it doesn&#8217;t exist already. The <cite>base</cite> directory is joined with the relative destination directory and returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>base</strong> &#8211; base directory (e.g. settings.datadirectory or settings.wikipridedirectory)</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">absolute path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.freeData">
+<tt class="descname">freeData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.freeData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.freeData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frees the data in hope of reducing the memory usage of the process.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.generateCSV">
+<tt class="descname">generateCSV</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.generateCSV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.generateCSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a simple csv file in a format used by the javascript <a class="reference external" href="http://dygraphs.com/">dygraphs</a> library.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.generateData">
+<tt class="descname">generateData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.generateData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.generateData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates and saves the cohort data. Calls the <a class="reference internal" href="#cohorts.base.Cohort.aggregateDataFromSQL" title="cohorts.base.Cohort.aggregateDataFromSQL"><tt class="xref py py-meth docutils literal"><span class="pre">aggregateDataFromSQL()</span></tt></a> method from the <a class="reference internal" href="#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">Cohort</span></tt></a> instance passed as argument. The collected data matrices are stored in the <a class="reference internal" href="#cohorts.base.Cohort.data" title="cohorts.base.Cohort.data"><tt class="xref py py-attr docutils literal"><span class="pre">Cohort.data</span></tt></a> attribute. The data matrices are saved as txt files in the data destination directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.generateVisualizations">
+<tt class="descname">generateVisualizations</tt><big>(</big><em>varNames</em>, <em>**kargs</em><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.generateVisualizations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.generateVisualizations" title="Permalink to this definition">¶</a></dt>
+<dd><p>For the variables names in <cite>varNames</cite>, produces the WikiPride graphs using <a class="reference internal" href="#cohorts.base.Cohort.wikiPride" title="cohorts.base.Cohort.wikiPride"><tt class="xref py py-meth docutils literal"><span class="pre">wikiPride()</span></tt></a> (e.g. <cite>added</cite>, <cite>editors</cite>, ...). If the cohort defines <cite>linePlots</cite>, they are also generated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kargs</strong> &#8211; arguments passed directly to <a class="reference internal" href="#cohorts.base.Cohort.wikiPride" title="cohorts.base.Cohort.wikiPride"><tt class="xref py py-meth docutils literal"><span class="pre">wikiPride()</span></tt></a>. E.g. <cite>flip=True</cite>, <cite>percentage=False</cite>.</li>
+<li><strong>varNames</strong> &#8211; list of str, containing the names of the variables for which wikipride should be produced.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="data.report.ReportItem.loadData">
+<tt class="descname">loadData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#ReportItem.loadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.ReportItem.loadData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the data from disk if available</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="data.report.ReportItem.relDest">
+<tt class="descname">relDest</tt><a class="headerlink" href="#data.report.ReportItem.relDest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Relative path to the destination directory</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="data.report.processCSV">
+<tt class="descclassname">data.report.</tt><tt class="descname">processCSV</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#processCSV"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.processCSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>The aggregation of the cohort data requires that  <a class="reference internal" href="#data.preprocessing.process" title="data.preprocessing.process"><tt class="xref py py-func docutils literal"><span class="pre">data.preprocessing.process()</span></tt></a> has been executed and the data thus preprocessed. The <tt class="xref py py-func docutils literal"><span class="pre">data.cohortdata.processData()</span></tt> method will use the report definition in <a class="reference internal" href="#module-data.report" title="data.report"><tt class="xref py py-mod docutils literal"><span class="pre">report</span></tt></a> to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of <cite>numpy</cite> matrices.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.report.processData">
+<tt class="descclassname">data.report.</tt><tt class="descname">processData</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#processData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.processData" title="Permalink to this definition">¶</a></dt>
+<dd><p>The aggregation of the cohort data requires that  <a class="reference internal" href="#data.preprocessing.process" title="data.preprocessing.process"><tt class="xref py py-func docutils literal"><span class="pre">data.preprocessing.process()</span></tt></a> has been executed and the data thus preprocessed. The <tt class="xref py py-func docutils literal"><span class="pre">data.cohortdata.processData()</span></tt> method will use the report definition in <a class="reference internal" href="#module-data.report" title="data.report"><tt class="xref py py-mod docutils literal"><span class="pre">report</span></tt></a> to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of <cite>numpy</cite> matrices.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="data.report.processReport">
+<tt class="descclassname">data.report.</tt><tt class="descname">processReport</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/data/report.html#processReport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#data.report.processReport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a set of graphs which requires that <a class="reference internal" href="#data.report.processData" title="data.report.processData"><tt class="xref py py-func docutils literal"><span class="pre">data.report.processData()</span></tt></a> has been executed and the data thus aggregated. The data is loaded from disk.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-db">
+<span id="database-configuration"></span><h1>Database configuration<a class="headerlink" href="#module-db" title="Permalink to this headline">¶</a></h1>
+<p>This module defines individual cohorts. All cohorts are sub-classes of the <a class="reference internal" href="#cohorts.base.Cohort" title="cohorts.base.Cohort"><tt class="xref py py-class docutils literal"><span class="pre">Cohort</span></tt></a>, and they should overwrite the non-generic methods defined in the parent class. Different kind of cohorts have been defined.</p>
+<span class="target" id="module-db.sql"></span><p>Creates a database connection to the slave replica on alpha and implements methods for querying the database</p>
+<dl class="function">
+<dt id="db.sql.connect">
+<tt class="descclassname">db.sql.</tt><tt class="descname">connect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/db/sql.html#connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.sql.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the MySQL database</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="db.sql.db">
+<tt class="descclassname">db.sql.</tt><tt class="descname">db</tt><a class="headerlink" href="#db.sql.db" title="Permalink to this definition">¶</a></dt>
+<dd><p>SQL connection instance</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.sql.getCursor">
+<tt class="descclassname">db.sql.</tt><tt class="descname">getCursor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/db/sql.html#getCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.sql.getCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a normal cursor</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.sql.getSSCursor">
+<tt class="descclassname">db.sql.</tt><tt class="descname">getSSCursor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/db/sql.html#getSSCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.sql.getSSCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a server-side  cursor</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="db.sql.getSSDictCursor">
+<tt class="descclassname">db.sql.</tt><tt class="descname">getSSDictCursor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/db/sql.html#getSSDictCursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#db.sql.getSSDictCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a server-side dictionary cursor</p>
+</dd></dl>
+
+<span class="target" id="module-db.mongo"></span><p>Provides a database connection <cite>con</cite> to wikilytics.</p>
+<dl class="data">
+<dt id="db.mongo.con">
+<tt class="descclassname">db.mongo.</tt><tt class="descname">con</tt><a class="headerlink" href="#db.mongo.con" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connection instance to the mongo db</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="db.mongo.mongocol">
+<tt class="descclassname">db.mongo.</tt><tt class="descname">mongocol</tt><a class="headerlink" href="#db.mongo.mongocol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the mongo collection</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="db.mongo.mongodb">
+<tt class="descclassname">db.mongo.</tt><tt class="descname">mongodb</tt><a class="headerlink" href="#db.mongo.mongodb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the mongo database</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-utils">
+<span id="utils-module"></span><h1>Utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<p>A set of utility methods that are used in different parts of the framework.</p>
+<dl class="function">
+<dt id="utils.cmap_discretize">
+<tt class="descclassname">utils.</tt><tt class="descname">cmap_discretize</tt><big>(</big><em>cmapName</em>, <em>N</em><big>)</big><a class="reference internal" href="_modules/utils.html#cmap_discretize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.cmap_discretize" title="Permalink to this definition">¶</a></dt>
+<dd><p>From <a class="reference external" href="http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations">http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmap</strong> &#8211; colormap instance, eg. cm.jet.</li>
+<li><strong>N</strong> &#8211; Number of colors.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a discrete colormap from the continuous colormap cmap.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.computeMonthStartEndtime">
+<tt class="descclassname">utils.</tt><tt class="descname">computeMonthStartEndtime</tt><big>(</big><em>ym</em><big>)</big><a class="reference internal" href="_modules/utils.html#computeMonthStartEndtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.computeMonthStartEndtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the starting and end datetime object for the yyyymm passed. I.e. the first and last day of the month</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ym</strong> &#8211; str, &#8216;yyyymm&#8217; format</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tuple of datetime objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.create_time_stamps_day">
+<tt class="descclassname">utils.</tt><tt class="descname">create_time_stamps_day</tt><big>(</big><em>fromymd='20010101'</em>, <em>toymd='20101231'</em><big>)</big><a class="reference internal" href="_modules/utils.html#create_time_stamps_day"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.create_time_stamps_day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper data structures for time stamps
+List of all time unites, i.e. every month. yyyymm</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.create_time_stamps_month">
+<tt class="descclassname">utils.</tt><tt class="descname">create_time_stamps_month</tt><big>(</big><em>fromym='200101'</em>, <em>toym='201012'</em><big>)</big><a class="reference internal" href="_modules/utils.html#create_time_stamps_month"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.create_time_stamps_month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper data structures for time stamps
+List of all time unites, i.e. every month. yyyymm</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.isBot">
+<tt class="descclassname">utils.</tt><tt class="descname">isBot</tt><big>(</big><em>u_id</em><big>)</big><a class="reference internal" href="_modules/utils.html#isBot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.isBot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if we filter for bots and  u_id is a known bot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ints</strong> &#8211; Boolean, if True compares u_id as int (default is False)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.numberOfMonths">
+<tt class="descclassname">utils.</tt><tt class="descname">numberOfMonths</tt><big>(</big><em>ymStart</em>, <em>ymEnd</em><big>)</big><a class="reference internal" href="_modules/utils.html#numberOfMonths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#utils.numberOfMonths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of months between the parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ymStart</strong> &#8211; str, &#8216;yyyymm&#8217; format</li>
+<li><strong>ymEnd</strong> &#8211; str, &#8216;yyyymm&#8217; format</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">int, number of month</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">WikiPride v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

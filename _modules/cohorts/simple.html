@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cohorts.simple &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for cohorts.simple</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;For simple cohorts :) </span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;Age cohorts&#39;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">N</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;Numpy not installed&#39;</span><span class="p">)</span>
+    
+
+<span class="kn">import</span> <span class="nn">settings</span>
+<span class="kn">import</span> <span class="nn">utils</span>
+
+<span class="kn">from</span> <span class="nn">cohorts.base</span> <span class="kn">import</span> <span class="n">Cohort</span>
+<span class="kn">from</span> <span class="nn">data</span> <span class="kn">import</span> <span class="n">tables</span>
+
+
+<div class="viewcode-block" id="OneYearCohort"><a class="viewcode-back" href="../../reference.html#cohorts.simple.OneYearCohort">[docs]</a><span class="k">class</span> <span class="nc">OneYearCohort</span><span class="p">(</span><span class="n">Cohort</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;A cohort that is comprised of active editors that started editing in a given year.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">year</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">overall</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="sd">&#39;&#39;&#39;The year the cohort started.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span> <span class="n">activation</span>
+        <span class="sd">&#39;&#39;&#39;Minimum number of edits per month to be included in the cohort</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overall</span> <span class="o">=</span> <span class="n">overall</span>
+
+        <span class="n">ts</span><span class="p">,</span><span class="n">ts_i</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_time_stamps_month</span><span class="p">(</span><span class="n">fromym</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">01&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="n">toym</span><span class="o">=</span><span class="s">&#39;201012&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span> <span class="o">=</span> <span class="n">ts</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span> <span class="o">=</span> <span class="n">ts_i</span>
+        <span class="sd">&#39;&#39;&#39;Only take time_stamps starting with self.year</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="s">&#39;others&#39;</span><span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Cohort definition</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> cohort&#39;</span><span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Cohort labels</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">overall</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span> <span class="o">=</span> <span class="s">&quot;SELECT *  FROM fabian WHERE user_id IN (SELECT user_id FROM fabian WHERE first_edit_year=</span><span class="si">%s</span><span class="s"> GROUP BY user_id HAVING SUM(add_edits)&gt;</span><span class="si">%s</span><span class="s">);&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span> <span class="o">=</span> <span class="s">&#39;SELECT *  FROM fabian WHERE add_edits &gt; </span><span class="si">%s</span><span class="s"> AND first_edit_year=</span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+
+        <span class="n">Cohort</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   
+    <span class="k">def</span> <span class="nf">initData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="c"># self.data[&#39;size&#39;] = N.zeros((len(self.cohorts), len(self.time_stamps)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+
+<div class="viewcode-block" id="OneYearCohort.initDataDescription"><a class="viewcode-back" href="../../reference.html#cohorts.simple.OneYearCohort.initDataDescription">[docs]</a>    <span class="k">def</span> <span class="nf">initDataDescription</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data_description dictionary with additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> Cohort, &gt;</span><span class="si">%s</span><span class="s"> edits/month - Megabytes added (</span><span class="si">%s</span><span class="s">, namespaces:</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span><span class="s">&#39;no bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">16</span> <span class="k">else</span> <span class="s">&#39;all&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> Cohort, &gt;</span><span class="si">%s</span><span class="s"> edits/month - Megabytes removed (</span><span class="si">%s</span><span class="s">, namespaces:</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span><span class="s">&#39;no bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">16</span> <span class="k">else</span> <span class="s">&#39;all&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> Cohort, &gt;</span><span class="si">%s</span><span class="s"> edits/month - Megabytes Added-Removed (</span><span class="si">%s</span><span class="s">, namespaces:</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span><span class="s">&#39;no bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">16</span> <span class="k">else</span> <span class="s">&#39;all&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> Cohort, &gt;</span><span class="si">%s</span><span class="s"> edits/month - Number of edits (</span><span class="si">%s</span><span class="s">, namespaces:</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">,</span><span class="s">&#39;no bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">16</span> <span class="k">else</span> <span class="s">&#39;all&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Edits&#39;</span> <span class="p">}</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">processSQLrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+
+        <span class="n">editor_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;user_id&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">isBot</span><span class="p">(</span><span class="n">editor_id</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">year</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_year&#39;</span><span class="p">]</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_month&#39;</span><span class="p">]</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;namespace&#39;</span><span class="p">])</span>
+
+        <span class="n">ym</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">)</span>
+
+        <span class="n">time_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ym</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">firstedit</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;first_edit_year&#39;</span><span class="p">],</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;first_edit_month&#39;</span><span class="p">])</span>
+
+        <span class="n">fe_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">firstedit</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fe_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cohorts_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getIndex</span><span class="p">(</span><span class="n">fe_index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ns</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;add_edits&#39;</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;remove_edits&#39;</span><span class="p">])</span>
+
+   
+<div class="viewcode-block" id="OneYearCohort.getIndex"><a class="viewcode-back" href="../../reference.html#cohorts.simple.OneYearCohort.getIndex">[docs]</a>    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fe</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the index of the cohort, which is identical to the time index of the first edit </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="mi">0</span>
+</div></div>
+<div class="viewcode-block" id="ProjectSpaceCohorts"><a class="viewcode-back" href="../../reference.html#cohorts.simple.ProjectSpaceCohorts">[docs]</a><span class="k">class</span> <span class="nc">ProjectSpaceCohorts</span><span class="p">(</span><span class="n">Cohort</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;A cohort that is comprised of active editors that started editing in a given year. Only the contributions to the Wikipedia namespaces 4&amp;5 are considered.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">activation</span> <span class="o">=</span>  <span class="n">activation</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">NS</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&#39;4&#39;</span><span class="p">,</span> <span class="s">&#39;5&#39;</span> <span class="p">)</span>
+
+        <span class="n">ts</span><span class="p">,</span><span class="n">ts_i</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_time_stamps_month</span><span class="p">(</span><span class="n">fromym</span><span class="o">=</span><span class="s">&#39;200401&#39;</span><span class="p">,</span><span class="n">toym</span><span class="o">=</span><span class="s">&#39;201012&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span> <span class="o">=</span> <span class="n">ts</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span> <span class="o">=</span> <span class="n">ts_i</span>
+        <span class="sd">&#39;&#39;&#39;Only take time_stamps starting with self.year</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2004</span><span class="p">,</span><span class="mi">2011</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39;Cohort definition</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> cohort&#39;</span><span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Cohort labels</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c"># self.sqlQuery = &#39;SELECT * FROM fabian WHERE namespace IN (4,5) AND add_edits &gt; %s AND first_edit_year in (%s)&#39;%(self.activation,&#39;,&#39;.join([str(c) for c in self.cohorts]))</span>
+
+
+        <span class="n">Cohort</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   
+    <span class="k">def</span> <span class="nf">initData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="c"># self.data[&#39;size&#39;] = N.zeros((len(self.cohorts), len(self.time_stamps)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ProjectSpaceCohorts.initDataDescription"><a class="viewcode-back" href="../../reference.html#cohorts.simple.ProjectSpaceCohorts.initDataDescription">[docs]</a>    <span class="k">def</span> <span class="nf">initDataDescription</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data_description dictionary with additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Megabytes added to Project namespaces, &gt;</span><span class="si">%s</span><span class="s"> edits/month&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+        <span class="c"># self.data_description[&#39;removed&#39;] = {  &#39;title&#39; : &#39;%s Cohort, &gt;%s edits/month - Megabytes removed (%s, namespaces:%s)&#39;%(self.year,self.activation,&#39;no bots&#39; if self.nobots else &#39;including bots&#39;, &#39;,&#39;.join(self.NS) if len(self.NS)&lt;16 else &#39;all&#39;), \</span>
+        <span class="c">#                                     &#39;ylabel&#39;: &#39;Megabytes&#39;,\</span>
+        <span class="c">#                                     &#39;ytickslabel&#39; : lambda x : &#39;%d&#39;%(x/1e6) }</span>
+
+        <span class="c"># self.data_description[&#39;net&#39;] = {  &#39;title&#39; : &#39;%s Cohort, &gt;%s edits/month - Megabytes Added-Removed (%s, namespaces:%s)&#39;%(self.year,self.activation,&#39;no bots&#39; if self.nobots else &#39;including bots&#39;, &#39;,&#39;.join(self.NS) if len(self.NS)&lt;16 else &#39;all&#39;), \</span>
+        <span class="c">#                                     &#39;ylabel&#39;: &#39;Megabytes&#39;,\</span>
+        <span class="c">#                                     &#39;ytickslabel&#39; : lambda x : &#39;%d&#39;%(x/1e6) }</span>
+
+        <span class="c"># self.data_description[&#39;edits&#39;] = {  &#39;title&#39; : &#39;%s Cohort, &gt;%s edits/month - Number of edits (%s, namespaces:%s)&#39;%(self.year,self.activation,&#39;no bots&#39; if self.nobots else &#39;including bots&#39;, &#39;,&#39;.join(self.NS) if len(self.NS)&lt;16 else &#39;all&#39;), \</span>
+        <span class="c">#                                     &#39;ylabel&#39;: &#39;Edits&#39; }</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">processSQLrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+
+        <span class="n">editor_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;user_id&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">isBot</span><span class="p">(</span><span class="n">editor_id</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">year</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_year&#39;</span><span class="p">]</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_month&#39;</span><span class="p">]</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;namespace&#39;</span><span class="p">])</span>
+
+        <span class="n">ym</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">)</span>
+
+        <span class="n">time_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ym</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cohorts_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getIndex</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;first_edit_year&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">ns</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">NS</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;add_edits&#39;</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;remove_edits&#39;</span><span class="p">])</span>
+
+   
+<div class="viewcode-block" id="ProjectSpaceCohorts.getIndex"><a class="viewcode-back" href="../../reference.html#cohorts.simple.ProjectSpaceCohorts.getIndex">[docs]</a>    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the index of the cohort, given the year of the first edit</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProjectSpaceCohorts.colorbarTicksAndLabels"><a class="viewcode-back" href="../../reference.html#cohorts.simple.ProjectSpaceCohorts.colorbarTicksAndLabels">[docs]</a>    <span class="k">def</span> <span class="nf">colorbarTicksAndLabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ncolors</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns ticks and labels for the colorbar of a WikiPride visualization</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">nlabels</span> <span class="o">=</span> <span class="n">ncolors</span><span class="o">+</span><span class="mi">1</span>
+
+        <span class="c"># too many dates are unreadable</span>
+        <span class="k">if</span> <span class="n">nlabels</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="n">nlabels</span> <span class="o">=</span> <span class="mi">15</span>
+
+        <span class="n">ticks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">nlabels</span><span class="p">)</span> <span class="c">#  +1./(nlabels-1)*1/2</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">nlabels</span><span class="p">)</span> <span class="p">]</span>                
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ticks</span><span class="p">,</span><span class="n">labels</span>
+</div></div>
+<div class="viewcode-block" id="NameSpaces"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NameSpaces">[docs]</a><span class="k">class</span> <span class="nc">NameSpaces</span><span class="p">(</span><span class="n">Cohort</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;The namespaces themselves are cohorts</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;2&#39;</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">,</span><span class="s">&#39;other&#39;</span><span class="p">)</span>
+        <span class="sd">&#39;&#39;&#39;Cohort definition</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> namespace&#39;</span><span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Cohort labels</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+                
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort_index</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;0&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;2&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span> <span class="o">=</span> <span class="s">&#39;SELECT * FROM </span><span class="si">%s</span><span class="s">;&#39;</span><span class="o">%</span><span class="n">tables</span><span class="o">.</span><span class="n">EDITOR_YEAR_MONTH_NAMESPACE</span>
+        <span class="sd">&#39;&#39;&#39;The SQL query returns edit information for each editor for each ym she has edited.&#39;&#39;&#39;</span>
+
+
+        <span class="n">Cohort</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   
+    <span class="k">def</span> <span class="nf">initData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="c"># self.data[&#39;size&#39;] = N.zeros((len(self.cohorts), len(self.time_stamps)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NameSpaces.initDataDescription"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NameSpaces.initDataDescription">[docs]</a>    <span class="k">def</span> <span class="nf">initDataDescription</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data_description dictionary with additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Megabytes added to namespaces (</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;excluding bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Megabytes removed from namespaces (</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;excluding bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Megabytes added-removed to namespaces (</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;excluding bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Megabytes&#39;</span><span class="p">,</span>\
+                                            <span class="s">&#39;ytickslabel&#39;</span> <span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="mf">1e6</span><span class="p">)</span> <span class="p">}</span>                                                                                                
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Number of edits to namespaces (</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;excluding bots&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nobots</span> <span class="k">else</span> <span class="s">&#39;including bots&#39;</span><span class="p">),</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;Edits&#39;</span> <span class="p">}</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">processSQLrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+
+        <span class="n">editor_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;user_id&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">isBot</span><span class="p">(</span><span class="n">editor_id</span><span class="p">):</span>            
+            <span class="k">return</span>
+        
+        <span class="n">year</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_year&#39;</span><span class="p">]</span>
+        <span class="n">month</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;rev_month&#39;</span><span class="p">]</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;namespace&#39;</span><span class="p">])</span>
+
+        <span class="n">ym</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">)</span>
+
+        <span class="n">time_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ym</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cohorts_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getIndex</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;removed&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_added&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;len_removed&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;remove_edits&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;edits&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">time_index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;add_edits&#39;</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;remove_edits&#39;</span><span class="p">])</span>
+
+   
+<div class="viewcode-block" id="NameSpaces.getIndex"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NameSpaces.getIndex">[docs]</a>    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the index of the cohort, given the year of the first edit</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="NameSpaces.colorbarTicksAndLabels"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NameSpaces.colorbarTicksAndLabels">[docs]</a>    <span class="k">def</span> <span class="nf">colorbarTicksAndLabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ncolors</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns ticks and labels for the colorbar of a WikiPride visualization</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">nlabels</span> <span class="o">=</span> <span class="n">ncolors</span>
+
+
+        <span class="n">ticks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="n">nlabels</span><span class="p">),</span> <span class="n">nlabels</span><span class="p">)</span> <span class="o">+</span><span class="mf">0.5</span><span class="o">/</span><span class="n">nlabels</span>
+        <span class="c"># skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels+1) ]                </span>
+        <span class="c"># labels = [self.cohort_labels[i] for i in skip]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span>
+
+        <span class="k">return</span> <span class="n">ticks</span><span class="p">,</span><span class="n">labels</span>
+
+</div></div>
+<div class="viewcode-block" id="NewEditors"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NewEditors">[docs]</a><span class="k">class</span> <span class="nc">NewEditors</span><span class="p">(</span><span class="n">Cohort</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;There is just one cohort, which contains the number of of editors who started contributing in any given month. </span>
+
+<span class="sd">    :meth:`.NewEditors.linePlot` creates a line plot.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;New Editors&#39;</span><span class="p">]</span>
+        <span class="sd">&#39;&#39;&#39;Cohort definition</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span>
+        <span class="sd">&#39;&#39;&#39;Cohort labels</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+                
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sqlQuery</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;SELECT  </span>
+<span class="s">            first_edit_year, </span>
+<span class="s">            first_edit_month, </span>
+<span class="s">            count(*) AS recruits</span>
+<span class="s">        FROM</span>
+<span class="s">            </span><span class="si">%s</span><span class="s"></span>
+<span class="s">        GROUP BY</span>
+<span class="s">            first_edit_year,</span>
+<span class="s">            first_edit_month;&quot;&quot;&quot;</span><span class="o">%</span><span class="n">tables</span><span class="o">.</span><span class="n">USER_COHORT</span>
+        <span class="sd">&#39;&#39;&#39;The SQL query returns the new editor count for each ym.&#39;&#39;&#39;</span>
+
+        <span class="n">Cohort</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+   
+    <span class="k">def</span> <span class="nf">initData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohorts</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_stamps</span><span class="p">)))</span>
+        <span class="c"># self.data[&#39;size&#39;] = N.zeros((len(self.cohorts), len(self.time_stamps)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initDataDescription</span><span class="p">()</span>
+
+<div class="viewcode-block" id="NewEditors.initDataDescription"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NewEditors.initDataDescription">[docs]</a>    <span class="k">def</span> <span class="nf">initDataDescription</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Initialize the self.data_description dictionary with additional information</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>  <span class="s">&#39;title&#39;</span> <span class="p">:</span> <span class="s">&#39;Number of new editors (first edit)&#39;</span><span class="p">,</span> \
+                                            <span class="s">&#39;ylabel&#39;</span><span class="p">:</span> <span class="s">&#39;# Editors&#39;</span> <span class="p">}</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">processSQLrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">row</span><span class="p">):</span>
+
+        <span class="n">firstedit</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;first_edit_year&#39;</span><span class="p">],</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;first_edit_month&#39;</span><span class="p">])</span>
+
+        <span class="n">fe_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_stamps_index</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">firstedit</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fe_index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c"># there is only one cohort</span>
+        <span class="n">cohorts_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">][</span><span class="n">cohorts_index</span><span class="p">,</span><span class="n">fe_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">row</span><span class="p">[</span><span class="s">&#39;recruits&#39;</span><span class="p">]</span>
+        
+
+   
+<div class="viewcode-block" id="NewEditors.getIndex"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NewEditors.getIndex">[docs]</a>    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Not needed in this cohort!</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;NO!&quot;</span><span class="p">)</span>
+        
+</div>
+<div class="viewcode-block" id="NewEditors.colorbarTicksAndLabels"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NewEditors.colorbarTicksAndLabels">[docs]</a>    <span class="k">def</span> <span class="nf">colorbarTicksAndLabels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ncolors</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Returns ticks and labels for the colorbar of a WikiPride visualization</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">nlabels</span> <span class="o">=</span> <span class="n">ncolors</span>
+
+
+        <span class="n">ticks</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="n">nlabels</span><span class="p">),</span> <span class="n">nlabels</span><span class="p">)</span> <span class="o">+</span><span class="mf">0.5</span><span class="o">/</span><span class="n">nlabels</span>
+        <span class="c"># skip = [ int(i) for i in N.linspace(0,len(self.cohorts)-1,nlabels+1) ]                </span>
+        <span class="c"># labels = [self.cohort_labels[i] for i in skip]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_labels</span>
+
+        <span class="k">return</span> <span class="n">ticks</span><span class="p">,</span><span class="n">labels</span>
+</div>
+<div class="viewcode-block" id="NewEditors.linePlots"><a class="viewcode-back" href="../../reference.html#cohorts.simple.NewEditors.linePlots">[docs]</a>    <span class="k">def</span> <span class="nf">linePlots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Creates a line plot for the number of new editors and saves it to disk.</span>
+
+<span class="sd">        :arg dest: str, destination directory</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Creating line plots for New editors cohort.&#39;</span><span class="p">)</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,:])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveFigure</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;line&#39;</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">][</span><span class="s">&#39;title&#39;</span><span class="p">],</span><span class="n">ylabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_description</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">][</span><span class="s">&#39;ylabel&#39;</span><span class="p">])</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

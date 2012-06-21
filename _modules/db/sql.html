@@ -1,0 +1,149 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>db.sql &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for db.sql</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Creates a database connection to the slave replica on alpha and implements methods for querying the database</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">settings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">MySQLdb</span><span class="o">,</span><span class="nn">MySQLdb.cursors</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;SQL module MySQLdb could not be imported.&quot;</span><span class="p">)</span>    
+
+
+<span class="n">db</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;SQL connection instance</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="connect"><a class="viewcode-back" href="../../reference.html#db.sql.connect">[docs]</a><span class="k">def</span> <span class="nf">connect</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect to the MySQL database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">db</span>
+    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c"># db = MySQLdb.connect(db=settings.sqlwikidb, host=settings.sqlhost, read_default_file=settings.sqlconfigfile)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">sqluserdb</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlhost</span><span class="p">,</span> <span class="n">read_default_file</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">sqlconfigfile</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="getSSDictCursor"><a class="viewcode-back" href="../../reference.html#db.sql.getSSDictCursor">[docs]</a><span class="k">def</span> <span class="nf">getSSDictCursor</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a server-side dictionary cursor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">MySQLdb</span><span class="o">.</span><span class="n">cursors</span><span class="o">.</span><span class="n">SSDictCursor</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="getSSCursor"><a class="viewcode-back" href="../../reference.html#db.sql.getSSCursor">[docs]</a><span class="k">def</span> <span class="nf">getSSCursor</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a server-side  cursor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">MySQLdb</span><span class="o">.</span><span class="n">cursors</span><span class="o">.</span><span class="n">SSCursor</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="getCursor"><a class="viewcode-back" href="../../reference.html#db.sql.getCursor">[docs]</a><span class="k">def</span> <span class="nf">getCursor</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a normal cursor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

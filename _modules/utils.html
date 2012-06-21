@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>utils &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for utils</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">A set of utility methods that are used in different parts of the framework.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<span class="c"># Set of bots read from a bot tsv file</span>
+<span class="n">bots</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">filterBots</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">def</span> <span class="nf">setFilterBots</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span><span class="n">botfile</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">filterBots</span><span class="p">,</span><span class="n">bots</span>
+    
+    <span class="k">if</span> <span class="n">fb</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bots</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">long</span><span class="p">(</span><span class="n">bot</span><span class="p">)</span> <span class="k">for</span> <span class="n">bot</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">botfile</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">))</span>            
+            <span class="n">filterBots</span> <span class="o">=</span> <span class="n">fb</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> Bots loaded from </span><span class="si">%s</span><span class="s">&quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bots</span><span class="p">),</span><span class="n">botfile</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Botlist (</span><span class="si">%s</span><span class="s">) could not be loaded, Bots will not be filtered&quot;</span><span class="o">%</span><span class="n">botfile</span><span class="p">)</span>
+            
+<div class="viewcode-block" id="isBot"><a class="viewcode-back" href="../reference.html#utils.isBot">[docs]</a><span class="k">def</span> <span class="nf">isBot</span><span class="p">(</span><span class="n">u_id</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns true if we filter for bots and  u_id is a known bot.</span>
+
+<span class="sd">    :arg ints: Boolean, if True compares u_id as int (default is False)    </span>
+<span class="sd">    &#39;&#39;&#39;</span>       
+    <span class="k">if</span> <span class="n">filterBots</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">u_id</span> <span class="ow">in</span> <span class="n">bots</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="bp">False</span>        
+
+</div>
+<div class="viewcode-block" id="create_time_stamps_month"><a class="viewcode-back" href="../reference.html#utils.create_time_stamps_month">[docs]</a><span class="k">def</span> <span class="nf">create_time_stamps_month</span><span class="p">(</span><span class="n">fromym</span><span class="o">=</span><span class="s">&#39;200101&#39;</span><span class="p">,</span><span class="n">toym</span><span class="o">=</span><span class="s">&#39;201012&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Helper data structures for time stamps</span>
+<span class="sd">    List of all time unites, i.e. every month. yyyymm</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">time_stamps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># A dictionary that serves as a lookup for the index of atime stamp</span>
+    <span class="n">time_stamps_index</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">min_year</span> <span class="o">=</span> <span class="n">fromym</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">min_month</span> <span class="o">=</span> <span class="n">fromym</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">max_year</span> <span class="o">=</span> <span class="n">toym</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">max_month</span> <span class="o">=</span> <span class="n">toym</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="c">#add remaining months in the first year</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">min_month</span><span class="p">),</span><span class="mi">13</span><span class="p">):</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#add intermediate years</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">min_year</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">max_year</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">13</span><span class="p">):</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+            <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#last year</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">max_month</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">max_year</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="create_time_stamps_day"><a class="viewcode-back" href="../reference.html#utils.create_time_stamps_day">[docs]</a><span class="k">def</span> <span class="nf">create_time_stamps_day</span><span class="p">(</span><span class="n">fromymd</span><span class="o">=</span><span class="s">&#39;20010101&#39;</span><span class="p">,</span><span class="n">toymd</span><span class="o">=</span><span class="s">&#39;20101231&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Helper data structures for time stamps</span>
+<span class="sd">    List of all time unites, i.e. every month. yyyymm</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="kn">import</span> <span class="nn">calendar</span>
+
+    <span class="n">time_stamps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># A dictionary that serves as a lookup for the index of atime stamp</span>
+    <span class="n">time_stamps_index</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">min_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fromymd</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">min_month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fromymd</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">min_day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fromymd</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+    <span class="n">max_year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">toymd</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">max_month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">toymd</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">max_day</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">toymd</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="c">#add remaining months in the first year</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_month</span><span class="p">,</span><span class="mi">13</span><span class="p">):</span>
+        <span class="c"># calender.monthrange returns a tuple (day of the week, number of days in the month)</span>
+        <span class="n">nds</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span><span class="n">m</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_day</span><span class="p">,</span><span class="n">nds</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">min_year</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#add intermediate years</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_year</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">max_year</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">13</span><span class="p">):</span>
+            <span class="c"># calender.monthrange returns a tuple (day of the week, number of days in the month)</span>
+            <span class="n">nds</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>            
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nds</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+                <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+                <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#to last month</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">max_month</span><span class="p">):</span>
+        <span class="n">nds</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">max_year</span><span class="p">,</span><span class="n">m</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nds</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">max_year</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c">#to last day</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">max_day</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s%02d%02d</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">max_year</span><span class="p">,</span><span class="n">max_month</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        <span class="n">time_stamps_index</span><span class="p">[</span><span class="n">ts</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="computeMonthStartEndtime"><a class="viewcode-back" href="../reference.html#utils.computeMonthStartEndtime">[docs]</a><span class="k">def</span> <span class="nf">computeMonthStartEndtime</span><span class="p">(</span><span class="n">ym</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the starting and end datetime object for the yyyymm passed. I.e. the first and last day of the month</span>
+
+<span class="sd">    :arg ym: str, &#39;yyyymm&#39; format</span>
+<span class="sd">    :returns: tuple of datetime objects</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+    <span class="kn">import</span> <span class="nn">calendar</span>
+
+    
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ym</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ym</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c"># days in the given month </span>
+    <span class="c"># calender.monthrange returns a tuple (day of the week, number of days in the month)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">monthrange</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">m</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="numberOfMonths"><a class="viewcode-back" href="../reference.html#utils.numberOfMonths">[docs]</a><span class="k">def</span> <span class="nf">numberOfMonths</span><span class="p">(</span><span class="n">ymStart</span><span class="p">,</span><span class="n">ymEnd</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Returns the number of months between the parameters.</span>
+
+<span class="sd">    :arg ymStart: str, &#39;yyyymm&#39; format</span>
+<span class="sd">    :arg ymEnd: str, &#39;yyyymm&#39; format</span>
+<span class="sd">    :returns: int, number of month</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">months</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ymEnd</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span><span class="o">-</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ymStart</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="mi">12</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymEnd</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="n">ymStart</span><span class="p">[:</span><span class="mi">4</span><span class="p">]):</span>
+        <span class="c">#same year</span>
+        <span class="n">months</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ymEnd</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">ymStart</span><span class="p">[</span><span class="mi">4</span><span class="p">:]))</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">months</span> <span class="o">+=</span> <span class="mi">12</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">ymStart</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">months</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ymEnd</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+
+    <span class="k">return</span> <span class="n">months</span>
+
+</div>
+<div class="viewcode-block" id="cmap_discretize"><a class="viewcode-back" href="../reference.html#utils.cmap_discretize">[docs]</a><span class="k">def</span> <span class="nf">cmap_discretize</span><span class="p">(</span><span class="n">cmapName</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    From http://www.scipy.org/Cookbook/Matplotlib/ColormapTransformations</span>
+<span class="sd">    </span>
+<span class="sd">    :arg cmap: colormap instance, eg. cm.jet.</span>
+<span class="sd">    :arg N: Number of colors.</span>
+
+<span class="sd">    :returns: a discrete colormap from the continuous colormap cmap.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">interp</span>
+        <span class="kn">import</span> <span class="nn">matplotlib</span> 
+        <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;matplotlib or numpy not installed&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;cmap_discretize() returns invalid cmap; you can&#39;t plot without these packages anyways&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cmapName</span>
+
+
+    <span class="k">if</span> <span class="n">cmapName</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">spectral</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmapName</span><span class="p">)</span>
+    
+
+
+    <span class="c"># try: </span>
+    <span class="c">#     from scipy import interpolate</span>
+    <span class="c"># except:</span>
+    <span class="c">#     logging.error(&#39;scipy not installed&#39;)</span>
+    <span class="c">#     logging.info(&quot;cmap_discretize() can&#39;t interpolate the colormap, returns cmap %s unchanged&quot;%cmapName)</span>
+    <span class="c">#     return cmap</span>
+
+
+    <span class="n">cdict</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">_segmentdata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c"># N colors</span>
+    <span class="n">colors_i</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+    <span class="c"># N+1 indices</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;red&#39;</span><span class="p">,</span><span class="s">&#39;green&#39;</span><span class="p">,</span><span class="s">&#39;blue&#39;</span><span class="p">):</span>
+        <span class="c"># Find the N colors</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">cdict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        
+        <span class="c"># using scipy </span>
+        <span class="c"># I = interpolate.interp1d(D[:,0], D[:,1])</span>
+        <span class="c"># colors = I(colors_i)</span>
+        
+        <span class="c"># using numpy</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">colors_i</span><span class="p">,</span><span class="n">D</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">D</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c"># Place these colors at the correct indices.</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span>
+        <span class="n">A</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span>
+        <span class="c"># Create a tuple for the dictionary.</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">A</span><span class="p">:</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+        <span class="n">cdict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="c"># Return colormap object.</span>
+    <span class="k">return</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s">&#39;colormap&#39;</span><span class="p">,</span><span class="n">cdict</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">movingAverage</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">WINDOW</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">N</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Moving average can&#39;t be computed (Numpy not installed)&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    
+    <span class="n">weightings</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">WINDOW</span><span class="p">)</span> <span class="o">/</span> <span class="n">WINDOW</span>
+    <span class="k">return</span> <span class="n">N</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">weightings</span><span class="p">)[</span><span class="n">WINDOW</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="p">(</span><span class="n">WINDOW</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

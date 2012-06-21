@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>settings &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for settings</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Settings used for cohort analysis. Many of these settings can be overwritten in the cohort class __init__ calls.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c"># Configure logging</span>
+<span class="n">format</span><span class="o">=</span><span class="s">&#39;</span><span class="si">%(asctime)s</span><span class="s"> - </span><span class="si">%(name)s</span><span class="s">: </span><span class="si">%(message)s</span><span class="s">&#39;</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s">&#39;%b-</span><span class="si">%d</span><span class="s"> %H:%M&#39;</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;wikipride.log&#39;</span><span class="p">)</span>
+<span class="c"># Log to file and in console</span>
+<span class="n">console</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="n">format</span><span class="p">)</span>
+<span class="n">console</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;Settings&#39;</span><span class="p">)</span>
+
+
+
+<span class="c">###</span>
+<span class="c">### General</span>
+<span class="c">###</span>
+<span class="n">language</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;The language of the Wikipedia (e.g. &#39;en&#39;,&#39;pt&#39;)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">filterbots</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Filter out known bots?</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c">#TODO REMOVE FILTER BOTS FROM SETTINGS!!!</span>
+<span class="c">#legacy</span>
+<span class="nd">@property</span>
+<span class="k">def</span> <span class="nf">nobots</span><span class="p">():</span>
+	<span class="k">return</span> <span class="n">filterbots</span>
+
+
+<span class="n">time_stamps</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;List containing all YM (e.g. &#39;200401&#39; for January 2004) that we want to analyze</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">time_stamps_index</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;A dictionary mapping each YM in `time_stamps` to its array index (used to access numpy arrays)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">###</span>
+<span class="c">### WikiPride visualizations</span>
+<span class="c">###</span>
+<span class="n">cmapName</span> <span class="o">=</span> <span class="s">&#39;spectral&#39;</span>
+<span class="sd">&#39;&#39;&#39;Colormap to use. Has to be a valid name in matplotlib.pyplot.cm.datad</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">###</span>
+<span class="c">### Directories</span>
+<span class="c">###</span>
+<span class="n">basedirectory</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Path to base directory for the wikipride project</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">datadirectory</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Path to directory for cohort data</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">userlistdirectory</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Path to directory for user lists</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">reportdirectory</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Path to store report </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">wikipridedirectory</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;Path to store wikipride visualizations of user defined cohorts</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c">###</span>
+<span class="c">### Database configuration</span>
+<span class="c">###</span>
+
+
+<span class="c"># SQL</span>
+<span class="n">sqlhost</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;The host name of the MySql server</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">sqlwikidb</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;The name of the database on db host where the Mediawiki database is stored. On the toolserver, this is for example `ptwiki_p`</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">sqluserdb</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;The name of the database on db host where the aggregated tables will be stored. On the toolserver, this is the username prepended by a `u_`, e.e. `u_delcerambaul`</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">sqlconfigfile</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The path to the MySQL configuration for logging into the server, e.g. &#39;~/.my.cnf&#39;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">sqldroptables</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">If `True`, all tables that we attempt to create will be dropped if they exist already. If `False`, only tables don&#39;t exist already will be created</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">&#39;&#39;&#39;  MOVE INTO COHORT DEFINITIONS WHERE NEEDED!</span>
+<span class="sd">sqlquery = &#39;SELECT *  FROM ptwiki_editor_centric_year_month;&#39;</span>
+<span class="sd">The SQL query that is used to aggregate the data</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c"># Mongo DB (Legacy code so far, only using MySQL at the moment)</span>
+<span class="n">mongodb</span> <span class="o">=</span> <span class="s">&#39;wikilytics&#39;</span>
+<span class="sd">&#39;&#39;&#39;The name of the db</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">mongocol</span> <span class="o">=</span> <span class="s">&#39;enwiki_editors_dataset&#39;</span>
+<span class="sd">&#39;&#39;&#39;The name of the collection </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">mongoQueryVars</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="sd">&#39;&#39;&#39;The Mongo query variables used to aggregate the data.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span> <span class="nf">setTimeStamps</span><span class="p">(</span><span class="n">startYM</span><span class="p">,</span><span class="n">endYM</span><span class="p">):</span>
+	<span class="k">global</span> <span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span>
+	<span class="p">(</span><span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_time_stamps_month</span><span class="p">(</span><span class="n">fromym</span><span class="o">=</span><span class="n">startYM</span><span class="p">,</span><span class="n">toym</span><span class="o">=</span><span class="n">endYM</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="readConfig"><a class="viewcode-back" href="../reference.html#settings.readConfig">[docs]</a><span class="k">def</span> <span class="nf">readConfig</span><span class="p">(</span><span class="n">configfile</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Reads the configuration from `ConfigParser` instance into the runtime settings.</span>
+
+<span class="sd">	:arg configfile: A file that can be read by a `ConfigParser` instance</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">global</span> <span class="n">language</span><span class="p">,</span><span class="n">filterbots</span><span class="p">,</span><span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span><span class="p">,</span><span class="n">botfile</span><span class="p">,</span><span class="n">basedirectory</span><span class="p">,</span><span class="n">datadirectory</span><span class="p">,</span><span class="n">userlistdirectory</span><span class="p">,</span><span class="n">reportdirectory</span><span class="p">,</span><span class="n">wikipridedirectory</span><span class="p">,</span><span class="n">sqlhost</span><span class="p">,</span><span class="n">sqlwikidb</span><span class="p">,</span><span class="n">sqluserdb</span><span class="p">,</span><span class="n">sqlconfigfile</span><span class="p">,</span><span class="n">sqldroptables</span>
+
+	<span class="kn">import</span> <span class="nn">os</span>
+	<span class="kn">import</span> <span class="nn">ConfigParser</span>
+
+	<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+	<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span>
+
+	<span class="c"># general settings</span>
+	<span class="n">language</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;General&#39;</span><span class="p">,</span><span class="s">&#39;language&#39;</span><span class="p">)</span> 
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">language</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Language code should be two characters (</span><span class="si">%s</span><span class="s">)&#39;</span><span class="o">%</span><span class="n">language</span><span class="p">)</span>
+
+	<span class="n">filterbots</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;General&#39;</span><span class="p">,</span><span class="s">&#39;filterbots&#39;</span><span class="p">)</span>	
+	
+	<span class="n">startYM</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;General&#39;</span><span class="p">,</span><span class="s">&#39;startYM&#39;</span><span class="p">)</span> 
+	<span class="n">endYM</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;General&#39;</span><span class="p">,</span><span class="s">&#39;endYM&#39;</span><span class="p">)</span> 
+	<span class="p">(</span><span class="n">time_stamps</span><span class="p">,</span><span class="n">time_stamps_index</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_time_stamps_month</span><span class="p">(</span><span class="n">fromym</span><span class="o">=</span><span class="n">startYM</span><span class="p">,</span><span class="n">toym</span><span class="o">=</span><span class="n">endYM</span><span class="p">)</span>
+	
+	<span class="c"># directories	</span>
+	<span class="n">basedirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Directories&#39;</span><span class="p">,</span><span class="s">&#39;basedirectory&#39;</span><span class="p">))</span>
+	<span class="n">datadirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Directories&#39;</span><span class="p">,</span><span class="s">&#39;datadirectory&#39;</span><span class="p">))</span>
+	<span class="n">userlistdirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Directories&#39;</span><span class="p">,</span><span class="s">&#39;userlistdirectory&#39;</span><span class="p">))</span>
+	<span class="n">reportdirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Directories&#39;</span><span class="p">,</span><span class="s">&#39;reportdirectory&#39;</span><span class="p">))</span>
+	<span class="n">wikipridedirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;Directories&#39;</span><span class="p">,</span><span class="s">&#39;wikipridedirectory&#39;</span><span class="p">))</span>
+
+	<span class="c"># if not os.path.isdir(basedirectory):</span>
+	<span class="c"># 	import errno</span>
+	<span class="c"># 	try:</span>
+	<span class="c"># 	    os.makedirs(p)</span>
+	<span class="c"># 	except OSError as exc: # Python &gt;2.5</span>
+	<span class="c"># 	    if exc.errno == errno.EEXIST:</span>
+	<span class="c"># 	        pass</span>
+	<span class="c"># 	    else: raise</span>
+
+	<span class="c"># sql</span>
+	<span class="n">sqlhost</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span><span class="s">&#39;sqlhost&#39;</span><span class="p">)</span>
+	<span class="n">sqlwikidb</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span><span class="s">&#39;sqlwikidb&#39;</span><span class="p">)</span>
+	<span class="n">sqluserdb</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span><span class="s">&#39;sqluserdb&#39;</span><span class="p">)</span>
+	<span class="n">sqlconfigfile</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span><span class="s">&#39;sqlconfigfile&#39;</span><span class="p">)</span>	
+	<span class="n">sqldroptables</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s">&#39;MySQL&#39;</span><span class="p">,</span><span class="s">&#39;sqldroptables&#39;</span><span class="p">)</span>	
+
+	<span class="n">sqlconfigfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">sqlconfigfile</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sqlconfigfile</span><span class="p">):</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> sql config file not found&quot;</span><span class="o">%</span><span class="n">sqlconfigfile</span><span class="p">)</span>
+		
+
+
+	<span class="c"># mongo db</span>
+
+	<span class="c"># not implemented at this point. if needed in the future (again), extract config settings here.</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>data.report &mdash; WikiPride v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="WikiPride v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for data.report</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;This module defines the content of a report, which consists of the following at the moment. </span>
+
+<span class="sd">* Community roles</span>
+<span class="sd">    * User  </span>
+<span class="sd">    * Administrators</span>
+<span class="sd">* Cohort trends</span>
+<span class="sd">    * Age Cohorts            </span>
+<span class="sd">        * More than 1 edit </span>
+<span class="sd">        * More than 5 edit </span>
+<span class="sd">        * More than 100 edit </span>
+<span class="sd">        * Less than 100 edits </span>
+<span class="sd">    * New editors</span>
+<span class="sd">    * Histogram cohorts</span>
+<span class="sd">    * Namespaces</span>
+<span class="sd">* User lists</span>
+<span class="sd">    * Most active editors</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;Report&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">import</span> <span class="nn">settings</span>
+
+<span class="kn">from</span> <span class="nn">data</span> <span class="kn">import</span> <span class="n">userlists</span>
+
+
+<div class="viewcode-block" id="ReportItem"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem">[docs]</a><span class="k">class</span> <span class="nc">ReportItem</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A report consists of a collection of report items. A report item consists of a cohort instance and methods to generate the data and the plots.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cohort</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span> <span class="o">=</span> <span class="n">cohort</span>
+        <span class="sd">&#39;&#39;&#39;Cohort instance</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">relDest</span> <span class="o">=</span> <span class="n">dest</span>
+        <span class="sd">&#39;&#39;&#39;Relative path to the destination directory&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="ReportItem.createDirectory"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.createDirectory">[docs]</a>    <span class="k">def</span> <span class="nf">createDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">base</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Creates the directory if it doesn&#39;t exist already. The `base` directory is joined with the relative destination directory and returned.</span>
+
+<span class="sd">        :arg base: base directory (e.g. settings.datadirectory or settings.wikipridedirectory)</span>
+<span class="sd">        :returns: absolute path</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">relDest</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span> <span class="c"># Python &gt;2.5</span>
+            <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span> <span class="k">raise</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="ReportItem.loadData"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.loadData">[docs]</a>    <span class="k">def</span> <span class="nf">loadData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Loads the data from disk if available</span>
+<span class="sd">        &#39;&#39;&#39;</span>    
+        <span class="k">for</span> <span class="n">varName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">data_description</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>  
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">loadDataFromDisk</span><span class="p">(</span><span class="n">varName</span><span class="o">=</span><span class="n">varName</span><span class="p">,</span><span class="n">destination</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REPORTDATA</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">relDest</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ReportItem.freeData"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.freeData">[docs]</a>    <span class="k">def</span> <span class="nf">freeData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Frees the data in hope of reducing the memory usage of the process.        </span>
+<span class="sd">        &#39;&#39;&#39;</span>  
+        <span class="k">for</span> <span class="n">varName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>  
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span>
+        
+
+
+</div>
+<div class="viewcode-block" id="ReportItem.generateData"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.generateData">[docs]</a>    <span class="k">def</span> <span class="nf">generateData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Generates and saves the cohort data. Calls the :meth:`.aggregateDataFromSQL` method from the :class:`.Cohort` instance passed as argument. The collected data matrices are stored in the :attr:`.Cohort.data` attribute. The data matrices are saved as txt files in the data destination directory.&#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">aggregateDataFromSQL</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>   
+        
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createDirectory</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">REPORTDATA</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">saveDataToDisk</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeData</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="ReportItem.generateCSV"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.generateCSV">[docs]</a>    <span class="k">def</span> <span class="nf">generateCSV</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Stores a simple csv file in a format used by the javascript `dygraphs &lt;http://dygraphs.com/&gt;`_ library.    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">()</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createDirectory</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">REPORTCSV</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">saveDataToCSV</span><span class="p">(</span><span class="n">destination</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ReportItem.generateVisualizations"><a class="viewcode-back" href="../../reference.html#data.report.ReportItem.generateVisualizations">[docs]</a>    <span class="k">def</span> <span class="nf">generateVisualizations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">varNames</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;For the variables names in `varNames`, produces the WikiPride graphs using :meth:`.wikiPride` (e.g. `added`, `editors`, ...). If the cohort defines `linePlots`, they are also generated.</span>
+
+<span class="sd">        :arg kargs: arguments passed directly to :meth:`.wikiPride`. E.g. `flip=True`, `percentage=False`.</span>
+<span class="sd">        :arg varNames: list of str, containing the names of the variables for which wikipride should be produced.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">()</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">createDirectory</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">REPORTGRAPHS</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">varNames</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">wikiPride</span><span class="p">(</span><span class="n">varName</span><span class="o">=</span><span class="n">v</span><span class="p">,</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">,</span><span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cohort</span><span class="o">.</span><span class="n">linePlots</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="n">dest</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">freeData</span><span class="p">()</span>
+
+
+<span class="c">#hackz</span></div></div>
+<span class="k">try</span><span class="p">:</span>
+
+    <span class="c">#Absolute path directories</span>
+
+    <span class="n">REPORTDATA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">reportdirectory</span><span class="p">,</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
+    <span class="n">REPORTGRAPHS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">reportdirectory</span><span class="p">,</span><span class="s">&#39;graphs&#39;</span><span class="p">)</span>
+    <span class="n">REPORTLISTS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">reportdirectory</span><span class="p">,</span><span class="s">&#39;lists&#39;</span><span class="p">)</span>
+    <span class="n">REPORTCSV</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">reportdirectory</span><span class="p">,</span><span class="s">&#39;csv&#39;</span><span class="p">)</span>
+
+    <span class="c">#Relative path directory tree for the report</span>
+
+    <span class="n">COMMUNITY</span> <span class="o">=</span> <span class="s">&quot;Community_roles&quot;</span> 
+
+    <span class="n">COHORTTREND</span> <span class="o">=</span>  <span class="s">&quot;Cohort_trends&quot;</span>
+    <span class="n">AGE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;Age_cohorts&quot;</span><span class="p">)</span>
+    <span class="n">ABS_AGE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;Absolute_age&quot;</span><span class="p">)</span>
+    <span class="n">ABS_MORE1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ABS_AGE</span><span class="p">,</span><span class="s">&quot;More_than_1_edit&quot;</span><span class="p">)</span>
+    <span class="n">ABS_MORE5</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ABS_AGE</span><span class="p">,</span><span class="s">&quot;More_than_5_edits&quot;</span><span class="p">)</span>
+    <span class="n">ABS_MORE100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ABS_AGE</span><span class="p">,</span><span class="s">&quot;More_than_100_edits&quot;</span><span class="p">)</span>
+    <span class="n">ABS_LESS100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ABS_AGE</span><span class="p">,</span><span class="s">&quot;Less_than_100_edits&quot;</span><span class="p">)</span>
+    <span class="n">REL_AGE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;Relative_age&quot;</span><span class="p">)</span>
+    <span class="n">REL_MORE1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REL_AGE</span><span class="p">,</span><span class="s">&quot;More_than_1_edit&quot;</span><span class="p">)</span>
+    <span class="n">REL_MORE5</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REL_AGE</span><span class="p">,</span><span class="s">&quot;More_than_5_edits&quot;</span><span class="p">)</span>
+    <span class="n">REL_MORE100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REL_AGE</span><span class="p">,</span><span class="s">&quot;More_than_100_edits&quot;</span><span class="p">)</span>
+    <span class="n">REL_LESS100</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">REL_AGE</span><span class="p">,</span><span class="s">&quot;Less_than_100_edits&quot;</span><span class="p">)</span>
+
+    <span class="n">NEWEDITORS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;New_editors&quot;</span><span class="p">)</span>
+    <span class="n">HISTOGRAM</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;Histogram_cohorts&quot;</span><span class="p">)</span>
+    <span class="n">NAMESPACES</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">COHORTTREND</span><span class="p">,</span><span class="s">&quot;Namespaces&quot;</span><span class="p">)</span>
+
+    <span class="n">USERLISTS</span> <span class="o">=</span> <span class="s">&quot;User_lists&quot;</span> 
+
+
+    <span class="c"># Report items</span>
+        
+    <span class="kn">from</span> <span class="nn">cohorts</span> <span class="kn">import</span> <span class="n">age</span>
+    <span class="kn">from</span> <span class="nn">cohorts</span> <span class="kn">import</span> <span class="n">histogram</span>
+    <span class="kn">from</span> <span class="nn">cohorts</span> <span class="kn">import</span> <span class="n">simple</span>
+
+    <span class="n">absMore1</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">AbsoluteAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">ABS_MORE1</span><span class="p">)</span>
+    <span class="n">absMore5</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">AbsoluteAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">ABS_MORE5</span><span class="p">)</span>
+    <span class="n">absMore100</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">AbsoluteAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">ABS_MORE100</span><span class="p">)</span>
+    <span class="n">absLess100</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">AbsoluteAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">maxedits</span> <span class="o">=</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">ABS_LESS100</span><span class="p">)</span>
+
+
+    <span class="n">relMore1</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">RelativeAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">REL_MORE1</span><span class="p">)</span>
+    <span class="n">relMore5</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">RelativeAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">5</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">REL_MORE5</span><span class="p">)</span>
+    <span class="n">relMore100</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">RelativeAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">REL_MORE100</span><span class="p">)</span>
+    <span class="n">relLess100</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">age</span><span class="o">.</span><span class="n">RelativeAgeAllNamespaces</span><span class="p">(</span><span class="n">minedits</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">maxedits</span> <span class="o">=</span> <span class="mi">100</span><span class="p">),</span> <span class="n">dest</span><span class="o">=</span><span class="n">REL_LESS100</span><span class="p">)</span>
+
+
+    <span class="n">editorActivity</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">histogram</span><span class="o">.</span><span class="n">EditorActivity</span><span class="p">(),</span> <span class="n">dest</span><span class="o">=</span><span class="n">HISTOGRAM</span><span class="p">)</span>
+
+    <span class="n">nsCohort</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">simple</span><span class="o">.</span><span class="n">NameSpaces</span><span class="p">(),</span> <span class="n">dest</span><span class="o">=</span><span class="n">NAMESPACES</span><span class="p">)</span>
+    <span class="n">newEditors</span> <span class="o">=</span> <span class="n">ReportItem</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">simple</span><span class="o">.</span><span class="n">NewEditors</span><span class="p">(),</span> <span class="n">dest</span><span class="o">=</span><span class="n">NEWEDITORS</span><span class="p">)</span>
+
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Exception when creating report structure. Likely settings haven&#39;t been read. Failure very likely...&quot;</span><span class="p">)</span>
+    <span class="k">pass</span>
+    
+<div class="viewcode-block" id="processData"><a class="viewcode-back" href="../../reference.html#data.report.processData">[docs]</a><span class="k">def</span> <span class="nf">processData</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;The aggregation of the cohort data requires that  :func:`data.preprocessing.process` has been executed and the data thus preprocessed. The :func:`data.cohortdata.processData` method will use the report definition in :mod:`.report` to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of `numpy` matrices.                </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Aggregating the cohort data for </span><span class="si">%s</span><span class="s">wiki&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+
+    <span class="n">utils</span><span class="o">.</span><span class="n">setFilterBots</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">filterbots</span><span class="p">,</span><span class="n">userlists</span><span class="o">.</span><span class="n">BOT_LIST_FILE</span><span class="p">)</span>
+
+    <span class="c"># aggregate and save cohort data</span>
+    <span class="n">absMore1</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">absMore5</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">absMore100</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">absLess100</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    
+    <span class="n">relMore1</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">relMore5</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">relMore100</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    <span class="n">relLess100</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+
+    <span class="n">editorActivity</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+
+    <span class="n">nsCohort</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+    
+    <span class="n">newEditors</span><span class="o">.</span><span class="n">generateData</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="processCSV"><a class="viewcode-back" href="../../reference.html#data.report.processCSV">[docs]</a><span class="k">def</span> <span class="nf">processCSV</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;The aggregation of the cohort data requires that  :func:`data.preprocessing.process` has been executed and the data thus preprocessed. The :func:`data.cohortdata.processData` method will use the report definition in :mod:`.report` to create a directory structure that contains the data of the cohort defitintions described below. The data is stored in the form of `numpy` matrices.                </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Saving dygraph CSV data files for </span><span class="si">%s</span><span class="s">wiki&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+
+    <span class="n">utils</span><span class="o">.</span><span class="n">setFilterBots</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">filterbots</span><span class="p">,</span><span class="n">userlists</span><span class="o">.</span><span class="n">BOT_LIST_FILE</span><span class="p">)</span>
+
+    <span class="c"># aggregate and save cohort data</span>
+    <span class="n">absMore1</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">absMore5</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">absMore100</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">absLess100</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    
+    <span class="n">relMore1</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">relMore5</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">relMore100</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    <span class="n">relLess100</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+
+    <span class="n">editorActivity</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+
+    <span class="n">nsCohort</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+    
+    <span class="n">newEditors</span><span class="o">.</span><span class="n">generateCSV</span><span class="p">()</span>
+
+
+
+</div>
+<div class="viewcode-block" id="processReport"><a class="viewcode-back" href="../../reference.html#data.report.processReport">[docs]</a><span class="k">def</span> <span class="nf">processReport</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Creates a set of graphs which requires that :func:`data.report.processData` has been executed and the data thus aggregated. The data is loaded from disk.</span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+
+    <span class="n">stdVars</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">,</span><span class="s">&#39;edits&#39;</span><span class="p">,</span><span class="s">&#39;editors&#39;</span><span class="p">]</span>
+
+    <span class="n">absMore1</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">)</span>
+    <span class="n">absMore5</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">)</span>
+    <span class="n">absMore100</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">)</span>
+    <span class="n">absLess100</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">)</span>
+
+    <span class="n">relMore1</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">relMore5</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">relMore100</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">relLess100</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">,</span> <span class="n">flip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">editorActivity</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="n">stdVars</span><span class="p">)</span>
+
+    <span class="n">nsCohort</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;added&#39;</span><span class="p">,</span><span class="s">&#39;edits&#39;</span><span class="p">])</span>
+
+    <span class="n">newEditors</span><span class="o">.</span><span class="n">generateVisualizations</span><span class="p">(</span><span class="n">varNames</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;editors&#39;</span><span class="p">],</span> <span class="n">percentage</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">colorbar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">WikiPride v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, declerambaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
