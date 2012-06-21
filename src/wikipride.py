@@ -32,8 +32,7 @@ def main():
 		help='the language of the wiki project to analyze',
 	)
 	parser.add_argument(
-		'-d', '--droptables',
-		metavar='',
+		'-d', '--droptables',		
 		action='store_true',
         dest='droptables', 		
 		help='if True, all SQL tables will be dropped before being created',
