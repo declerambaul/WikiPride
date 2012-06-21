@@ -34,8 +34,8 @@ def main():
 	parser.add_argument(
 		'-d', '--droptables',
 		metavar='',
-		type=bool,
-		default=None, 
+		action='store_true',
+        dest='droptables', 		
 		help='if True, all SQL tables will be dropped before being created',
 	)
 
@@ -63,16 +63,20 @@ def main():
 		settings.droptables = args.droptables
 	
 	if args.workstep == 'all':
-		pass
+		from data import preprocessing
+		from data import report
+		preprocessing.process()
+		report.processData()
+		report.processReport()
 	elif args.workstep == 'preprocessing':
 		from data import preprocessing
-		preprocessing.process()		
+		preprocessing.process()	
 	elif args.workstep == 'data':
 		from data import report
-		report.processData()		
+		report.processData()
 	elif args.workstep == 'report':	
 		from data import report
-		report.processReport()		
+		report.processReport()	
 
 	
 if __name__ == "__main__":
